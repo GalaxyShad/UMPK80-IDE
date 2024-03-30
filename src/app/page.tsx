@@ -9,6 +9,11 @@ import { SevenSegmentDisplay } from "./SevenSegmentDisplay";
 import UmpkCodeEditor from "./UmpkCodeEditor";
 import { appWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api/tauri";
+import UmpkKeyboard from "@/components/umpk-keyboard";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import UmpkIoOutput from "@/components/umpk-io-output";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 type TypePayload = {
   digit: number[];
@@ -59,37 +64,54 @@ const UmpkDisplay = () => {
   );
 };
 
+{
+  value: 'R'
+}
+
+{
+  value: 1
+}
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-row items-center justify-between">
-      <div className="w-full">
-        <UmpkCodeEditor/>
-      </div>
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel className="w-full">
+          <UmpkCodeEditor />
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel className="flex flex-col h-full px-4">
+          <div className="flex items-center space-x-2 mb-2">
+            <Switch id="umpk-on" />
+            <Label htmlFor="on">Сеть</Label>
+          </div>
 
-      <div className="flex flex-col h-full px-4">
-        
-        <UmpkDisplay />
+          <UmpkDisplay />
+          <UmpkIoOutput />
+          <UmpkKeyboard />
 
-        <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-          <a
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-            onClick={async () => {
-              await invoke("start_umpk80", {
-                window: appWindow,
-              });
-            }}
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Run{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                -&gt;
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>{`Let's Rock`}</p>
-          </a>
-        </div>
-      </div>
-
+          <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+            <a
+              className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+              onClick={async () => {
+                await invoke("start_umpk80", {
+                  window: appWindow,
+                });
+              }}
+            >
+              <h2 className={`mb-3 text-2xl font-semibold`}>
+                Run{" "}
+                <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+                  -&gt;
+                </span>
+              </h2>
+              <p
+                className={`m-0 max-w-[30ch] text-sm opacity-50`}
+              >{`Let's Rock`}</p>
+            </a>
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </main>
   );
 }

@@ -5,6 +5,7 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
 use std::time;
+use tauri::State;
 use tauri::Window;
 
 mod umpk80;
@@ -41,19 +42,27 @@ impl AppState {
 }
 
 #[tauri::command]
-fn start_umpk80(window: Window) {
-    let app_state = Arc::new(AppState::new());
+fn umpk_press_key(state: State<AppState>, key: u8) {
+    let umpk80 = state.umpk80.lock().unwrap();
+    // теперь вы можете использовать umpk80
+    // например, вы можете вызвать метод press_key, если он существует
+    umpk80.press_key(key);
+}
 
-    let app_state_clone = app_state.clone();
+#[tauri::command]
+fn start_umpk80(state: State<AppState>, window: Window) {
+    let umpk80 = Arc::clone(&state.umpk80);
+    
     thread::spawn(move || loop {
-        app_state_clone.tick();
+        umpk80.lock().unwrap().tick();
     });
 
     let window = window.clone();
 
-    let app_state = Arc::clone(&app_state);
+    let umpk80 = Arc::clone(&state.umpk80);
     thread::spawn(move || loop {
-        let umpk80 = app_state.umpk80.lock().unwrap();
+        let umpk80 = umpk80.lock().unwrap();
+
         let display = [
             umpk80.get_display_digit(0),
             umpk80.get_display_digit(1),
@@ -78,7 +87,8 @@ fn start_umpk80(window: Window) {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![start_umpk80])
+        .manage(AppState::new())
+        .invoke_handler(tauri::generate_handler![start_umpk80, umpk_press_key])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

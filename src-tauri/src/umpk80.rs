@@ -1,7 +1,4 @@
 use std::os::raw::c_int;
-use std::ptr;
-use std::sync::{Arc, Mutex};
-
 use libc::c_void;
 
 #[link(name = "cumpk80")]
@@ -29,14 +26,13 @@ extern {
 }
 
 pub struct Umpk80 {
-    ptr: Arc<Mutex<*mut c_void>>,
+    ptr: *mut c_void,
 }
 
 impl Drop for Umpk80 {
     fn drop(&mut self) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_Free(*ptr);
+            UMPK80_Free(self.ptr);
         }
     }
 }
@@ -48,82 +44,70 @@ impl Umpk80 {
             if ptr.is_null() {
                 panic!("Failed to create UMPK80 instance");
             }
-            Self { ptr: Arc::new(Mutex::new(ptr)) }
+            Self { ptr }
         }
     }
 
     pub fn set_port_io_input(&self, data: u8) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_PortIOSetInput(*ptr, data);
+            UMPK80_PortIOSetInput(self.ptr, data);
         }
     }
 
     pub fn get_port_io_input(&self) -> u8 {
-        let ptr = self.ptr.lock().unwrap();
-        unsafe { UMPK80_PortIOGetInput(*ptr) }
+        unsafe { UMPK80_PortIOGetInput(self.ptr) }
     }
 
     pub fn get_port_io_output(&self) -> u8 {
-        let ptr = self.ptr.lock().unwrap();
-        unsafe { UMPK80_PortIOGetOutput(*ptr) }
+        unsafe { UMPK80_PortIOGetOutput(self.ptr) }
     }
 
     pub fn tick(&self) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_Tick(*ptr);
+            UMPK80_Tick(self.ptr);
         }
     }
 
     pub fn stop(&self) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_Stop(*ptr);
+            UMPK80_Stop(self.ptr);
         }
     }
 
     pub fn restart(&self) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_Restart(*ptr);
+            UMPK80_Restart(self.ptr);
         }
     }
 
     pub fn press_key(&self, key: u8) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_KeyboardPressButton(*ptr, key);
+            UMPK80_KeyboardPressButton(self.ptr, key);
         }
     }
 
     pub fn release_key(&self, key: u8) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_KeyboardReleaseButton(*ptr, key);
+            UMPK80_KeyboardReleaseButton(self.ptr, key);
         }
     }
 
     pub fn get_display_digit(&self, digit: c_int) -> u8 {
-        let ptr = self.ptr.lock().unwrap();
-        unsafe { UMPK80_DisplayGetDigit(*ptr, digit) }
+        unsafe { UMPK80_DisplayGetDigit(self.ptr, digit) }
     }
 
     pub fn load_os(&self, os: &[u8]) {
-        let ptr = self.ptr.lock().unwrap();
         unsafe {
-            UMPK80_LoadOS(*ptr, os.as_ptr());
+            UMPK80_LoadOS(self.ptr, os.as_ptr());
         }
     }
 
     pub fn get_cpu_program_counter(&self) -> u16 {
-        let ptr = self.ptr.lock().unwrap();
-        unsafe { UMPK80_CpuProgramCounter(*ptr) }
+        unsafe { UMPK80_CpuProgramCounter(self.ptr) }
     }
 
     pub fn get_cpu_stack_pointer(&self) -> u16 {
-        let ptr = self.ptr.lock().unwrap();
-        unsafe { UMPK80_CpuStackPointer(*ptr) }
+        unsafe { UMPK80_CpuStackPointer(self.ptr) }
     }
 }
 

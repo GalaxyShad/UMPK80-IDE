@@ -55,10 +55,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 720,
         "resizable": true,
         "title": "UMPK80",
-        "width": 800
+        "width": 1280
       }
     ]
   }

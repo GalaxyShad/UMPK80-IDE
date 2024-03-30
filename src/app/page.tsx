@@ -75,7 +75,7 @@ const UmpkDisplay = () => {
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-row items-center justify-between">
-      <ResizablePanelGroup direction="horizontal">
+      <ResizablePanelGroup className="min-h-screen" direction="horizontal">
         <ResizablePanel className="w-full">
           <UmpkCodeEditor />
         </ResizablePanel>

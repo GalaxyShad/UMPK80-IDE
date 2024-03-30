@@ -43,11 +43,15 @@ function KeyboardButton({
   children: ReactNode;
   className?: string;
 }) {
-  function sendToBackend(key: KeyboardKey) {
-    invoke("umpk_press_key", {key})
-  }
-
-  return <Button className={className} onClick={() => sendToBackend(value)}>{children}</Button>;
+  return (
+    <Button 
+      className={className} 
+      onMouseDown={() => invoke("umpk_press_key", { key: value })}
+      onMouseUp={() => invoke("umpk_release_key", { key: value })}
+    >
+      {children}
+    </Button>
+  );
 }
 
 export default function UmpkKeyboard({}: Props) {

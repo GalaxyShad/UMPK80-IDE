@@ -44,7 +44,7 @@ PRINT:
 export default function UmpkCodeEditor({}: Props) {
   return (
     <Editor
-      height="90vh"
+      height="100%"
       defaultLanguage="nasm"
       theme="vs-dark"
       defaultValue={dummyData}

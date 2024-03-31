@@ -1,11 +1,15 @@
 "use client";
 
 export type DisplaySegmentProps = {
-  value: boolean[];
+  value: number;
 };
 
-export const SevenSegmentDisplay = (props: DisplaySegmentProps) => {
-  const displayStates = props.value;
+const bitsToBooleanList = (value: number, bitsCount = 8) =>
+    [...Array(bitsCount)].map((_, i) => (value >> i) & 1).reverse();
+
+export const SevenSegmentDisplay = ({value}: DisplaySegmentProps) => {
+  const displayStates = bitsToBooleanList(value);
+
   const segments = [
     displayStates[0] ? (
       <polygon

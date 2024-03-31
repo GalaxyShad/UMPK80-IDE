@@ -58,4 +58,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  html, body {
+    @apply min-h-full h-full
+  }
 }

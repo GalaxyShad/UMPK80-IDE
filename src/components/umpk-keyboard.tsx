@@ -38,13 +38,16 @@ function KeyboardButton({
   value,
   children,
   className,
+  disabled
 }: {
   value: KeyboardKey;
   children: ReactNode;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
     <Button 
+      disabled={disabled}
       className={className} 
       onMouseDown={() => invoke("umpk_press_key", { key: value })}
       onMouseUp={() => invoke("umpk_release_key", { key: value })}
@@ -60,7 +63,7 @@ export default function UmpkKeyboard({}: Props) {
       <KeyboardButton value={KeyboardKey.R} className="col-start-2">
         R
       </KeyboardButton>
-      <KeyboardButton value={KeyboardKey.SHC}>ШЦ</KeyboardButton>
+      <KeyboardButton disabled value={KeyboardKey.SHC}>ШЦ</KeyboardButton>
       <KeyboardButton value={KeyboardKey._C}>C</KeyboardButton>
       <KeyboardButton value={KeyboardKey._D}>D</KeyboardButton>
       <KeyboardButton value={KeyboardKey._E}>E</KeyboardButton>

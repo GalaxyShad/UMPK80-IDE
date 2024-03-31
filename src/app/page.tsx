@@ -25,8 +25,6 @@ const UmpkDisplay = () => {
   const [pg, setPg] = useState(0);
 
   useEffect(() => {
-    console.log("JS Meow");
-
     const unlisten = listen("PROGRESS", (event) => {
       const pay = event.payload as TypePayload;
 
@@ -64,14 +62,6 @@ const UmpkDisplay = () => {
   );
 };
 
-{
-  value: 'R'
-}
-
-{
-  value: 1
-}
-
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-row items-center justify-between">
@@ -80,7 +70,7 @@ export default function Home() {
           <UmpkCodeEditor />
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel className="flex flex-col h-full px-4">
+        <ResizablePanel className="flex flex-col h-full px-4 gap-4 items-center">
           <div className="flex items-center space-x-2 mb-2">
             <Switch id="umpk-on" />
             <Label htmlFor="on">Сеть</Label>

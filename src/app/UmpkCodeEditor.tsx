@@ -1,10 +1,12 @@
-import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
+import { intel8080Conf, intel8080Language } from "@/monaco-languages/intel8080";
+import Editor, { DiffEditor, useMonaco, loader, Monaco } from "@monaco-editor/react";
 
 import React from "react";
 
 type Props = {};
 
-const dummyData = `ORG 0800h
+const dummyData = `
+ORG 0800h
 INIT:
     LXI H, 0902h    ; Pointer initialization
     MOV C, M        ; Read subtractor
@@ -42,12 +44,19 @@ PRINT:
     RST 1           ; Stop`;
 
 export default function UmpkCodeEditor({}: Props) {
+  function handleEditorWillMount(monaco: Monaco) {
+    monaco.languages.register({ id: 'intel8080asm' });
+    monaco.languages.setMonarchTokensProvider('intel8080asm', intel8080Language);
+    monaco.languages.setLanguageConfiguration('intel8080asm', intel8080Conf);
+  }
+
   return (
     <Editor
       height="100%"
-      defaultLanguage="nasm"
+      defaultLanguage="intel8080asm"
       theme="vs-dark"
       defaultValue={dummyData}
+      beforeMount={handleEditorWillMount}
     />
   );
 }

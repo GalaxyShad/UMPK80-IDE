@@ -191,13 +191,13 @@ export default function Home() {
                 <UmpkCodeEditor value={editorValue} onChange={(value) => { setEditorValue(value ?? ""); }} />
               </ResizablePanel>
               <ResizableHandle />
-              <ResizablePanel className="w-full">
+              <ResizablePanel defaultSize={30} className="w-full">
                 <UmpkTerminal value={terminalOutput} />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel className="flex flex-col h-full px-4 gap-4 items-center">
+          <ResizablePanel defaultSize={40} minSize={38}  className="flex flex-col h-full px-4 gap-4 items-center">
             <div className="flex items-center space-x-2 mb-2">
               <Switch id="umpk-on" />
               <Label htmlFor="umpk-on">Сеть</Label>

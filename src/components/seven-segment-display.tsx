@@ -63,7 +63,7 @@ export const SevenSegmentDisplay = ({value}: DisplaySegmentProps) => {
 
   return (
     <div className="block w-full">
-      <figure className="p-2 bg-primary-foreground w-16">
+      <figure className="p-2  w-16">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 53.3 97.7"

@@ -13,8 +13,19 @@ function Segment({ value }: { value: boolean }) {
   );
 }
 
-export function UmpkIOPortInput() {
-  const [input, setInput] = useState<boolean[]>(new Array(8).fill(false));
+const boolArrayToByte = (boolArray: boolean[]): number =>
+  boolArray.reduce(
+    (byte: number, current: boolean, index: number) =>
+      byte | (current ? 1 << (7 - index) : 0),
+    0
+  );
+
+export function UmpkIOPortInput({
+  onChange,
+}: {
+  onChange: (hex: number) => void;
+}) {
+  const [input, setInput] = useState<boolean[]>(new Array(8).fill(true));
 
   return (
     <div className="min-w-[200px] flex flex-row gap-1 px-2 py-4 border justify-center rounded">
@@ -22,21 +33,27 @@ export function UmpkIOPortInput() {
         <SwitchVertical
           key={i}
           checked={x}
-          onCheckedChange={(checked) =>
-            setInput(input.map((y, yi) => (yi == i ? checked : y)))
-          }
+          onCheckedChange={(checked) => {
+            const newValue = input.map((y, yi) => (yi == i ? checked : y));
+
+            setInput(newValue);
+            onChange(boolArrayToByte(newValue));
+          }}
         />
       ))}
     </div>
   );
 }
 
-export function UmpkIOPortOutput() {
-  const [value, setValue] = useState<boolean[]>(new Array(8).fill(false));
+const bitsToBooleanList = (value: number, bitsCount = 8): boolean[] =>
+  [...Array<boolean>(bitsCount)]
+    .map((_, i) => ((value >> i) & 1) != 0)
+    .reverse();
 
+export function UmpkIOPortOutput({ value }: { value: number }) {
   return (
     <div className="flex flex-row gap-1 px-2 py-4 border justify-center rounded">
-      {value?.map((x, i) => (
+      {bitsToBooleanList(value).map((x, i) => (
         <Segment value={x} key={i} />
       ))}
     </div>

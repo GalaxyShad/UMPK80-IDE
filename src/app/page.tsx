@@ -24,42 +24,27 @@ import {
 import { Input, InputProps } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import UmpkTerminal from "@/components/umpk-terminal";
 
 type TypePayload = {
   digit: number[];
+  io: number;
   pg: number;
 };
 
-const UmpkDisplay = () => {
-  const [data, setData] = useState<number[]>([0, 0, 0, 0, 0, 0]);
-  const [pg, setPg] = useState(0);
-
-  useEffect(() => {
-    const unlisten = listen("PROGRESS", (event) => {
-      const pay = event.payload as TypePayload;
-
-      setData(pay.digit);
-
-      setPg(pay.pg);
-    });
-
-    return () => {
-      unlisten.then((f) => f());
-    };
-  }, []);
-
+const UmpkDisplay = ({pg, digit}: {pg: number, digit: number[]}) => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-row">
         <div className="flex flex-row">
-          <SevenSegmentDisplay value={data[0]} />
-          <SevenSegmentDisplay value={data[1]} />
-          <SevenSegmentDisplay value={data[2]} />
-          <SevenSegmentDisplay value={data[3]} />
+          <SevenSegmentDisplay value={digit[0]} />
+          <SevenSegmentDisplay value={digit[1]} />
+          <SevenSegmentDisplay value={digit[2]} />
+          <SevenSegmentDisplay value={digit[3]} />
         </div>
         <div className="flex flex-row ml-4">
-          <SevenSegmentDisplay value={data[4]} />
-          <SevenSegmentDisplay value={data[5]} />
+          <SevenSegmentDisplay value={digit[4]} />
+          <SevenSegmentDisplay value={digit[5]} />
         </div>
       </div>
       <h1 className="text-slate-100 w-full text-center">
@@ -108,22 +93,107 @@ function UmpkRegistersControl() {
   );
 }
 
+const dummyData = `
+ORG 0800h
+INIT:
+    LXI H, 0902h    ; Pointer initialization
+    MOV C, M        ; Read subtractor
+    DCX H           ; Pointer decrement
+    MOV A, M        ; Reading the second summand
+    DCX H           ; Pointer decrement
+    ADD M           ; Adding the second summand to the first summand
+    JC  M0          ; Jump if the resulting number is greater than FFh
+    SUB C           ; Subtraction 
+    JC  BAD         ; Jump if the resulting number is negative
+    JMP LESS_100    ; Jump to check the number less than 100h
+M0:
+    SUB C           ; Subtraction 
+    JNC GREATER_FF  ; Jump if the number is greater than FFh
+
+
+LESS_100:
+    CPI 0F7h        ; Comparison to check if the number is outside the leftmost boundary of the interval
+    JC  BAD         ; Jump if the number is outside the limits
+    JMP GOOD        ; Otherwise, pass to output the number of successful fulfillment of the condition
+GREATER_FF:
+    ANI 0FEh        ; Allocation of all bits except the first one
+    JZ GOOD         ; Jump if the number is equal to 100h or 101h
+
+
+BAD:
+    MVI A, 70h      ; Writing to the accumulator the number 70h when the result is NOT within the interval.
+    JMP PRINT       ; Jump to output the result of the analysis to port 05h
+GOOD:
+    MVI A, 07h      ; Write 07h to the accumulator when the result falls within the interval.
+
+
+PRINT:
+    OUT 05h         ; Output analysis result to port 05h
+    RST 1           ; Stop`;
+
 export default function Home() {
+  const [terminalOutput, setTerminalOutput] = useState<string>("");
+  const [editorValue, setEditorValue] = useState<string>(dummyData);
+
+  const [umpkData, setUmpkData] = useState<TypePayload>({
+    digit: [0,0,0,0, 0,0],
+    io: 0,
+    pg: 0
+  });
+
+  async function setIOInput(hex: number) {
+    console.log({hex});
+    await invoke('umpk_set_io_input', { io: hex });
+  }
+
+  useEffect(() => {
+    const unlisten = listen("PROGRESS", (event) => {
+      const pay = event.payload as TypePayload;
+
+      setUmpkData(pay);
+    });
+
+    return () => {
+      unlisten.then((f) => f());
+    };
+  }, []);
+
   return (
     <main className="flex h-full flex-row">
-      <div className="w-12 h-full bg-card">Menu placeholder</div>
+      <div className="w-12 h-full bg-card">Menu</div>
       <div className="flex flex-col w-full h-full">
         <div className="flex flex-row py-1 px-2">
-          <Button className="h-6 w-6" variant="outline" size="icon" />
+          <Button
+            className="h-6 w-6"
+            variant="outline"
+            size="icon"
+            onClick={async () => {
+              console.log({editorValue});
+
+              try {
+                const res = await invoke("process_string", {
+                  inputString: editorValue
+                }) as any;
+
+                setTerminalOutput(res[0]);
+
+                console.log(res);
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+          />
         </div>
         <ResizablePanelGroup className="h-full w-full" direction="horizontal">
           <ResizablePanel className="w-full">
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel className="w-full">
-                <UmpkCodeEditor />
+                <UmpkCodeEditor value={editorValue} onChange={(value) => { setEditorValue(value ?? ""); }} />
               </ResizablePanel>
               <ResizableHandle />
-              <ResizablePanel className="w-full"></ResizablePanel>
+              <ResizablePanel className="w-full">
+                <UmpkTerminal value={terminalOutput} />
+              </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
           <ResizableHandle />
@@ -133,7 +203,7 @@ export default function Home() {
               <Label htmlFor="umpk-on">Сеть</Label>
             </div>
 
-            <UmpkDisplay />
+            <UmpkDisplay digit={umpkData.digit} pg={umpkData.pg} />
 
             <div className="grid grid-cols-2 gap-y-4 gap-x-6">
               <div className="bg-card flex flex-row gap-2 font-semibold justify-end rounded px-2 py-1">
@@ -149,8 +219,8 @@ export default function Home() {
               <UmpkRegistersControl />
 
               <div className="flex flex-col justify-between gap-2">
-                <UmpkIOPortOutput />
-                <UmpkIOPortInput />
+                <UmpkIOPortOutput value={umpkData.io} />
+                <UmpkIOPortInput onChange={setIOInput}/>
               </div>
 
               <UmpkKeyboardControl />

@@ -21,6 +21,8 @@ extern {
     pub fn UMPK80_DisplayGetDigit(umpk: *mut libc::c_void, digit: libc::c_int) -> u8;
     pub fn UMPK80_LoadOS(umpk: *mut libc::c_void, os: *const u8);
 
+    pub fn UMPK80_LoadProgram(umpk: *mut libc::c_void, program: *const u8, programSize: u16, dstAddress: u16);
+
     pub fn UMPK80_CpuProgramCounter(umpk: *mut libc::c_void) -> u16;
     pub fn UMPK80_CpuStackPointer(umpk: *mut libc::c_void) -> u16;
 }
@@ -108,6 +110,12 @@ impl Umpk80 {
 
     pub fn get_cpu_stack_pointer(&self) -> u16 {
         unsafe { UMPK80_CpuStackPointer(self.ptr) }
+    }
+
+    pub fn load_program(&self, program: &[u8], program_size: u16, dst_address: u16) {
+        unsafe {
+            UMPK80_LoadProgram(self.ptr, program.as_ptr(), program_size, dst_address);
+        }
     }
 }
 

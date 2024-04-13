@@ -51,6 +51,7 @@ function KeyboardButton({
       className={className + " h-12"} 
       onMouseDown={() => invoke("umpk_press_key", { key: value })}
       onMouseUp={() => invoke("umpk_release_key", { key: value })}
+      onMouseLeave={() => invoke("umpk_release_key", { key: value })}
     >
       {children}
     </Button>

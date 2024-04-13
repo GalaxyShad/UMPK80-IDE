@@ -1,8 +1,35 @@
-use std::os::raw::c_int;
 use libc::c_void;
+use std::os::raw::c_int;
+
+#[repr(C)]
+pub enum Umpk80Register {
+    PcLow,
+    PcHigh,
+    SpLow,
+    SpHigh,
+    L,
+    H,
+    E,
+    D,
+    C,
+    B,
+    PSW,
+    A,
+    M,
+}
+
+#[repr(C)]
+pub enum Umpk80RegisterPair {
+    PC,
+    SP,
+    HL,
+    DE,
+    BC,
+    PSWA,
+}
 
 #[link(name = "cumpk80")]
-extern {
+extern "C" {
     pub fn UMPK80_Create() -> *mut libc::c_void;
     pub fn UMPK80_Free(umpk: *mut libc::c_void);
 
@@ -21,10 +48,21 @@ extern {
     pub fn UMPK80_DisplayGetDigit(umpk: *mut libc::c_void, digit: libc::c_int) -> u8;
     pub fn UMPK80_LoadOS(umpk: *mut libc::c_void, os: *const u8);
 
-    pub fn UMPK80_LoadProgram(umpk: *mut libc::c_void, program: *const u8, programSize: u16, dstAddress: u16);
+    pub fn UMPK80_LoadProgram(
+        umpk: *mut libc::c_void,
+        program: *const u8,
+        programSize: u16,
+        dstAddress: u16,
+    );
 
     pub fn UMPK80_CpuProgramCounter(umpk: *mut libc::c_void) -> u16;
     pub fn UMPK80_CpuStackPointer(umpk: *mut libc::c_void) -> u16;
+
+    pub fn UMPK80_GetRegister(umpk: *mut libc::c_void, reg: Umpk80Register) -> u8;
+    pub fn UMPK80_SetRegister(umpk: *mut libc::c_void, reg: Umpk80Register, value: u8);
+
+    pub fn UMPK80_GetRegisterPair(umpk: *mut libc::c_void, regPair: Umpk80RegisterPair) -> u16;
+    pub fn UMPK80_SetRegisterPair(umpk: *mut libc::c_void, regPair: Umpk80RegisterPair, value: u16);
 }
 
 pub struct Umpk80 {
@@ -117,6 +155,24 @@ impl Umpk80 {
             UMPK80_LoadProgram(self.ptr, program.as_ptr(), program_size, dst_address);
         }
     }
+
+    pub fn get_register(&self, register: Umpk80Register) -> u8 {
+        unsafe { UMPK80_GetRegister(self.ptr, register) }
+    }
+
+    pub fn set_register(&self, register: Umpk80Register, data: u8) {
+        unsafe { UMPK80_SetRegister(self.ptr, register, data) }
+    }
+
+    pub fn get_register_pair(&self, register_pair: Umpk80RegisterPair) -> u16 {
+        unsafe { UMPK80_GetRegisterPair(self.ptr, register_pair) }
+    }
+
+    pub fn set_register_pair(&self, register_pair: Umpk80RegisterPair, data: u16) {
+        unsafe { UMPK80_SetRegisterPair(self.ptr, register_pair, data) }
+    }
+
+
 }
 
 unsafe impl Send for Umpk80 {}

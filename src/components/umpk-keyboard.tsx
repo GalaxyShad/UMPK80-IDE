@@ -37,7 +37,7 @@ function KeyboardButton({
   value,
   children,
   className,
-  disabled
+  disabled,
 }: {
   value: KeyboardKey;
   children: ReactNode;
@@ -45,10 +45,10 @@ function KeyboardButton({
   disabled?: boolean;
 }) {
   return (
-    <Button 
+    <Button
       variant="secondary"
       disabled={disabled}
-      className={className + " h-12"} 
+      className={className + " h-12"}
       onMouseDown={() => invoke("umpk_press_key", { key: value })}
       onMouseUp={() => invoke("umpk_release_key", { key: value })}
       onMouseLeave={() => invoke("umpk_release_key", { key: value })}
@@ -58,10 +58,54 @@ function KeyboardButton({
   );
 }
 
-export function UmpkKeyboardNumber({className} : {className?: string}) {
-  return (
-    <div className={"grid grid-cols-4 gap-2 " + className}>
+export function UmpkKeyboardNumber({ className }: { className?: string }) {
+  type Button = {
+    key: KeyboardKey;
+    realKeyCode: string;
+    name: string;
+  };
 
+  const keyMap = {
+    Digit0: KeyboardKey._0,
+    Digit1: KeyboardKey._1,
+    Digit2: KeyboardKey._2,
+    Digit3: KeyboardKey._3,
+    Digit4: KeyboardKey._4,
+    Digit5: KeyboardKey._5,
+    Digit6: KeyboardKey._6,
+    Digit7: KeyboardKey._7,
+    Digit8: KeyboardKey._8,
+    Digit9: KeyboardKey._9,
+    KeyA: KeyboardKey._A,
+    KeyB: KeyboardKey._B,
+    KeyC: KeyboardKey._C,
+    KeyD: KeyboardKey._D,
+    KeyE: KeyboardKey._E,
+    KeyF: KeyboardKey._F,
+  } as Record<string, KeyboardKey>;
+
+  function keyHandler(e: React.KeyboardEvent<HTMLDivElement>) {
+    const key = keyMap[e.code];
+
+    if (key !== undefined) {
+      invoke("umpk_press_key", { key });
+    }
+  }
+
+  function keyUpHandler(e: React.KeyboardEvent<HTMLDivElement>) {
+    const key = keyMap[e.code];
+
+    if (key !== undefined) {
+      invoke("umpk_release_key", { key });
+    }
+  }
+
+  return (
+    <div
+      onKeyDown={keyHandler}
+      onKeyUp={keyUpHandler}
+      className={"grid grid-cols-4 gap-2 " + className}
+    >
       <KeyboardButton value={KeyboardKey._C}>C</KeyboardButton>
       <KeyboardButton value={KeyboardKey._D}>D</KeyboardButton>
       <KeyboardButton value={KeyboardKey._E}>E</KeyboardButton>
@@ -85,13 +129,15 @@ export function UmpkKeyboardNumber({className} : {className?: string}) {
   );
 }
 
-export function UmpkKeyboardControl({className} : {className?: string}) {
+export function UmpkKeyboardControl({ className }: { className?: string }) {
   return (
     <div className={"grid grid-cols-3 gap-2 " + className}>
       <KeyboardButton value={KeyboardKey.R} className="col-start-2">
         R
       </KeyboardButton>
-      <KeyboardButton disabled value={KeyboardKey.SHC}>ШЦ</KeyboardButton>
+      <KeyboardButton disabled value={KeyboardKey.SHC}>
+        ШЦ
+      </KeyboardButton>
 
       <KeyboardButton value={KeyboardKey.SHK} className="col-start-2">
         ШК

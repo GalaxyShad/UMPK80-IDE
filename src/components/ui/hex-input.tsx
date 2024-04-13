@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { Input } from "./input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
@@ -19,10 +19,14 @@ const HexInput = React.forwardRef<HTMLInputElement, InputProps>(
 
     const [strValue, setStrValue] = useState<string>(formatHex(props.value ?? 0, hexPad));
 
+    useEffect(() => {
+      console.log("sadasd");
+      setStrValue(formatHex(props.value ?? 0, hexPad))
+    }, [props.value, hexPad])
+
     function change(e: React.ChangeEvent<HTMLInputElement>) {
       const input = e.currentTarget.value.toUpperCase();
 
-      
       const regHex = new RegExp(`^[0-9A-F]{1,${hexPad}}$`);
       console.log(regHex);
       

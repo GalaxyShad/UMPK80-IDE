@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Switch } from "./ui/switch";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
@@ -9,13 +9,15 @@ import { UmpkRegistersControl } from "./umpk-registers-control";
 import { Label } from "./ui/label";
 import { Slider } from "./ui/slider";
 import { listen } from "@tauri-apps/api/event";
+import { RegistersPayload } from "./RegistersPayload";
 
 type Props = {};
 
-type TypePayload = {
+interface TypePayload {
   digit: number[];
   io: number;
   pg: number;
+  registers: RegistersPayload
 };
 
 export default function UmpkTab({}: Props) {
@@ -23,7 +25,11 @@ export default function UmpkTab({}: Props) {
     digit: [0, 0, 0, 0, 0, 0],
     io: 0,
     pg: 0,
+    registers: {} as RegistersPayload
   });
+
+  const [registers, setRegisters] = useState<RegistersPayload>({} as RegistersPayload);
+  const refUmpk = useRef<HTMLDivElement>(null);
 
   async function setIOInput(hex: number) {
     console.log({ hex });
@@ -33,14 +39,17 @@ export default function UmpkTab({}: Props) {
   useEffect(() => {
     const unlisten = listen("PROGRESS", (event) => {
       const pay = event.payload as TypePayload;
-
-      setUmpkData(pay);
+      // console.log({pay});
+      setUmpkData({...pay});
+      setRegisters({...pay.registers});
     });
 
     return () => {
       unlisten.then((f) => f());
     };
   }, []);
+
+  
 
   return (
     <div>
@@ -62,7 +71,7 @@ export default function UmpkTab({}: Props) {
           <Slider />
         </div>
 
-        <UmpkRegistersControl />
+        <UmpkRegistersControl registers={registers}/>
 
         <div className="flex flex-col justify-between gap-2">
           <UmpkIOPortOutput value={umpkData.io} />

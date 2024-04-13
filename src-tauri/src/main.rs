@@ -16,10 +16,26 @@ mod umpk80;
 use umpk80::Umpk80;
 
 #[derive(Serialize, Deserialize, Clone)]
+struct RegistersPayload {
+    a: u8,
+    m: u8,
+    b: u8,
+    c: u8,
+    d: u8,
+    e: u8,
+    h: u8,
+    l: u8,
+    psw: u8,
+    pc: u16,
+    sp: u16,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
 struct TypePayload {
     digit: [u8; 6],
     pg: u16,
-    io: u8
+    io: u8,
+    registers: RegistersPayload,
 }
 
 struct AppState {
@@ -129,9 +145,23 @@ fn start_umpk80(state: State<AppState>, window: Window) {
         ];
         let pg = umpk80.get_cpu_program_counter();
         let io = umpk80.get_port_io_output();
+        let registers = RegistersPayload {
+            a: umpk80.get_register(umpk80::Umpk80Register::A),
+            b: umpk80.get_register(umpk80::Umpk80Register::B),
+            c: umpk80.get_register(umpk80::Umpk80Register::C),
+            d: umpk80.get_register(umpk80::Umpk80Register::D),
+            e: umpk80.get_register(umpk80::Umpk80Register::E),
+            h: umpk80.get_register(umpk80::Umpk80Register::H),
+            l: umpk80.get_register(umpk80::Umpk80Register::L),
+            m: umpk80.get_register(umpk80::Umpk80Register::M),
+            psw: umpk80.get_register(umpk80::Umpk80Register::PSW),
+
+            sp: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::SP),
+            pc: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::PC),
+        };
         drop(umpk80);
 
-        let payload = TypePayload { digit: display, pg, io };
+        let payload = TypePayload { digit: display, pg, io, registers };
         if let Err(e) = window.emit("PROGRESS", payload) {
             eprintln!("Error sending message: {}", e);
             break;

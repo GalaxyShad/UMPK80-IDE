@@ -1,3 +1,5 @@
+use rodio::source::SineWave;
+use rodio::Source;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::Read;
@@ -6,14 +8,20 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
 use std::time;
+use std::time::Duration;
 use tauri::State;
 use tauri::Window;
 use std::io::{Write, BufRead, BufReader};
 use std::process::Command;
 use tempfile::NamedTempFile;
+use rodio::{Decoder, OutputStream, Sink};
+use std::f32::consts::PI;
 
+mod squarewave;
 mod umpk80;
+
 use umpk80::Umpk80;
+use squarewave::SquareWave;
 
 #[derive(Serialize, Deserialize, Clone)]
 struct RegistersPayload {
@@ -60,6 +68,17 @@ impl AppState {
     fn tick(&self) {
         self.umpk80.lock().unwrap().tick();
     }
+}
+
+
+fn play_tone(freq: f32, duration: u64) {
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let sink = Sink::try_new(&stream_handle).unwrap();
+
+    let source = SquareWave::new(freq).take_duration(Duration::from_millis(duration)).amplify(0.01);
+
+    sink.append(source);
+    sink.sleep_until_end();
 }
 
 #[tauri::command]
@@ -126,7 +145,15 @@ fn start_umpk80(state: State<AppState>, window: Window) {
     let umpk80 = Arc::clone(&state.umpk80);
 
     thread::spawn(move || loop {
-        umpk80.lock().unwrap().tick();
+        let umpk = umpk80.lock().unwrap();
+        umpk.tick();
+
+        if umpk.get_cpu_program_counter() == 0x0447 {
+            let frequency = (0xFF - umpk.get_cpu_register(umpk80::Umpk80Register::B)) as f32;
+            let duration = umpk.get_cpu_register(umpk80::Umpk80Register::D) as u64;
+
+            play_tone((frequency) * 1.5, duration * 3);
+        }
     });
 
     let window = window.clone();

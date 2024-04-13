@@ -55,8 +55,10 @@ extern "C" {
         dstAddress: u16,
     );
 
+    pub fn UMPK80_CpuSetProgramCounter(umpk: *mut libc::c_void, value: u16);
     pub fn UMPK80_CpuProgramCounter(umpk: *mut libc::c_void) -> u16;
     pub fn UMPK80_CpuStackPointer(umpk: *mut libc::c_void) -> u16;
+    pub fn UMPK80_CpuGetRegister(umpk: *mut libc::c_void, reg: Umpk80Register) -> u8;
 
     pub fn UMPK80_GetRegister(umpk: *mut libc::c_void, reg: Umpk80Register) -> u8;
     pub fn UMPK80_SetRegister(umpk: *mut libc::c_void, reg: Umpk80Register, value: u8);
@@ -142,6 +144,10 @@ impl Umpk80 {
         }
     }
 
+    pub fn set_cpu_program_counter(&self, data: u16) {
+        unsafe { UMPK80_CpuSetProgramCounter(self.ptr, data) }
+    }
+
     pub fn get_cpu_program_counter(&self) -> u16 {
         unsafe { UMPK80_CpuProgramCounter(self.ptr) }
     }
@@ -150,10 +156,15 @@ impl Umpk80 {
         unsafe { UMPK80_CpuStackPointer(self.ptr) }
     }
 
+    
     pub fn load_program(&self, program: &[u8], program_size: u16, dst_address: u16) {
         unsafe {
             UMPK80_LoadProgram(self.ptr, program.as_ptr(), program_size, dst_address);
         }
+    }
+    
+    pub fn get_cpu_register(&self, register: Umpk80Register) -> u8 {
+        unsafe { UMPK80_CpuGetRegister(self.ptr, register) }
     }
 
     pub fn get_register(&self, register: Umpk80Register) -> u8 {

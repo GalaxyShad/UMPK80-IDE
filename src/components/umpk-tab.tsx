@@ -10,6 +10,7 @@ import { Label } from "./ui/label";
 import { Slider } from "./ui/slider";
 import { listen } from "@tauri-apps/api/event";
 import { RegistersPayload } from "./RegistersPayload";
+import { Toggle } from "./ui/toggle";
 
 type Props = {};
 
@@ -17,18 +18,20 @@ interface TypePayload {
   digit: number[];
   io: number;
   pg: number;
-  registers: RegistersPayload
-};
+  registers: RegistersPayload;
+}
 
 export default function UmpkTab({}: Props) {
   const [umpkData, setUmpkData] = useState<TypePayload>({
     digit: [0, 0, 0, 0, 0, 0],
     io: 0,
     pg: 0,
-    registers: {} as RegistersPayload
+    registers: {} as RegistersPayload,
   });
 
-  const [registers, setRegisters] = useState<RegistersPayload>({} as RegistersPayload);
+  const [registers, setRegisters] = useState<RegistersPayload>(
+    {} as RegistersPayload
+  );
   const refUmpk = useRef<HTMLDivElement>(null);
 
   async function setIOInput(hex: number) {
@@ -40,16 +43,14 @@ export default function UmpkTab({}: Props) {
     const unlisten = listen("PROGRESS", (event) => {
       const pay = event.payload as TypePayload;
       // console.log({pay});
-      setUmpkData({...pay});
-      setRegisters({...pay.registers});
+      setUmpkData({ ...pay });
+      setRegisters({ ...pay.registers });
     });
 
     return () => {
       unlisten.then((f) => f());
     };
   }, []);
-
-  
 
   return (
     <div>
@@ -61,17 +62,18 @@ export default function UmpkTab({}: Props) {
       <UmpkDisplay digit={umpkData.digit} pg={umpkData.pg} />
 
       <div className="grid grid-cols-2 gap-y-4 gap-x-6">
-        <div className="bg-card flex flex-row gap-2 font-semibold justify-end rounded px-2 py-1">
-          {["S", "Z", "AC", "P", "C"].map((x, i) => (
-            <div key={i}>{x}</div>
-          ))}
-        </div>
+        <UmpkFlags
+          psw={registers.psw}
+          onPswChange={(data) =>
+            invoke("umpk_set_register", { registerName: "psw", data })
+          }
+        />
 
         <div className="bg-card flex flex-row gap-2 font-semibold justify-end rounded px-2 py-1">
           <Slider />
         </div>
 
-        <UmpkRegistersControl registers={registers}/>
+        <UmpkRegistersControl registers={registers} />
 
         <div className="flex flex-col justify-between gap-2">
           <UmpkIOPortOutput value={umpkData.io} />
@@ -102,6 +104,45 @@ export default function UmpkTab({}: Props) {
           >{`Let's Rock`}</p>
         </a>
       </div>
+    </div>
+  );
+}
+
+interface UmpkFlagsProps {
+  psw: number;
+  onPswChange: (psw: number) => void;
+}
+
+function UmpkFlags({ psw, onPswChange }: UmpkFlagsProps) {
+  interface Flag {
+    name: string;
+    mask: number;
+  }
+
+  const flags = [
+    { name: "S", mask: 0b10000000 },
+    { name: "Z", mask: 0b01000000 },
+    { name: "AC", mask: 0b00010000 },
+    { name: "P", mask: 0b00000100 },
+    { name: "C", mask: 0b00000001 },
+  ] as Flag[];
+
+  function handleChange(mask: number, pressed: boolean) {
+    onPswChange(pressed ? psw | mask : psw & ~mask);
+  }
+
+  return (
+    <div className="bg-card flex flex-row gap-1 font-semibold justify-end rounded px-2 py-1">
+      {flags.map((flag, i) => (
+        <Toggle
+          key={i}
+          pressed={(psw & flag.mask) != 0}
+          onPressedChange={(pressed) => handleChange(flag.mask, pressed)}
+          size="sm"
+        >
+          {flag.name}
+        </Toggle>
+      ))}
     </div>
   );
 }

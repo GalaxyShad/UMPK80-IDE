@@ -5,9 +5,10 @@ import { Input } from "./input";
 import { useEffect, useState } from "react";
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "onBlur"> {
   value?: number;
   onChange?: (value: number) => void;
+  onBlur?: (value: number) => void;
   bytesLen?: number;
 }
 
@@ -20,7 +21,6 @@ const HexInput = React.forwardRef<HTMLInputElement, InputProps>(
     const [strValue, setStrValue] = useState<string>(formatHex(props.value ?? 0, hexPad));
 
     useEffect(() => {
-      console.log("sadasd");
       setStrValue(formatHex(props.value ?? 0, hexPad))
     }, [props.value, hexPad])
 
@@ -42,17 +42,21 @@ const HexInput = React.forwardRef<HTMLInputElement, InputProps>(
 
     function blur(e: React.FocusEvent<HTMLInputElement>) {
       if (e.currentTarget.value === "") {
-        setStrValue(formatHex(0));
+        setStrValue(formatHex(0, hexPad));
 
         props.onChange?.(0);
-        props.onBlur?.(e);
+        props.onBlur?.(0);
+
+        return;
       }
+
+      const hex = Number.parseInt(e.currentTarget.value, 16);
+      props.onBlur?.(hex);
     }
 
     return (
       <Input
         {...props}
-        type={type}
         className={className}
         ref={ref}
         onChange={change}

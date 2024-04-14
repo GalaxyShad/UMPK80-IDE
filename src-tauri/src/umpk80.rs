@@ -69,6 +69,7 @@ extern "C" {
 
 pub struct Umpk80 {
     ptr: *mut c_void,
+    speaker_volume: f32,
 }
 
 impl Drop for Umpk80 {
@@ -86,7 +87,7 @@ impl Umpk80 {
             if ptr.is_null() {
                 panic!("Failed to create UMPK80 instance");
             }
-            Self { ptr }
+            Self { ptr: ptr, speaker_volume: 0.01 }
         }
     }
 
@@ -180,10 +181,17 @@ impl Umpk80 {
     }
 
     pub fn set_register_pair(&self, register_pair: Umpk80RegisterPair, data: u16) {
+        println!("{}", data);
         unsafe { UMPK80_SetRegisterPair(self.ptr, register_pair, data) }
     }
 
+    pub fn set_speaker_volume(&mut self, volume: f32) {
+        self.speaker_volume = volume;
+    }
 
+    pub fn get_speaker_volume(&self) -> f32 {
+        self.speaker_volume
+    }
 }
 
 unsafe impl Send for Umpk80 {}

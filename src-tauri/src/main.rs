@@ -1,6 +1,8 @@
 use rodio::source::SineWave;
 use rodio::Source;
 use serde::{Deserialize, Serialize};
+use umpk80::Umpk80Register;
+use umpk80::Umpk80RegisterPair;
 use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
@@ -71,11 +73,11 @@ impl AppState {
 }
 
 
-fn play_tone(freq: f32, duration: u64) {
+fn play_tone(freq: f32, duration: u64, volume: f32) {
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let sink = Sink::try_new(&stream_handle).unwrap();
 
-    let source = SquareWave::new(freq).take_duration(Duration::from_millis(duration)).amplify(0.01);
+    let source = SquareWave::new(freq).take_duration(Duration::from_millis(duration)).amplify(volume);
 
     sink.append(source);
     sink.sleep_until_end();
@@ -97,6 +99,28 @@ fn umpk_release_key(state: State<AppState>, key: u8) {
 fn umpk_set_io_input(state: State<AppState>, io: u8) {
     let umpk80 = state.umpk80.lock().unwrap();
     umpk80.set_port_io_input(io);
+}
+
+#[tauri::command]
+fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> Result<(), String> {
+    let umpk = state.umpk80.lock().unwrap();
+    
+    match register_name {
+        "a" => umpk.set_register(Umpk80Register::A, data as u8),
+        "b" => umpk.set_register(Umpk80Register::B, data as u8),
+        "c" => umpk.set_register(Umpk80Register::C, data as u8),
+        "d" => umpk.set_register(Umpk80Register::D, data as u8),
+        "e" => umpk.set_register(Umpk80Register::E, data as u8),
+        "h" => umpk.set_register(Umpk80Register::H, data as u8),
+        "l" => umpk.set_register(Umpk80Register::L, data as u8),
+        "pc" => umpk.set_register_pair(Umpk80RegisterPair::PC, data),
+        "sp" => umpk.set_register_pair(Umpk80RegisterPair::SP, data),
+        "psw" => umpk.set_register(Umpk80Register::PSW, data as u8),
+
+        _ => return Err(format!("Unknown register name {register_name}").into())
+    };
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -151,8 +175,9 @@ fn start_umpk80(state: State<AppState>, window: Window) {
         if umpk.get_cpu_program_counter() == 0x0447 {
             let frequency = (0xFF - umpk.get_cpu_register(umpk80::Umpk80Register::B)) as f32;
             let duration = umpk.get_cpu_register(umpk80::Umpk80Register::D) as u64;
+            let volume = umpk.get_speaker_volume();
 
-            play_tone((frequency) * 1.5, duration * 3);
+            play_tone((frequency) * 1.5, duration * 3, volume);
         }
     });
 
@@ -207,6 +232,7 @@ fn main() {
             umpk_press_key,
             umpk_release_key,
             umpk_set_io_input,
+            umpk_set_register,
             process_string
         ])
         .run(tauri::generate_context!())

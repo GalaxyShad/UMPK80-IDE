@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
 import { UmpkDisplay } from "./umpk-display";
 import { UmpkIOPortOutput, UmpkIOPortInput } from "./umpk-io-output";
-import { UmpkKeyboardControl, UmpkKeyboardNumber } from "./umpk-keyboard";
+import { KeyboardKey, UmpkKeyboardControl, UmpkKeyboardNumber } from "./umpk-keyboard";
 import { UmpkRegistersControl } from "./umpk-registers-control";
 import { Label } from "./ui/label";
 import { Slider } from "./ui/slider";
@@ -21,6 +21,67 @@ interface TypePayload {
   registers: RegistersPayload;
 }
 
+function useUmpkRealKeyboardBindings(): [
+  React.RefObject<HTMLDivElement>,
+  (e: React.KeyboardEvent<HTMLDivElement>) => void,
+  (e: React.KeyboardEvent<HTMLDivElement>) => void,
+  KeyboardKey[]
+] {
+  const refUmpk = useRef<HTMLDivElement>(null);
+
+  const [pressedKeys, setPressedKeys] = useState<KeyboardKey[]>([]);
+
+  const keyMap = {
+    Digit0: KeyboardKey._0,
+    Digit1: KeyboardKey._1,
+    Digit2: KeyboardKey._2,
+    Digit3: KeyboardKey._3,
+    Digit4: KeyboardKey._4,
+    Digit5: KeyboardKey._5,
+    Digit6: KeyboardKey._6,
+    Digit7: KeyboardKey._7,
+    Digit8: KeyboardKey._8,
+    Digit9: KeyboardKey._9,
+    KeyA: KeyboardKey._A,
+    KeyB: KeyboardKey._B,
+    KeyC: KeyboardKey._C,
+    KeyD: KeyboardKey._D,
+    KeyE: KeyboardKey._E,
+    KeyF: KeyboardKey._F,
+    Space: KeyboardKey.OT_A,
+    ArrowRight: KeyboardKey.ZP_UV,
+    ArrowLeft: KeyboardKey.UM,
+    ShiftLeft: KeyboardKey.OT_RG,
+    ShiftRight: KeyboardKey.OT_RG,
+  } as Record<string, KeyboardKey>;
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== refUmpk.current) return;
+
+    console.log(e.code);
+
+    const key = keyMap[e.code];
+
+    if (key !== undefined) {
+      setPressedKeys((x) => [...x, key]);
+      invoke("umpk_press_key", { key });
+    }
+  };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== refUmpk.current) return;
+
+    const key = keyMap[e.code];
+
+    if (key !== undefined) {
+      setPressedKeys((prevPressedKeys) => prevPressedKeys.filter((pk) => pk !== key));
+      invoke("umpk_release_key", { key });
+    }
+  };
+
+  return [refUmpk, handleKeyDown, handleKeyUp, pressedKeys];
+}
+
 export default function UmpkTab({}: Props) {
   const [umpkData, setUmpkData] = useState<TypePayload>({
     digit: [0, 0, 0, 0, 0, 0],
@@ -29,10 +90,11 @@ export default function UmpkTab({}: Props) {
     registers: {} as RegistersPayload,
   });
 
+  const [refUmpk, handleKeyDown, handleKeyUp, pressedKeys] = useUmpkRealKeyboardBindings();
+
   const [registers, setRegisters] = useState<RegistersPayload>(
     {} as RegistersPayload
   );
-  const refUmpk = useRef<HTMLDivElement>(null);
 
   async function setIOInput(hex: number) {
     console.log({ hex });
@@ -53,7 +115,13 @@ export default function UmpkTab({}: Props) {
   }, []);
 
   return (
-    <div>
+    <div
+      className="px-4 h-full w-full"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onKeyUp={handleKeyUp}
+      ref={refUmpk}
+    >
       <div className="flex items-center space-x-2 mb-2">
         <Switch id="umpk-on" />
         <Label htmlFor="umpk-on">Сеть</Label>
@@ -80,8 +148,8 @@ export default function UmpkTab({}: Props) {
           <UmpkIOPortInput onChange={setIOInput} />
         </div>
 
-        <UmpkKeyboardControl />
-        <UmpkKeyboardNumber />
+        <UmpkKeyboardControl pressedKeys={pressedKeys}/>
+        <UmpkKeyboardNumber pressedKeys={pressedKeys}/>
       </div>
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">

@@ -100,7 +100,7 @@ export default function Home() {
           <ResizableHandle />
           <ResizablePanel
             defaultSize={40}
-            className="flex flex-col h-full px-4 gap-4 items-center min-w-[484px]"
+            className="flex flex-col h-full items-center min-w-[484px]"
           >
             <UmpkTab/>
           </ResizablePanel>

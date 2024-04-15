@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { Input } from "./input";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "onBlur"> {
@@ -15,13 +15,18 @@ export interface InputProps
 const formatHex = (x: number, pad: number = 2) => x.toString(16).toUpperCase().padStart(pad, "0");
 
 const HexInput = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, bytesLen, ...props }, ref) => {
+  ({ className, type, bytesLen, ...props }) => {
     const hexPad = (bytesLen ?? 1) * 2;
 
+    const refInput = useRef<HTMLInputElement | null>(null);
     const [strValue, setStrValue] = useState<string>(formatHex(props.value ?? 0, hexPad));
 
     useEffect(() => {
-      setStrValue(formatHex(props.value ?? 0, hexPad))
+      setStrValue(formatHex(props.value ?? 0, hexPad));
+
+      refInput.current?.classList.add("border-primary/75");
+
+      setTimeout(() => refInput.current?.classList.remove("border-primary/75"), 100);
     }, [props.value, hexPad])
 
     function change(e: React.ChangeEvent<HTMLInputElement>) {
@@ -57,8 +62,8 @@ const HexInput = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <Input
         {...props}
-        className={className}
-        ref={ref}
+        className={cn(className, "transition-colors")}
+        ref={refInput}
         onChange={change}
         onBlur={blur}
         value={strValue}

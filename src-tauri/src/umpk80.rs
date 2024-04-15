@@ -181,7 +181,6 @@ impl Umpk80 {
     }
 
     pub fn set_register_pair(&self, register_pair: Umpk80RegisterPair, data: u16) {
-        println!("{}", data);
         unsafe { UMPK80_SetRegisterPair(self.ptr, register_pair, data) }
     }
 

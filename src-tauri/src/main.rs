@@ -102,6 +102,11 @@ fn umpk_set_io_input(state: State<AppState>, io: u8) {
 }
 
 #[tauri::command]
+fn umpk_set_speaker_volume(state: State<AppState>, volume: f32) {
+    state.umpk80.lock().unwrap().set_speaker_volume(volume);
+}
+
+#[tauri::command]
 fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> Result<(), String> {
     let umpk = state.umpk80.lock().unwrap();
     
@@ -233,6 +238,7 @@ fn main() {
             umpk_release_key,
             umpk_set_io_input,
             umpk_set_register,
+            umpk_set_speaker_volume,
             process_string
         ])
         .run(tauri::generate_context!())

@@ -1,6 +1,7 @@
 use rodio::source::SineWave;
 use rodio::Source;
 use serde::{Deserialize, Serialize};
+use tauri::Manager;
 use umpk80::Umpk80Register;
 use umpk80::Umpk80RegisterPair;
 use std::fs::File;
@@ -9,6 +10,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
+use std::thread::JoinHandle;
 use std::time;
 use std::time::Duration;
 use tauri::State;
@@ -50,6 +52,7 @@ struct TypePayload {
 
 struct AppState {
     umpk80: Arc<Mutex<Umpk80>>,
+    umpk_thread_handle: JoinHandle<()>
 }
 
 impl AppState {
@@ -64,11 +67,21 @@ impl AppState {
 
         umpk80.lock().unwrap().load_os(contents.as_mut_slice());
 
-        Self { umpk80 }
-    }
+        let thread_umpk = Arc::clone(&umpk80);
+        let umpk_thread_handle = thread::spawn(move || loop {
+            let umpk = thread_umpk.lock().unwrap();
+            umpk.tick();
+    
+            if umpk.get_cpu_program_counter() == 0x0447 {
+                let frequency = (0xFF - umpk.get_cpu_register(umpk80::Umpk80Register::B)) as f32;
+                let duration = umpk.get_cpu_register(umpk80::Umpk80Register::D) as u64;
+                let volume = umpk.get_speaker_volume();
+    
+                play_tone((frequency) * 1.5, duration * 3, volume);
+            }
+        });
 
-    fn tick(&self) {
-        self.umpk80.lock().unwrap().tick();
+        Self { umpk80, umpk_thread_handle }
     }
 }
 
@@ -169,71 +182,59 @@ fn process_string(state: State<AppState>, input_string: String) -> Result<(Strin
     Ok((output_string, binary_data))
 }
 
-#[tauri::command]
-fn start_umpk80(state: State<AppState>, window: Window) {
-    let umpk80 = Arc::clone(&state.umpk80);
-
-    thread::spawn(move || loop {
-        let umpk = umpk80.lock().unwrap();
-        umpk.tick();
-
-        if umpk.get_cpu_program_counter() == 0x0447 {
-            let frequency = (0xFF - umpk.get_cpu_register(umpk80::Umpk80Register::B)) as f32;
-            let duration = umpk.get_cpu_register(umpk80::Umpk80Register::D) as u64;
-            let volume = umpk.get_speaker_volume();
-
-            play_tone((frequency) * 1.5, duration * 3, volume);
-        }
-    });
-
-    let window = window.clone();
-
-    let umpk80 = Arc::clone(&state.umpk80);
-    thread::spawn(move || loop {
-        let umpk80 = umpk80.lock().unwrap();
-
-        let display = [
-            umpk80.get_display_digit(0),
-            umpk80.get_display_digit(1),
-            umpk80.get_display_digit(2),
-            umpk80.get_display_digit(3),
-            umpk80.get_display_digit(4),
-            umpk80.get_display_digit(5),
-        ];
-        let pg = umpk80.get_cpu_program_counter();
-        let io = umpk80.get_port_io_output();
-        let registers = RegistersPayload {
-            a: umpk80.get_register(umpk80::Umpk80Register::A),
-            b: umpk80.get_register(umpk80::Umpk80Register::B),
-            c: umpk80.get_register(umpk80::Umpk80Register::C),
-            d: umpk80.get_register(umpk80::Umpk80Register::D),
-            e: umpk80.get_register(umpk80::Umpk80Register::E),
-            h: umpk80.get_register(umpk80::Umpk80Register::H),
-            l: umpk80.get_register(umpk80::Umpk80Register::L),
-            m: umpk80.get_register(umpk80::Umpk80Register::M),
-            psw: umpk80.get_register(umpk80::Umpk80Register::PSW),
-
-            sp: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::SP),
-            pc: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::PC),
-        };
-        drop(umpk80);
-
-        let payload = TypePayload { digit: display, pg, io, registers };
-        if let Err(e) = window.emit("PROGRESS", payload) {
-            eprintln!("Error sending message: {}", e);
-            break;
-        }
-
-        let delay = time::Duration::from_millis(1);
-        thread::sleep(delay);
-    });
-}
 
 fn main() {
     tauri::Builder::default()
         .manage(AppState::new())
+        .setup(|app| {
+            let main_window = app.get_window("main").unwrap();
+
+            let binding = app.handle();
+            let state = binding.state::<AppState>();
+            let umpk80 = Arc::clone(&state.umpk80);
+
+            thread::spawn(move || loop {
+                let umpk80 = umpk80.lock().unwrap();
+        
+                let display = [
+                    umpk80.get_display_digit(0),
+                    umpk80.get_display_digit(1),
+                    umpk80.get_display_digit(2),
+                    umpk80.get_display_digit(3),
+                    umpk80.get_display_digit(4),
+                    umpk80.get_display_digit(5),
+                ];
+                let pg = umpk80.get_cpu_program_counter();
+                let io = umpk80.get_port_io_output();
+                let registers = RegistersPayload {
+                    a: umpk80.get_register(umpk80::Umpk80Register::A),
+                    b: umpk80.get_register(umpk80::Umpk80Register::B),
+                    c: umpk80.get_register(umpk80::Umpk80Register::C),
+                    d: umpk80.get_register(umpk80::Umpk80Register::D),
+                    e: umpk80.get_register(umpk80::Umpk80Register::E),
+                    h: umpk80.get_register(umpk80::Umpk80Register::H),
+                    l: umpk80.get_register(umpk80::Umpk80Register::L),
+                    m: umpk80.get_register(umpk80::Umpk80Register::M),
+                    psw: umpk80.get_register(umpk80::Umpk80Register::PSW),
+        
+                    sp: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::SP),
+                    pc: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::PC),
+                };
+                drop(umpk80);
+        
+                let payload = TypePayload { digit: display, pg, io, registers };
+                if let Err(e) = main_window.emit("PROGRESS", payload) {
+                    eprintln!("Error sending message: {}", e);
+                    break;
+                }
+        
+                let delay = time::Duration::from_millis(1);
+                thread::sleep(delay);
+            });
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
-            start_umpk80,
             umpk_press_key,
             umpk_release_key,
             umpk_set_io_input,

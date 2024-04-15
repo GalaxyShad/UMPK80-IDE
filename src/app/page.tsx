@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import UmpkCodeEditor from "../components/umpk-code-editor";
 import { invoke } from "@tauri-apps/api/tauri";
 import {
@@ -11,12 +11,13 @@ import {
 import { Button } from "@/components/ui/button";
 import UmpkTerminal from "@/components/umpk-terminal";
 import UmpkTab from "@/components/umpk-tab";
+import { Terminal } from "@xterm/xterm";
 
 const dummyData = `
 ORG 0800h
 INIT:
-LXI H, 0902h    ; Pointer initialization
-MOV C, M        ; Read subtractor
+    LXI H, 0902h    ; Pointer initialization
+    MOV C, M        ; Read subtractor
     DCX H           ; Pointer decrement
     MOV A, M        ; Reading the second summand
     DCX H           ; Pointer decrement
@@ -51,8 +52,13 @@ PRINT:
     RST 1           ; Stop`;
 
 export default function Home() {
-  const [terminalOutput, setTerminalOutput] = useState<string>("");
   const [editorValue, setEditorValue] = useState<string>(dummyData);
+
+  const terminal = useRef<Terminal>(new Terminal({
+    theme: {
+      background: "#fdf6e300"
+    }
+  }));
 
   return (
     <main className="flex h-full flex-row">
@@ -71,7 +77,8 @@ export default function Home() {
                   inputString: editorValue,
                 })) as any;
 
-                setTerminalOutput(res[0]);
+                terminal.current.clear();
+                terminal.current.writeln(res[0]);
 
                 console.log(res);
               } catch (e) {
@@ -92,8 +99,8 @@ export default function Home() {
                 />
               </ResizablePanel>
               <ResizableHandle />
-              <ResizablePanel defaultSize={30} className="w-full">
-                <UmpkTerminal value={terminalOutput} />
+              <ResizablePanel defaultSize={30} className="px-4 pt-4 w-full h-full">
+                <UmpkTerminal terminal={terminal.current} />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>

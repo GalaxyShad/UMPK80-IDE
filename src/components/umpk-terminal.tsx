@@ -1,32 +1,36 @@
 import React, { useEffect, useRef } from "react";
 
 import { Terminal } from "@xterm/xterm";
+import { FitAddon } from '@xterm/addon-fit';
 
 import '@xterm/xterm/css/xterm.css'
 
 type Props = {
-  value: string;
+  terminal: Terminal
 };
 
-export default function UmpkTerminal({value}: Props) {
-  const refTerminal = useRef<HTMLDivElement>(null);
-  const terminal = useRef<Terminal>(new Terminal());
+export default function UmpkTerminal({terminal}: Props) {
+  const refDivTerminal = useRef<HTMLDivElement>(null);
+  const fitAddon = useRef<FitAddon>(new FitAddon());
 
   useEffect(() => {
-    console.log(refTerminal.current);
+    console.log(refDivTerminal.current);
 
-    if (refTerminal.current !== null)
-      terminal.current.open(refTerminal.current);
+    if (refDivTerminal.current !== null) {
+      terminal.loadAddon(fitAddon.current);
+      terminal.open(refDivTerminal.current);
+
+      const resizeObserver = new ResizeObserver(() => {
+        fitAddon.current.fit();
+      })
+
+      resizeObserver.observe(refDivTerminal.current);
+    }
 
     return () => {
-      terminal.current.dispose();
+      terminal.dispose();
     }
   }, []);
 
-  useEffect(() => {
-    terminal.current.write(value);
-    console.log({value});
-  }, [value])
-
-  return <div ref={refTerminal} />;
+  return <div className="w-full h-full" ref={refDivTerminal} />;
 }

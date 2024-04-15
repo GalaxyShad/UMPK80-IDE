@@ -104,7 +104,7 @@ export default function UmpkTab({}: Props) {
   useEffect(() => {
     const unlisten = listen("PROGRESS", (event) => {
       const pay = event.payload as TypePayload;
-      // console.log({pay});
+
       setUmpkData({ ...pay });
       setRegisters({ ...pay.registers });
     });
@@ -116,16 +116,16 @@ export default function UmpkTab({}: Props) {
 
   return (
     <div
-      className="px-4 h-full w-full"
+      className="flex flex-col py-4 px-4 h-full w-full outline-none"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       ref={refUmpk}
     >
-      <div className="flex items-center space-x-2 mb-2">
+      {/* <div className="flex items-center space-x-2 mb-2">
         <Switch id="umpk-on" />
         <Label htmlFor="umpk-on">Сеть</Label>
-      </div>
+      </div> */}
 
       <UmpkDisplay digit={umpkData.digit} pg={umpkData.pg} />
 
@@ -150,27 +150,6 @@ export default function UmpkTab({}: Props) {
 
         <UmpkKeyboardControl pressedKeys={pressedKeys}/>
         <UmpkKeyboardNumber pressedKeys={pressedKeys}/>
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          onClick={async () => {
-            await invoke("start_umpk80", {
-              window: appWindow,
-            });
-          }}
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Run{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p
-            className={`m-0 max-w-[30ch] text-sm opacity-50`}
-          >{`Let's Rock`}</p>
-        </a>
       </div>
     </div>
   );

@@ -13,7 +13,21 @@ export default function UmpkCodeEditor({value, onChange}: Props) {
     monaco.languages.register({ id: 'intel8080asm' });
     monaco.languages.setMonarchTokensProvider('intel8080asm', intel8080Language);
     monaco.languages.setLanguageConfiguration('intel8080asm', intel8080Conf);
+
+    monaco.editor.addKeybindingRule({
+      keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Equal,
+      command: "editor.action.fontZoomIn"
+    })
+
+    monaco.editor.addKeybindingRule({
+      keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Minus,
+      command: "editor.action.fontZoomOut"
+    })
+
+    console.log({monaco});
   }
+
+
 
   return (
     <Editor

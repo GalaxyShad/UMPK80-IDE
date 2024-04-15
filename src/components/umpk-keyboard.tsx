@@ -5,33 +5,29 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { ClassNameValue } from "tailwind-merge";
 import { cn } from "@/lib/utils";
 
+// prettier-ignore
 export enum KeyboardKey {
-  _D,
-  _E,
-  _F,
-  _A,
-  _B,
-  _C,
-  _7,
-  _8,
-  _9,
-  _4,
-  _5,
-  _6,
-  _1,
-  _2,
-  _3,
-  _0,
-  ZP_UV,
-  UM,
-  P,
-  OT_RG,
-  OT_A,
-  SHK,
-  PR_SCH,
-  SHC,
-  R,
-  ST,
+  _D,    _E,     _F,
+  _A,    _B,     _C,
+  _7,    _8,     _9, 
+  _4,    _5,     _6, 
+  _1,    _2,     _3,
+  _0,    ZP_UV,  UM,
+  P,     OT_RG,  OT_A,
+  SHK,   PR_SCH, SHC,
+  R,     ST
+}
+
+interface Button {
+  binary: KeyboardKey;
+  name: string;
+  startWithNextCol?: boolean;
+  disabled?: boolean;
+}
+
+interface KeyboardProps {
+  className?: string;
+  pressedKeys?: KeyboardKey[];
 }
 
 function KeyboardButton({
@@ -50,6 +46,7 @@ function KeyboardButton({
       variant="secondary"
       disabled={disabled}
       className={className + " h-12"}
+      tabIndex={-1}
       onMouseDown={() => invoke("umpk_press_key", { key: value })}
       onMouseUp={() => invoke("umpk_release_key", { key: value })}
       onMouseLeave={() => invoke("umpk_release_key", { key: value })}
@@ -57,17 +54,6 @@ function KeyboardButton({
       {children}
     </Button>
   );
-}
-
-interface Button {
-  binary: KeyboardKey;
-  name: string;
-  startWithNextCol: boolean;
-}
-
-interface KeyboardProps {
-  className?: string;
-  pressedKeys?: KeyboardKey[];
 }
 
 export function UmpkKeyboardNumber({ className, pressedKeys }: KeyboardProps) {
@@ -111,9 +97,10 @@ export function UmpkKeyboardNumber({ className, pressedKeys }: KeyboardProps) {
 }
 
 export function UmpkKeyboardControl({ className, pressedKeys }: KeyboardProps) {
+  
   const buttons = [
     { name: "R", binary: KeyboardKey.R, startWithNextCol: true },
-    { name: "ШЦ", binary: KeyboardKey.SHC },
+    { name: "ШЦ", binary: KeyboardKey.SHC, disabled: true },
     { name: "ШК", binary: KeyboardKey.SHK, startWithNextCol: true },
     { name: "Пр Сч", binary: KeyboardKey.PR_SCH },
 
@@ -136,6 +123,7 @@ export function UmpkKeyboardControl({ className, pressedKeys }: KeyboardProps) {
           )}
           key={btn.binary}
           value={btn.binary}
+          disabled={btn.disabled}
         >
           {btn.name}
         </KeyboardButton>

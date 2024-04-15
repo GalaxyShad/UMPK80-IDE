@@ -28,7 +28,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.umpk80.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

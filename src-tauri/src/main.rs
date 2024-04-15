@@ -55,17 +55,13 @@ struct AppState {
     umpk_thread_handle: JoinHandle<()>
 }
 
+static OS_FILE: &[u8] = include_bytes!("../../core/data/scaned-os-fixed.bin");
+
 impl AppState {
     fn new() -> Self {
         let umpk80 = Arc::new(Mutex::new(Umpk80::new()));
 
-        let mut file = File::open("../core/data/scaned-os-fixed.bin").expect("Failed to open file");
-
-        let mut contents = Vec::new();
-        file.read_to_end(&mut contents)
-            .expect("Failed to read file");
-
-        umpk80.lock().unwrap().load_os(contents.as_mut_slice());
+        umpk80.lock().unwrap().load_os(OS_FILE);
 
         let thread_umpk = Arc::clone(&umpk80);
         let umpk_thread_handle = thread::spawn(move || loop {

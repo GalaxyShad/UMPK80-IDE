@@ -9,9 +9,13 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import UmpkTerminal from "@/components/umpk-terminal";
+// import UmpkTerminal from "@/components/umpk-terminal";
 import UmpkTab from "@/components/umpk-tab";
 import { Terminal } from "@xterm/xterm";
+
+import dynamic from 'next/dynamic'
+
+const UmpkTerminal = dynamic(() => import("@/components/umpk-terminal"), {ssr: false});
 
 const dummyData = `
 ORG 0800h

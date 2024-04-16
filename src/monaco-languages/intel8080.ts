@@ -114,15 +114,14 @@ const intel8080Language: monaco.languages.IMonarchLanguage = {
   tokenizer: {
     root: [
       [/[+\-*\/\=<>!\&\|%]/, 'operator'],
-      [/\d+/, 'number'],
       [/[a-zA-Z_]\w*/, { cases: { '@keywords': 'keyword', '@default': 'identifier' } }],
       [/;[^\n]*/, 'comment'],
       [/\s+/, ''], 
-      [/:\s*/, 'delimiter'], // labels
-      [/0[xX][0-9a-fA-F]+/, 'number'], // hexadecimal numbers with prefix 0x or 0X
-      [/0[0-7]+/, 'number'], // octal numbers with prefix 0
-      [/\$[0-9a-fA-F]+/, 'number'], // hexadecimal numbers with prefix $
-      [/[0-9]+/, 'number'], // decimal numbers
+      [/\s+\:/, 'delimiter'], // labels
+      [/[0-7]+[OoQq]/, 'number.octal'], 
+      [/[01]+[01\_]*[01]+[bB]/, 'number.binary'], 
+      [/\d+([\dA-F])*[hH]/, 'number.hex'], 
+      [/\d+[dD]?/, 'number.decimal'],
     ],
   },
 };

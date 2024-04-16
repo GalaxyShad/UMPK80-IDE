@@ -3,41 +3,38 @@ import { Button } from "./ui/button";
 
 import { invoke } from "@tauri-apps/api/tauri";
 import { ClassNameValue } from "tailwind-merge";
+import { cn } from "@/lib/utils";
 
-enum KeyboardKey {
-  _D,
-  _E,
-  _F,
-  _A,
-  _B,
-  _C,
-  _7,
-  _8,
-  _9,
-  _4,
-  _5,
-  _6,
-  _1,
-  _2,
-  _3,
-  _0,
-  ZP_UV,
-  UM,
-  P,
-  OT_RG,
-  OT_A,
-  SHK,
-  PR_SCH,
-  SHC,
-  R,
-  ST,
+// prettier-ignore
+export enum KeyboardKey {
+  _D,    _E,     _F,
+  _A,    _B,     _C,
+  _7,    _8,     _9, 
+  _4,    _5,     _6, 
+  _1,    _2,     _3,
+  _0,    ZP_UV,  UM,
+  P,     OT_RG,  OT_A,
+  SHK,   PR_SCH, SHC,
+  R,     ST
+}
+
+interface Button {
+  binary: KeyboardKey;
+  name: string;
+  startWithNextCol?: boolean;
+  disabled?: boolean;
+}
+
+interface KeyboardProps {
+  className?: string;
+  pressedKeys?: KeyboardKey[];
 }
 
 function KeyboardButton({
   value,
   children,
   className,
-  disabled
+  disabled,
 }: {
   value: KeyboardKey;
   children: ReactNode;
@@ -45,65 +42,92 @@ function KeyboardButton({
   disabled?: boolean;
 }) {
   return (
-    <Button 
+    <Button
       variant="secondary"
       disabled={disabled}
-      className={className + " h-12"} 
+      className={className + " h-12"}
+      tabIndex={-1}
       onMouseDown={() => invoke("umpk_press_key", { key: value })}
       onMouseUp={() => invoke("umpk_release_key", { key: value })}
+      onMouseLeave={() => invoke("umpk_release_key", { key: value })}
     >
       {children}
     </Button>
   );
 }
 
-export function UmpkKeyboardNumber({className} : {className?: string}) {
+export function UmpkKeyboardNumber({ className, pressedKeys }: KeyboardProps) {
+  const buttons = [
+    { name: "C", binary: KeyboardKey._C },
+    { name: "D", binary: KeyboardKey._D },
+    { name: "E", binary: KeyboardKey._E },
+    { name: "F", binary: KeyboardKey._F },
+
+    { name: "8", binary: KeyboardKey._8 },
+    { name: "9", binary: KeyboardKey._9 },
+    { name: "A", binary: KeyboardKey._A },
+    { name: "B", binary: KeyboardKey._B },
+
+    { name: "4", binary: KeyboardKey._4 },
+    { name: "5", binary: KeyboardKey._5 },
+    { name: "6", binary: KeyboardKey._6 },
+    { name: "7", binary: KeyboardKey._7 },
+
+    { name: "0", binary: KeyboardKey._0 },
+    { name: "1", binary: KeyboardKey._1 },
+    { name: "2", binary: KeyboardKey._2 },
+    { name: "3", binary: KeyboardKey._3 },
+  ] as Button[];
+
   return (
     <div className={"grid grid-cols-4 gap-2 " + className}>
-
-      <KeyboardButton value={KeyboardKey._C}>C</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._D}>D</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._E}>E</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._F}>F</KeyboardButton>
-
-      <KeyboardButton value={KeyboardKey._8}>8</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._9}>9</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._A}>A</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._B}>B</KeyboardButton>
-
-      <KeyboardButton value={KeyboardKey._4}>4</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._5}>5</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._6}>6</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._7}>7</KeyboardButton>
-
-      <KeyboardButton value={KeyboardKey._0}>0</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._1}>1</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._2}>2</KeyboardButton>
-      <KeyboardButton value={KeyboardKey._3}>3</KeyboardButton>
+      {buttons.map((btn) => (
+        <KeyboardButton
+          className={
+            pressedKeys?.includes(btn.binary) ? "bg-primary" : undefined
+          }
+          key={btn.binary}
+          value={btn.binary}
+        >
+          {btn.name}
+        </KeyboardButton>
+      ))}
     </div>
   );
 }
 
-export function UmpkKeyboardControl({className} : {className?: string}) {
+export function UmpkKeyboardControl({ className, pressedKeys }: KeyboardProps) {
+  
+  const buttons = [
+    { name: "R", binary: KeyboardKey.R, startWithNextCol: true },
+    { name: "ШЦ", binary: KeyboardKey.SHC, disabled: true },
+    { name: "ШК", binary: KeyboardKey.SHK, startWithNextCol: true },
+    { name: "Пр Сч", binary: KeyboardKey.PR_SCH },
+
+    { name: "Ст", binary: KeyboardKey.ST },
+    { name: "От Рг", binary: KeyboardKey.OT_RG },
+    { name: "От А", binary: KeyboardKey.OT_A },
+
+    { name: "П", binary: KeyboardKey.P },
+    { name: "Ум", binary: KeyboardKey.UM },
+    { name: "Зп Ув", binary: KeyboardKey.ZP_UV },
+  ] as Button[];
+
   return (
     <div className={"grid grid-cols-3 gap-2 " + className}>
-      <KeyboardButton value={KeyboardKey.R} className="col-start-2">
-        R
-      </KeyboardButton>
-      <KeyboardButton disabled value={KeyboardKey.SHC}>ШЦ</KeyboardButton>
-
-      <KeyboardButton value={KeyboardKey.SHK} className="col-start-2">
-        ШК
-      </KeyboardButton>
-      <KeyboardButton value={KeyboardKey.PR_SCH}>Пр Сч</KeyboardButton>
-
-      <KeyboardButton value={KeyboardKey.ST}>Ст</KeyboardButton>
-      <KeyboardButton value={KeyboardKey.OT_RG}>От Рг</KeyboardButton>
-      <KeyboardButton value={KeyboardKey.OT_A}>От А</KeyboardButton>
-
-      <KeyboardButton value={KeyboardKey.P}>П</KeyboardButton>
-      <KeyboardButton value={KeyboardKey.UM}>Ум</KeyboardButton>
-      <KeyboardButton value={KeyboardKey.ZP_UV}>Зп Ув</KeyboardButton>
+      {buttons.map((btn) => (
+        <KeyboardButton
+          className={cn(
+            pressedKeys?.includes(btn.binary) ? "bg-primary" : undefined,
+            btn.startWithNextCol ? "col-start-2" : undefined
+          )}
+          key={btn.binary}
+          value={btn.binary}
+          disabled={btn.disabled}
+        >
+          {btn.name}
+        </KeyboardButton>
+      ))}
     </div>
   );
 }

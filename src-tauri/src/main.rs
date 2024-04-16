@@ -216,6 +216,7 @@ fn main() {
                     sp: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::SP),
                     pc: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::PC),
                 };
+                println!("{}", registers.pc);
                 drop(umpk80);
         
                 let payload = TypePayload { digit: display, pg, io, registers };

@@ -121,15 +121,19 @@ fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> 
     
     match register_name {
         "a" => umpk.set_register(Umpk80Register::A, data as u8),
+        "psw" => umpk.set_register(Umpk80Register::PSW, data as u8),
+
         "b" => umpk.set_register(Umpk80Register::B, data as u8),
         "c" => umpk.set_register(Umpk80Register::C, data as u8),
+
         "d" => umpk.set_register(Umpk80Register::D, data as u8),
         "e" => umpk.set_register(Umpk80Register::E, data as u8),
+
         "h" => umpk.set_register(Umpk80Register::H, data as u8),
         "l" => umpk.set_register(Umpk80Register::L, data as u8),
+
         "pc" => umpk.set_register_pair(Umpk80RegisterPair::PC, data),
         "sp" => umpk.set_register_pair(Umpk80RegisterPair::SP, data),
-        "psw" => umpk.set_register(Umpk80Register::PSW, data as u8),
 
         _ => return Err(format!("Unknown register name {register_name}").into())
     };

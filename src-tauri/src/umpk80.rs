@@ -65,6 +65,9 @@ extern "C" {
 
     pub fn UMPK80_GetRegisterPair(umpk: *mut libc::c_void, regPair: Umpk80RegisterPair) -> u16;
     pub fn UMPK80_SetRegisterPair(umpk: *mut libc::c_void, regPair: Umpk80RegisterPair, value: u16);
+
+    pub fn UMPK80_MemoryRead(umpk: *mut libc::c_void, adr: u16) -> u8;
+    pub fn UMPK80_MemoryWrite(umpk: *mut libc::c_void, adr: u16, data: u8);
 }
 
 pub struct Umpk80 {
@@ -190,6 +193,14 @@ impl Umpk80 {
 
     pub fn get_speaker_volume(&self) -> f32 {
         self.speaker_volume
+    }
+
+    pub fn memory_read(&self, address: u16) -> u8 {
+        unsafe { UMPK80_MemoryRead(self.ptr, address) }
+    }
+
+    pub fn memory_write(&self, address: u16, data: u8) {
+        unsafe { UMPK80_MemoryWrite(self.ptr, address, data); }
     }
 }
 

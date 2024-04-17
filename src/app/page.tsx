@@ -86,7 +86,7 @@ export default function Home() {
 
                 console.log(res);
               } catch (e) {
-                terminal.current.writeln(e);
+                terminal.current.writeln(e as string);
                 console.error(e);
               }
             }}

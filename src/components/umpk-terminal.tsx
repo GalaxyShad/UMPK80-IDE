@@ -6,24 +6,21 @@ import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 
 import "@xterm/xterm/css/xterm.css";
+import { getTerminal } from "@/services/terminal";
 
-type Props = {
-  terminal: Terminal;
-};
-
-export default function UmpkTerminal({ terminal }: Props) {
+export default function UmpkTerminal() {
   const refDivTerminal = useRef<HTMLDivElement>(null);
-  const fitAddon = useRef<FitAddon>(new FitAddon());
-
+ 
   useEffect(() => {
     console.log(refDivTerminal.current);
 
+    const [terminal, fitAddon] = getTerminal();
+
     if (refDivTerminal.current !== null) {
-      terminal.loadAddon(fitAddon.current);
       terminal.open(refDivTerminal.current);
 
       const resizeObserver = new ResizeObserver(() => {
-        fitAddon.current.fit();
+        fitAddon.fit();
       });
 
       resizeObserver.observe(refDivTerminal.current);
@@ -32,7 +29,7 @@ export default function UmpkTerminal({ terminal }: Props) {
     return () => {
       terminal.dispose();
     };
-  }, [terminal]);
+  }, []);
 
   return <div className="w-full h-full" ref={refDivTerminal} />;
 }

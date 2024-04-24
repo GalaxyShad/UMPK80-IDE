@@ -11,9 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 // import UmpkTerminal from "@/components/umpk-terminal";
 import UmpkTab from "@/components/umpk-tab";
-import { Terminal } from "@xterm/xterm";
 
 import dynamic from 'next/dynamic'
+import { PlayIcon } from "@radix-ui/react-icons";
+import Toolbar from "@/components/toolbar";
+import SideMenu from "@/components/side-menu";
 
 const UmpkTerminal = dynamic(() => import("@/components/umpk-terminal"), {ssr: false});
 
@@ -58,40 +60,11 @@ PRINT:
 export default function Home() {
   const [editorValue, setEditorValue] = useState<string>(dummyData);
 
-  const terminal = useRef<Terminal>(new Terminal({
-    theme: {
-      background: "#fdf6e300"
-    }
-  }));
-
   return (
     <main className="flex h-full flex-row">
-      <div className="w-12 h-full bg-card">Menu</div>
+      <SideMenu/>
       <div className="flex flex-col w-full h-full">
-        <div className="flex flex-row py-1 px-2">
-          <Button
-            className="h-6 w-6"
-            variant="outline"
-            size="icon"
-            onClick={async () => {
-              console.log({ editorValue });
-
-              try {
-                const res = (await invoke("process_string", {
-                  inputString: editorValue,
-                })) as any;
-
-                terminal.current.clear();
-                terminal.current.writeln(res[0]);
-
-                console.log(res);
-              } catch (e) {
-                terminal.current.writeln(e as string);
-                console.error(e);
-              }
-            }}
-          />
-        </div>
+        <Toolbar/>
         <ResizablePanelGroup className="h-full w-full" direction="horizontal">
           <ResizablePanel className="w-full">
             <ResizablePanelGroup direction="vertical">
@@ -105,7 +78,7 @@ export default function Home() {
               </ResizablePanel>
               <ResizableHandle />
               <ResizablePanel defaultSize={30} className="px-4 pt-4 w-full h-full">
-                <UmpkTerminal terminal={terminal.current} />
+                <UmpkTerminal/>
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>

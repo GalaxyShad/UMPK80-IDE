@@ -1,25 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Switch } from "./ui/switch";
-import { invoke } from "@tauri-apps/api/tauri";
-import { appWindow } from "@tauri-apps/api/window";
-import { UmpkDisplay } from "./umpk-display";
-import { UmpkIOPortOutput, UmpkIOPortInput } from "./umpk-io-output";
-import { KeyboardKey, UmpkKeyboardControl, UmpkKeyboardNumber } from "./umpk-keyboard";
-import { UmpkRegistersControl } from "./umpk-registers-control";
-import { Label } from "./ui/label";
-import { Slider } from "./ui/slider";
-import { listen } from "@tauri-apps/api/event";
-import { RegistersPayload } from "./RegistersPayload";
-import { Toggle } from "./ui/toggle";
+import React, {useEffect, useRef, useState} from "react";
+import {Switch} from "./ui/switch";
+import {invoke} from "@tauri-apps/api/tauri";
+import {appWindow} from "@tauri-apps/api/window";
+import {UmpkDisplay} from "./umpk-display";
+import {UmpkIOPortOutput, UmpkIOPortInput} from "./umpk-io-output";
+import {KeyboardKey, UmpkKeyboardControl, UmpkKeyboardNumber} from "./umpk-keyboard";
+import {UmpkRegistersControl} from "./umpk-registers-control";
+import {Label} from "./ui/label";
+import {Slider} from "./ui/slider";
+import {listen} from "@tauri-apps/api/event";
+import {RegistersPayload} from "./RegistersPayload";
+import {Toggle} from "./ui/toggle";
+import {useUMPK80Store} from "@/store/umpk";
 
 type Props = {};
 
-interface TypePayload {
-  digit: number[];
-  io: number;
-  pg: number;
-  registers: RegistersPayload;
-}
 
 function useUmpkRealKeyboardBindings(): [
   React.RefObject<HTMLDivElement>,
@@ -64,7 +59,7 @@ function useUmpkRealKeyboardBindings(): [
 
     if (key !== undefined) {
       setPressedKeys((x) => [...x, key]);
-      invoke("umpk_press_key", { key });
+      invoke("umpk_press_key", {key});
     }
   };
 
@@ -75,44 +70,25 @@ function useUmpkRealKeyboardBindings(): [
 
     if (key !== undefined) {
       setPressedKeys((prevPressedKeys) => prevPressedKeys.filter((pk) => pk !== key));
-      invoke("umpk_release_key", { key });
+      invoke("umpk_release_key", {key});
     }
   };
 
   return [refUmpk, handleKeyDown, handleKeyUp, pressedKeys];
 }
 
-export default function UmpkTab({}: Props) {
-  const [umpkData, setUmpkData] = useState<TypePayload>({
-    digit: [0, 0, 0, 0, 0, 0],
-    io: 0,
-    pg: 0,
-    registers: {} as RegistersPayload,
-  });
-
+export default function UmpkTab() {
   const [refUmpk, handleKeyDown, handleKeyUp, pressedKeys] = useUmpkRealKeyboardBindings();
 
-  const [registers, setRegisters] = useState<RegistersPayload>(
-    {} as RegistersPayload
-  );
-
   async function setIOInput(hex: number) {
-    console.log({ hex });
-    await invoke("umpk_set_io_input", { io: hex });
+    console.log({hex});
+    await invoke("umpk_set_io_input", {io: hex});
   }
 
-  useEffect(() => {
-    const unlisten = listen("PROGRESS", (event) => {
-      const pay = event.payload as TypePayload;
-
-      setUmpkData({ ...pay });
-      setRegisters({ ...pay.registers });
-    });
-
-    return () => {
-      unlisten.then((f) => f());
-    };
-  }, []);
+  const io = useUMPK80Store((state) => state.io)
+  const registers = useUMPK80Store((state) => state.registers)
+  const digit = useUMPK80Store((state) => state.digit)
+  const pg = useUMPK80Store((state) => state.pg)
 
   return (
     <div
@@ -127,25 +103,25 @@ export default function UmpkTab({}: Props) {
         <Label htmlFor="umpk-on">Сеть</Label>
       </div> */}
 
-      <UmpkDisplay digit={umpkData.digit} pg={umpkData.pg} />
+      <UmpkDisplay digit={digit} pg={pg}/>
 
       <div className="grid grid-cols-2 gap-y-4 gap-x-6">
         <UmpkFlags
           psw={registers.psw}
           onPswChange={(data) =>
-            invoke("umpk_set_register", { registerName: "psw", data })
+            invoke("umpk_set_register", {registerName: "psw", data})
           }
         />
 
         <div className="bg-card flex flex-row gap-2 font-semibold justify-end rounded px-2 py-1">
-          <Slider />
+          <Slider/>
         </div>
 
-        <UmpkRegistersControl registers={registers} />
+        <UmpkRegistersControl registers={registers}/>
 
         <div className="flex flex-col justify-between gap-2">
-          <UmpkIOPortOutput value={umpkData.io} />
-          <UmpkIOPortInput onChange={setIOInput} />
+          <UmpkIOPortOutput value={io}/>
+          <UmpkIOPortInput onChange={setIOInput}/>
         </div>
 
         <UmpkKeyboardControl pressedKeys={pressedKeys}/>
@@ -160,18 +136,18 @@ interface UmpkFlagsProps {
   onPswChange: (psw: number) => void;
 }
 
-function UmpkFlags({ psw, onPswChange }: UmpkFlagsProps) {
+function UmpkFlags({psw, onPswChange}: UmpkFlagsProps) {
   interface Flag {
     name: string;
     mask: number;
   }
 
   const flags = [
-    { name: "S", mask: 0b10000000 },
-    { name: "Z", mask: 0b01000000 },
-    { name: "AC", mask: 0b00010000 },
-    { name: "P", mask: 0b00000100 },
-    { name: "C", mask: 0b00000001 },
+    {name: "S", mask: 0b10000000},
+    {name: "Z", mask: 0b01000000},
+    {name: "AC", mask: 0b00010000},
+    {name: "P", mask: 0b00000100},
+    {name: "C", mask: 0b00000001},
   ] as Flag[];
 
   function handleChange(mask: number, pressed: boolean) {

@@ -1,31 +1,32 @@
 use rodio::source::SineWave;
 use rodio::Source;
+use rodio::{Decoder, OutputStream, Sink};
 use serde::{Deserialize, Serialize};
-use tauri::Manager;
-use umpk80::Umpk80Register;
-use umpk80::Umpk80RegisterPair;
+use std::f32::consts::PI;
 use std::fs::File;
 use std::io::Read;
+use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
+use std::process::Command;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread;
 use std::thread::JoinHandle;
 use std::time;
 use std::time::Duration;
+use std::{array, vec};
+use tauri::Manager;
 use tauri::State;
 use tauri::Window;
-use std::io::{Write, BufRead, BufReader};
-use std::process::Command;
 use tempfile::NamedTempFile;
-use rodio::{Decoder, OutputStream, Sink};
-use std::f32::consts::PI;
+use umpk80::Umpk80Register;
+use umpk80::Umpk80RegisterPair;
 
 mod squarewave;
 mod umpk80;
 
-use umpk80::Umpk80;
 use squarewave::SquareWave;
+use umpk80::Umpk80;
 
 #[derive(Serialize, Deserialize, Clone)]
 struct RegistersPayload {
@@ -48,11 +49,14 @@ struct TypePayload {
     pg: u16,
     io: u8,
     registers: RegistersPayload,
+
+    stack_start: u16,
+    stack: Vec<u8>,
 }
 
 struct AppState {
     umpk80: Arc<Mutex<Umpk80>>,
-    umpk_thread_handle: JoinHandle<()>
+    umpk_thread_handle: JoinHandle<()>,
 }
 
 static OS_FILE: &[u8] = include_bytes!("../../core/data/scaned-os-fixed.bin");
@@ -67,26 +71,30 @@ impl AppState {
         let umpk_thread_handle = thread::spawn(move || loop {
             let umpk = thread_umpk.lock().unwrap();
             umpk.tick();
-    
+
             if umpk.get_cpu_program_counter() == 0x0447 {
                 let frequency = (0xFF - umpk.get_cpu_register(umpk80::Umpk80Register::B)) as f32;
                 let duration = umpk.get_cpu_register(umpk80::Umpk80Register::D) as u64;
                 let volume = umpk.get_speaker_volume();
-    
+
                 play_tone((frequency) * 1.5, duration * 3, volume);
             }
         });
 
-        Self { umpk80, umpk_thread_handle }
+        Self {
+            umpk80,
+            umpk_thread_handle,
+        }
     }
 }
-
 
 fn play_tone(freq: f32, duration: u64, volume: f32) {
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let sink = Sink::try_new(&stream_handle).unwrap();
 
-    let source = SquareWave::new(freq).take_duration(Duration::from_millis(duration)).amplify(volume);
+    let source = SquareWave::new(freq)
+        .take_duration(Duration::from_millis(duration))
+        .amplify(volume);
 
     sink.append(source);
     sink.sleep_until_end();
@@ -118,7 +126,7 @@ fn umpk_set_speaker_volume(state: State<AppState>, volume: f32) {
 #[tauri::command]
 fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> Result<(), String> {
     let umpk = state.umpk80.lock().unwrap();
-    
+
     match register_name {
         "a" => umpk.set_register(Umpk80Register::A, data as u8),
         "psw" => umpk.set_register(Umpk80Register::PSW, data as u8),
@@ -135,25 +143,57 @@ fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> 
         "pc" => umpk.set_register_pair(Umpk80RegisterPair::PC, data),
         "sp" => umpk.set_register_pair(Umpk80RegisterPair::SP, data),
 
-        _ => return Err(format!("Unknown register name {register_name}").into())
+        _ => return Err(format!("Unknown register name {register_name}").into()),
     };
 
     Ok(())
 }
 
 #[tauri::command]
-fn process_string(state: State<AppState>, input_string: String) -> Result<(String, Vec<u8>), String> {
+fn save_source_code_to_file(file_path: &str, source_code: &str) -> Result<(), String> {
+    let mut f = File::create(file_path).map_err(|err| err.to_string())?;
+    f.write_all(source_code.as_bytes())
+        .map_err(|err| err.to_string())?;
+
+    Ok(())
+}
+
+#[tauri::command]
+fn load_source_code_from_file(file_path: &str) -> Result<String, String> {
+    let mut f = File::open(file_path).map_err(|err| err.to_string())?;
+
+    let mut contents = String::new();
+    f.read_to_string(&mut contents)
+        .map_err(|err| err.to_string())?;
+
+    Ok(contents)
+}
+
+#[tauri::command]
+fn process_string(
+    state: State<AppState>,
+    input_string: String,
+) -> Result<(String, Vec<u8>), String> {
     let mut temp_file = NamedTempFile::new().map_err(|err| err.to_string())?;
 
-    temp_file.write_all(input_string.as_bytes()).map_err(|err| err.to_string());
+    temp_file
+        .write_all(input_string.as_bytes())
+        .map_err(|err| err.to_string());
 
     temp_file.flush().map_err(|err| err.to_string());
 
     let mut command = Command::new("i8080");
 
-    let path = temp_file.into_temp_path().keep().map_err(|err| err.to_string())?;
+    let path = temp_file
+        .into_temp_path()
+        .keep()
+        .map_err(|err| err.to_string())?;
 
-    let output = command.arg(path.clone()).arg("-b").output().map_err(|err| err.to_string())?;
+    let output = command
+        .arg(path.clone())
+        .arg("-b")
+        .output()
+        .map_err(|err| err.to_string())?;
 
     if !output.status.success() {
         return Err("Command execution failed".to_string());
@@ -169,19 +209,20 @@ fn process_string(state: State<AppState>, input_string: String) -> Result<(Strin
         path.push(format!("{}\\.i8080asm.bin", path_parent.to_str().unwrap()));
         path
     };
-    
+
     println!("{}", binary_file_path.display());
-    
+
     let mut binary_file = File::open(&binary_file_path).map_err(|e| e.to_string())?;
     let mut binary_data = Vec::new();
-    binary_file.read_to_end(&mut binary_data).map_err(|e| e.to_string())?;
-    
+    binary_file
+        .read_to_end(&mut binary_data)
+        .map_err(|e| e.to_string())?;
+
     let umpk80 = state.umpk80.lock().unwrap();
     umpk80.load_program(&binary_data, binary_data.len() as u16, 0x0000);
 
     Ok((output_string, binary_data))
 }
-
 
 fn main() {
     tauri::Builder::default()
@@ -195,7 +236,7 @@ fn main() {
 
             thread::spawn(move || loop {
                 let umpk80 = umpk80.lock().unwrap();
-        
+
                 let display = [
                     umpk80.get_display_digit(0),
                     umpk80.get_display_digit(1),
@@ -216,19 +257,27 @@ fn main() {
                     l: umpk80.get_register(umpk80::Umpk80Register::L),
                     m: umpk80.get_register(umpk80::Umpk80Register::M),
                     psw: umpk80.get_register(umpk80::Umpk80Register::PSW),
-        
+
                     sp: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::SP),
                     pc: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::PC),
                 };
-                println!("{}", registers.pc);
+                //let stack = array::from_fn::<u8, 0x0010, _>(|i| umpk80.memory_read(0x0BB0 - i as u16)).to_vec();
+                let stack = vec![1,2];
                 drop(umpk80);
-        
-                let payload = TypePayload { digit: display, pg, io, registers };
+
+                let payload = TypePayload {
+                    digit: display,
+                    pg,
+                    io,
+                    registers,
+                    stack,
+                    stack_start: 0x0100
+                };
                 if let Err(e) = main_window.emit("PROGRESS", payload) {
                     eprintln!("Error sending message: {}", e);
                     break;
                 }
-        
+
                 let delay = time::Duration::from_millis(1);
                 thread::sleep(delay);
             });
@@ -241,7 +290,9 @@ fn main() {
             umpk_set_io_input,
             umpk_set_register,
             umpk_set_speaker_volume,
-            process_string
+            process_string,
+            load_source_code_from_file,
+            save_source_code_to_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

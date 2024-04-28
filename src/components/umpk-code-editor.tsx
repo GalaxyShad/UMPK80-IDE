@@ -6,6 +6,7 @@ import {useEditorStore} from "@/store/editor-store";
 
 export default function UmpkCodeEditor() {
   const sourceCode = useEditorStore((state) => state.sourceCode);
+  const setSourceCode = useEditorStore((state) => state.setSourceCode);
 
   function handleEditorWillMount(monaco: Monaco) {
     monaco.languages.register({id: 'intel8080asm'});
@@ -31,6 +32,7 @@ export default function UmpkCodeEditor() {
       defaultLanguage="intel8080asm"
       theme="vs-dark"
       value={sourceCode}
+      onChange={(x) => setSourceCode(x ?? '')}
       beforeMount={handleEditorWillMount}
     />
   );

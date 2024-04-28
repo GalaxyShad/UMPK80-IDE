@@ -2,6 +2,7 @@ import React from 'react'
 import { Button } from './ui/button'
 import { BetweenHorizonalStart, BetweenVerticalStart, BookText, Code, Layers, Settings } from 'lucide-react'
 import { StackIcon } from '@radix-ui/react-icons'
+import {DialogTrigger} from "@/components/ui/dialog";
 
 type Props = {}
 
@@ -15,7 +16,9 @@ export default function SideMenu({}: Props) {
       </div>
 
       <div className='flex flex-col'>
-        <Button className='text-neutral-600' size="icon" variant="ghost"><Settings/></Button>
+        <DialogTrigger asChild>
+          <Button className='text-neutral-600' size="icon" variant="ghost"><Settings/></Button>
+        </DialogTrigger>
       </div>
     </div>
   )

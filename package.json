@@ -32,6 +32,7 @@
     "clsx": "^2.1.0",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
+    "flexlayout-react": "^0.7.15",
     "install": "^0.13.0",
     "lucide-react": "^0.372.0",
     "monaco-editor": "^0.47.0",

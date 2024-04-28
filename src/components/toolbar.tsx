@@ -27,7 +27,7 @@ export default function Toolbar({}: Props) {
   const playClick = async () => {
     //console.log({ editorValue });
 
-    const [terminal] = getTerminal();
+    const terminal = getTerminal();
 
     try {
       const res = (await invoke("process_string", {

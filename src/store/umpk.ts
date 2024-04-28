@@ -26,6 +26,7 @@ export const useUMPK80Store = create<UMPK80State>()(() => ({
 export const startListeningUMPK80 = async (): Promise<UnlistenFn> => await listen<UMPK80State>("PROGRESS", (event) => {
   useUMPK80Store.setState((state) => ({
     ...event.payload,
+    stackStart: (event.payload as any).stack_start,
     digit: [...event.payload.digit],
     registers: {...event.payload.registers},
     stack: [...event.payload.stack],

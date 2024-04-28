@@ -57,6 +57,7 @@ struct TypePayload {
 struct AppState {
     umpk80: Arc<Mutex<Umpk80>>,
     umpk_thread_handle: JoinHandle<()>,
+    translator_path: Mutex<String>
 }
 
 static OS_FILE: &[u8] = include_bytes!("../../core/data/scaned-os-fixed.bin");
@@ -84,6 +85,7 @@ impl AppState {
         Self {
             umpk80,
             umpk_thread_handle,
+            translator_path: Mutex::new(String::from("i8080"))
         }
     }
 }
@@ -170,6 +172,27 @@ fn load_source_code_from_file(file_path: &str) -> Result<String, String> {
 }
 
 #[tauri::command]
+fn translator_set_execution_command(state: State<AppState>, command: &str) -> Result<String, String> {
+    let mut cmd = Command::new(command);
+
+    let output = cmd
+        .arg("--version")
+        .output()
+        .map_err(|err| format!("[Command error] {err}"))?;
+
+    let mut translator_path = state.translator_path.lock().unwrap();
+
+    *translator_path = String::from(command);
+
+    let mut output_string = String::new();
+    let mut err_output_string = String::new();
+    BufReader::new(&output.stdout[..]).read_to_string(&mut output_string);
+    BufReader::new(&output.stderr[..]).read_to_string(&mut err_output_string);
+
+    Ok(output_string)
+}
+
+#[tauri::command]
 fn process_string(
     state: State<AppState>,
     input_string: String,
@@ -182,7 +205,9 @@ fn process_string(
 
     temp_file.flush().map_err(|err| err.to_string());
 
-    let mut command = Command::new("i8080");
+    let translator_path = state.translator_path.lock().unwrap();
+
+    let mut command = Command::new(translator_path.as_str());
 
     let path = temp_file
         .into_temp_path()
@@ -261,8 +286,8 @@ fn main() {
                     sp: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::SP),
                     pc: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::PC),
                 };
-                //let stack = array::from_fn::<u8, 0x0010, _>(|i| umpk80.memory_read(0x0BB0 - i as u16)).to_vec();
-                let stack = vec![1,2];
+                let stack = array::from_fn::<u8, 0x0100, _>(|i| umpk80.memory_read(0x0BB0 - i as u16)).to_vec();
+                // let stack = vec![1,2];
                 drop(umpk80);
 
                 let payload = TypePayload {
@@ -271,14 +296,14 @@ fn main() {
                     io,
                     registers,
                     stack,
-                    stack_start: 0x0100
+                    stack_start: 0x0BB0
                 };
                 if let Err(e) = main_window.emit("PROGRESS", payload) {
                     eprintln!("Error sending message: {}", e);
                     break;
                 }
 
-                let delay = time::Duration::from_millis(1);
+                let delay = time::Duration::from_millis(16);
                 thread::sleep(delay);
             });
 
@@ -292,7 +317,8 @@ fn main() {
             umpk_set_speaker_volume,
             process_string,
             load_source_code_from_file,
-            save_source_code_to_file
+            save_source_code_to_file,
+            translator_set_execution_command
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

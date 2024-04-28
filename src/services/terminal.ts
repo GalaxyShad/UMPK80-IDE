@@ -1,17 +1,22 @@
-import { FitAddon } from "@xterm/addon-fit";
-import { Terminal } from "@xterm/xterm";
+"use client"
 
-const terminal = new Terminal({
-  theme: {
-    background: "#fdf6e300"
-  }
-})
+import {Terminal} from "@xterm/xterm";
 
-const fitAddon = new FitAddon();
-terminal.loadAddon(fitAddon);
+let terminal: Terminal;
 
-function useTerminal(): [Terminal, FitAddon] {
-  return [terminal, fitAddon];
+// should be called in window context
+function createTerminal() {
+  terminal = new Terminal({
+    theme: {
+      background: "#fdf6e300"
+    }
+  });
+
+  return terminal;
 }
 
-export { useTerminal as getTerminal };
+function useTerminal(): Terminal {
+  return terminal;
+}
+
+export {useTerminal as getTerminal, createTerminal};

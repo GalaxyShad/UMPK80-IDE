@@ -76,40 +76,40 @@ export default function Toolbar({}: Props) {
   return (
     <div className="flex flex-row py-1 px-2 gap-4">
       <span className="flex flex-row gap-1">
-        <Button className="h-6 w-6" variant="outline" size="icon">
+        <Button className="h-6 w-6" variant="ghost" size="icon">
           <File size={16} className="text-white"/>
         </Button>
-        <Button className="h-6 w-6" variant="outline" size="icon">
+        <Button className="h-6 w-6" variant="ghost" size="icon">
           <FolderOpen onClick={openClick} size={16} className="text-yellow-400"/>
         </Button>
-        <Button className="h-6 w-6" variant="outline" size="icon">
+        <Button className="h-6 w-6" variant="ghost" size="icon">
           <Save onClick={saveClick} size={16} className="text-violet-600"/>
         </Button>
       </span>
 
       <span className="flex flex-row gap-1">
         <Input className="max-h-6 w-16" defaultValue={2048}/>
-        <Button className="h-6 w-6" variant="outline" size="icon">
+        <Button className="h-6 w-6" variant="ghost" size="icon">
           <Hammer size={16} className="text-gray-300"/>
         </Button>
         <Button
           className="h-6 w-6"
-          variant="outline"
+          variant="ghost"
           size="icon"
           onClick={playClick}
         >
           <Play size={16} className="text-green-400"/>
         </Button>
-        <Button className="h-6 w-6" variant="outline" size="icon">
+        <Button className="h-6 w-6" variant="ghost" size="icon">
           <Square size={16} className="text-red-400"/>
         </Button>
-        <Button className="h-6 w-6" variant="outline" size="icon">
+        <Button className="h-6 w-6" variant="ghost" size="icon">
           <RedoDot size={16} className="text-blue-400"/>
         </Button>
       </span>
 
       <span className="flex flex-row gap-1">
-        <Button className="h-6 w-6" variant="outline" size="icon">
+        <Button className="h-6 w-6" variant="ghost" size="icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

@@ -6,7 +6,7 @@ use std::f32::consts::PI;
 use std::fs::File;
 use std::io::Read;
 use std::io::{BufRead, BufReader, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -15,10 +15,11 @@ use std::thread::JoinHandle;
 use std::time;
 use std::time::Duration;
 use std::{array, vec};
-use tauri::Manager;
-use tauri::State;
+use std::error::Error;
 use tauri::Window;
-use tempfile::NamedTempFile;
+use tauri::{command, State};
+use tauri::{App, Manager};
+use tempfile::{NamedTempFile, TempDir};
 use umpk80::Umpk80Register;
 use umpk80::Umpk80RegisterPair;
 
@@ -27,6 +28,7 @@ mod umpk80;
 
 use squarewave::SquareWave;
 use umpk80::Umpk80;
+use crate::umpk80::Intel8080Disassembler;
 
 #[derive(Serialize, Deserialize, Clone)]
 struct RegistersPayload {
@@ -57,7 +59,7 @@ struct TypePayload {
 struct AppState {
     umpk80: Arc<Mutex<Umpk80>>,
     umpk_thread_handle: JoinHandle<()>,
-    translator_path: Mutex<String>
+    translator_path: Mutex<String>,
 }
 
 static OS_FILE: &[u8] = include_bytes!("../../core/data/scaned-os-fixed.bin");
@@ -85,7 +87,7 @@ impl AppState {
         Self {
             umpk80,
             umpk_thread_handle,
-            translator_path: Mutex::new(String::from("i8080"))
+            translator_path: Mutex::new(String::from("i8080")),
         }
     }
 }
@@ -125,6 +127,20 @@ fn umpk_set_speaker_volume(state: State<AppState>, volume: f32) {
     state.umpk80.lock().unwrap().set_speaker_volume(volume);
 }
 
+#[command]
+fn umpk_get_rom(state: State<AppState>) -> Vec<u8> {
+    let umpk80 = state.umpk80.lock().unwrap();
+
+    return array::from_fn::<u8, 0x0800, _>(|x| umpk80.memory_read(x as u16)).to_vec();
+}
+
+#[tauri::command]
+fn umpk_get_ram(state: State<AppState>) -> Vec<u8> {
+    let umpk80 = state.umpk80.lock().unwrap();
+
+    return array::from_fn::<u8, 0x0800, _>(|x| umpk80.memory_read(0x0800 + x as u16)).to_vec();
+}
+
 #[tauri::command]
 fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> Result<(), String> {
     let umpk = state.umpk80.lock().unwrap();
@@ -152,6 +168,39 @@ fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> 
 }
 
 #[tauri::command]
+fn umpk_get_state(state: State<AppState>) -> TypePayload {
+    let umpk80 = state.umpk80.lock().unwrap();
+
+    let display = array::from_fn(|x| umpk80.get_display_digit(x as i32));
+    let pg = umpk80.get_cpu_program_counter();
+    let io = umpk80.get_port_io_output();
+    let registers = RegistersPayload {
+        a: umpk80.get_register(Umpk80Register::A),
+        b: umpk80.get_register(Umpk80Register::B),
+        c: umpk80.get_register(Umpk80Register::C),
+        d: umpk80.get_register(Umpk80Register::D),
+        e: umpk80.get_register(Umpk80Register::E),
+        h: umpk80.get_register(Umpk80Register::H),
+        l: umpk80.get_register(Umpk80Register::L),
+        m: umpk80.get_register(Umpk80Register::M),
+        psw: umpk80.get_register(Umpk80Register::PSW),
+
+        sp: umpk80.get_register_pair(Umpk80RegisterPair::SP),
+        pc: umpk80.get_register_pair(Umpk80RegisterPair::PC),
+    };
+    let stack = array::from_fn::<u8, 0x0100, _>(|i| umpk80.memory_read(0x0BB0 - i as u16)).to_vec();
+
+    TypePayload {
+        digit: display,
+        pg,
+        io,
+        registers,
+        stack,
+        stack_start: 0x0BB0,
+    }
+}
+
+#[tauri::command]
 fn save_source_code_to_file(file_path: &str, source_code: &str) -> Result<(), String> {
     let mut f = File::create(file_path).map_err(|err| err.to_string())?;
     f.write_all(source_code.as_bytes())
@@ -172,7 +221,10 @@ fn load_source_code_from_file(file_path: &str) -> Result<String, String> {
 }
 
 #[tauri::command]
-fn translator_set_execution_command(state: State<AppState>, command: &str) -> Result<String, String> {
+fn translator_set_execution_command(
+    state: State<AppState>,
+    command: &str,
+) -> Result<String, String> {
     let mut cmd = Command::new(command);
 
     let output = cmd
@@ -197,28 +249,22 @@ fn process_string(
     state: State<AppState>,
     input_string: String,
 ) -> Result<(String, Vec<u8>), String> {
-    let mut temp_file = NamedTempFile::new().map_err(|err| err.to_string())?;
+    let temp_dir = TempDir::new().map_err(|x| x.to_string())?;
+    let source_file_path = Path::join(temp_dir.path(), "a.asm");
 
-    temp_file
-        .write_all(input_string.as_bytes())
-        .map_err(|err| err.to_string());
+    let mut source_file = File::create(&source_file_path).map_err(|x| x.to_string())?;
 
-    temp_file.flush().map_err(|err| err.to_string());
+    source_file.write_all(input_string.as_bytes()).map_err(|x| x.to_string())?;
 
     let translator_path = state.translator_path.lock().unwrap();
 
     let mut command = Command::new(translator_path.as_str());
 
-    let path = temp_file
-        .into_temp_path()
-        .keep()
-        .map_err(|err| err.to_string())?;
-
     let output = command
-        .arg(path.clone())
+        .arg(source_file_path.as_os_str())
         .arg("-b")
         .output()
-        .map_err(|err| err.to_string())?;
+        .map_err(|err| err.kind().to_string())?;
 
     if !output.status.success() {
         return Err("Command execution failed".to_string());
@@ -227,13 +273,7 @@ fn process_string(
     let mut output_string = String::new();
     BufReader::new(&output.stdout[..]).read_to_string(&mut output_string);
 
-    let path_parent = path.parent().unwrap();
-
-    let binary_file_path = {
-        let mut path = PathBuf::from(path_parent);
-        path.push(format!("{}\\.i8080asm.bin", path_parent.to_str().unwrap()));
-        path
-    };
+    let binary_file_path = Path::join(temp_dir.path(), "a.i8080asm.bin");
 
     println!("{}", binary_file_path.display());
 
@@ -249,72 +289,50 @@ fn process_string(
     Ok((output_string, binary_data))
 }
 
+#[derive(Serialize, Deserialize)]
+struct DisassembledLinePayload {
+    address: u16,
+    mnemonic: String,
+    arguments: Vec<u8>,
+    bytes: Vec<u8>
+}
+
+#[tauri::command]
+fn umpk_get_disassembled_rom() -> Vec<DisassembledLinePayload> {
+    let disassembler = Intel8080Disassembler::new(OS_FILE);
+
+    (0..)
+        .map(|_| disassembler.disassemble())
+        .take_while(|res| !res.eof)
+        .fold(Vec::new(), |mut acc, x| {
+            acc.push(DisassembledLinePayload {
+                address: x.address,
+                mnemonic: x.instruction.unwrap().mnemonic.to_string(),
+                arguments: match x.bytes.len() {
+                    2 => x.bytes[1..].to_vec(),
+                    3 => vec![x.bytes[2], x.bytes[1]],
+                    _ => Vec::new(),
+                },
+                bytes: x.bytes,
+            });
+
+            acc
+        })
+}
+
 fn main() {
     tauri::Builder::default()
         .manage(AppState::new())
-        .setup(|app| {
-            let main_window = app.get_window("main").unwrap();
-
-            let binding = app.handle();
-            let state = binding.state::<AppState>();
-            let umpk80 = Arc::clone(&state.umpk80);
-
-            thread::spawn(move || loop {
-                let umpk80 = umpk80.lock().unwrap();
-
-                let display = [
-                    umpk80.get_display_digit(0),
-                    umpk80.get_display_digit(1),
-                    umpk80.get_display_digit(2),
-                    umpk80.get_display_digit(3),
-                    umpk80.get_display_digit(4),
-                    umpk80.get_display_digit(5),
-                ];
-                let pg = umpk80.get_cpu_program_counter();
-                let io = umpk80.get_port_io_output();
-                let registers = RegistersPayload {
-                    a: umpk80.get_register(umpk80::Umpk80Register::A),
-                    b: umpk80.get_register(umpk80::Umpk80Register::B),
-                    c: umpk80.get_register(umpk80::Umpk80Register::C),
-                    d: umpk80.get_register(umpk80::Umpk80Register::D),
-                    e: umpk80.get_register(umpk80::Umpk80Register::E),
-                    h: umpk80.get_register(umpk80::Umpk80Register::H),
-                    l: umpk80.get_register(umpk80::Umpk80Register::L),
-                    m: umpk80.get_register(umpk80::Umpk80Register::M),
-                    psw: umpk80.get_register(umpk80::Umpk80Register::PSW),
-
-                    sp: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::SP),
-                    pc: umpk80.get_register_pair(umpk80::Umpk80RegisterPair::PC),
-                };
-                let stack = array::from_fn::<u8, 0x0100, _>(|i| umpk80.memory_read(0x0BB0 - i as u16)).to_vec();
-                // let stack = vec![1,2];
-                drop(umpk80);
-
-                let payload = TypePayload {
-                    digit: display,
-                    pg,
-                    io,
-                    registers,
-                    stack,
-                    stack_start: 0x0BB0
-                };
-                if let Err(e) = main_window.emit("PROGRESS", payload) {
-                    eprintln!("Error sending message: {}", e);
-                    break;
-                }
-
-                let delay = time::Duration::from_millis(16);
-                thread::sleep(delay);
-            });
-
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             umpk_press_key,
             umpk_release_key,
             umpk_set_io_input,
             umpk_set_register,
             umpk_set_speaker_volume,
+            umpk_get_rom,
+            umpk_get_ram,
+            umpk_get_state,
+            umpk_get_disassembled_rom,
             process_string,
             load_source_code_from_file,
             save_source_code_to_file,

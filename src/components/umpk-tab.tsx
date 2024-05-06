@@ -12,6 +12,7 @@ import {listen} from "@tauri-apps/api/event";
 import {RegistersPayload} from "./RegistersPayload";
 import {Toggle} from "./ui/toggle";
 import {useUMPK80Store} from "@/store/umpk";
+import {FlagIcon, SpeakerIcon, Volume, Volume1, Volume2} from "lucide-react";
 
 type Props = {};
 
@@ -113,7 +114,11 @@ export default function UmpkTab() {
           }
         />
 
-        <div className="bg-card flex flex-row gap-2 font-semibold justify-end rounded px-2 py-1">
+        <div className="bg-card flex flex-row gap-2 font-semibold rounded px-2 py-1 items-center">
+          {/*<div className="bg-accent h-full aspect-square flex justify-center items-center">*/}
+
+          {/*</div>*/}
+          <Volume2 className="text-neutral-700" size={24}/>
           <Slider/>
         </div>
 
@@ -155,17 +160,22 @@ function UmpkFlags({psw, onPswChange}: UmpkFlagsProps) {
   }
 
   return (
-    <div className="bg-card flex flex-row gap-1 font-semibold justify-end rounded px-2 py-1">
-      {flags.map((flag, i) => (
-        <Toggle
-          key={i}
-          pressed={(psw & flag.mask) != 0}
-          onPressedChange={(pressed) => handleChange(flag.mask, pressed)}
-          size="sm"
-        >
-          {flag.name}
-        </Toggle>
-      ))}
+    <div className="bg-card flex flex-row font-semibold justify-between rounded  items-center">
+      <div className="text-neutral-700 h-full aspect-square flex items-center justify-center bg-accent/50 rounded">
+        <FlagIcon size={24}/>
+      </div>
+      <div className="flex flex-row gap-1 px-2 py-1">
+        {flags.map((flag, i) => (
+          <Toggle
+            key={i}
+            pressed={(psw & flag.mask) != 0}
+            onPressedChange={(pressed) => handleChange(flag.mask, pressed)}
+            size="sm"
+          >
+            {flag.name}
+          </Toggle>
+        ))}
+      </div>
     </div>
   );
 }

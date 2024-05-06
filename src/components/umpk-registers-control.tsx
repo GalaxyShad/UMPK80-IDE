@@ -31,10 +31,10 @@ export function UmpkRegistersControl({ registers }: Props) {
   ] as [string, number][];
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-2 font-mono">
       {registerList.map((reg, i) => (
         <div key={i} className="flex items-center space-x-2 h-full">
-          <Label className="w-8" htmlFor={reg[0]}>{reg[0]}</Label>
+          <Label className="w-8" htmlFor={reg[0]}>{reg[0]} </Label>
           <HexInput
             value={reg[1]}
             onBlur={(x) => handleChange(reg[0].toLowerCase(), x)}

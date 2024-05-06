@@ -14,7 +14,7 @@ export function UmpkStack() {
   const hexToString = (x: number, pad = 2) => x.toString(16).padStart(pad, '0').toUpperCase()
 
   return (
-    <div className="h-full w-full overflow-auto mx-2">
+    <div className="h-full w-full overflow-auto mx-2 font-mono">
       <AutoSizer>
         {({height, width}) => (
           <Table

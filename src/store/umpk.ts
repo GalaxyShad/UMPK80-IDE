@@ -3,7 +3,7 @@ import {listen, UnlistenFn} from "@tauri-apps/api/event";
 import {create} from "zustand";
 import {RegistersPayload} from "@/components/RegistersPayload";
 
-interface UMPK80State {
+export interface UMPK80State {
   digit: number[];
   io: number;
   pg: number;
@@ -19,16 +19,5 @@ export const useUMPK80Store = create<UMPK80State>()(() => ({
   pg: 0x0000,
   stack: [],
   stackStart: 0x0000,
-  registers: {} as RegistersPayload,
-
+  registers: {} as RegistersPayload
 }))
-
-export const startListeningUMPK80 = async (): Promise<UnlistenFn> => await listen<UMPK80State>("PROGRESS", (event) => {
-  useUMPK80Store.setState((state) => ({
-    ...event.payload,
-    stackStart: (event.payload as any).stack_start,
-    digit: [...event.payload.digit],
-    registers: {...event.payload.registers},
-    stack: [...event.payload.stack],
-  }));
-});

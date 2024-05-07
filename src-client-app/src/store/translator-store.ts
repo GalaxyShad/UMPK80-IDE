@@ -1,5 +1,6 @@
-import {create} from "zustand";
-import {invoke} from "@tauri-apps/api/tauri";
+import { create } from 'zustand'
+import { invoke } from '@tauri-apps/api/tauri'
+import { Err, Ok, Result } from '@/lib/result.ts'
 
 interface TranslatorState {
   translateCommand: string,
@@ -7,23 +8,13 @@ interface TranslatorState {
   setTranslateCommand: (command: string) => Promise<Result<string>>,
 }
 
-type Result<T, E = string> = { ok: true, value: T } | { ok: false, error: E | undefined };
-
-const Ok = <T>(data: T): Result<T, never> => {
-  return { ok: true, value: data };
-};
-
-const Err = <E>(error?: E): Result<never, E> => {
-  return { ok: false, error };
-};
-
-export const useTranslatorStore = create<TranslatorState>()(( set ) => ({
-  translateCommand: "i8080",
+export const useTranslatorStore = create<TranslatorState>()((set) => ({
+  translateCommand: 'i8080',
   setTranslateCommand: async (command: string): Promise<Result<string>> => {
     try {
-      const result = await invoke("translator_set_execution_command", { command });
+      const result = await invoke('translator_set_execution_command', { command })
 
-      set(state => ({ ...state, translateCommand: command }));
+      set(state => ({ ...state, translateCommand: command }))
 
       return Ok(result as string)
     } catch (e) {

@@ -1,6 +1,5 @@
 import { KeyboardKey, UmpkKeyboardControl, UmpkKeyboardNumber } from '@/components/umpk/UmpkKeyboard.tsx'
-import { Toggle } from '@/components/ui/Toggle.tsx'
-import { FlagIcon, Volume2 } from 'lucide-react'
+import { Volume2 } from 'lucide-react'
 import { UmpkIOPortInput, UmpkIOPortOutput } from '@/components/umpk/UmpkIOOutput.tsx'
 import UmpkRegistersControl from '@/components/umpk/UmpkRegistersControl.tsx'
 import { Slider } from '@/components/ui/Slider.tsx'
@@ -8,6 +7,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 import UmpkDisplay from '@/components/umpk/UmpkDisplay.tsx'
 import { useUMPK80Store } from '@/store/umpk.ts'
 import { useRef, useState } from 'react'
+import { UmpkFlags } from '@/components/umpk/UmpkFlags.tsx'
 
 function useUmpkRealKeyboardBindings(): [
   React.RefObject<HTMLDivElement>,
@@ -91,11 +91,6 @@ export default function UmpkTab() {
       onKeyUp={handleKeyUp}
       ref={refUmpk}
     >
-      {/* <div className="flex items-center space-x-2 mb-2">
-        <Switch id="umpk-on" />
-        <Label htmlFor="umpk-on">Сеть</Label>
-      </div> */}
-
       <UmpkDisplay digit={digit} pg={pg} />
 
       <div className="grid grid-cols-2 gap-y-4 gap-x-6">
@@ -105,9 +100,6 @@ export default function UmpkTab() {
         />
 
         <div className="bg-card flex flex-row gap-2 font-semibold rounded px-2 py-1 items-center">
-          {/*<div className="bg-accent h-full aspect-square flex justify-center items-center">*/}
-
-          {/*</div>*/}
           <Volume2 className="text-neutral-700" size={24} />
           <Slider />
         </div>
@@ -126,46 +118,5 @@ export default function UmpkTab() {
   )
 }
 
-interface UmpkFlagsProps {
-  psw: number
-  onPswChange: (psw: number) => void
-}
 
-function UmpkFlags({ psw, onPswChange }: UmpkFlagsProps) {
-  interface Flag {
-    name: string
-    mask: number
-  }
 
-  const flags = [
-    { name: 'S', mask: 0b10000000 },
-    { name: 'Z', mask: 0b01000000 },
-    { name: 'AC', mask: 0b00010000 },
-    { name: 'P', mask: 0b00000100 },
-    { name: 'C', mask: 0b00000001 },
-  ] as Flag[]
-
-  function handleChange(mask: number, pressed: boolean) {
-    onPswChange(pressed ? psw | mask : psw & ~mask)
-  }
-
-  return (
-    <div className="bg-card flex flex-row font-semibold justify-between rounded  items-center">
-      <div className="text-neutral-700 h-full aspect-square flex items-center justify-center bg-accent/50 rounded">
-        <FlagIcon size={24} />
-      </div>
-      <div className="flex flex-row gap-1 px-2 py-1">
-        {flags.map((flag, i) => (
-          <Toggle
-            key={i}
-            pressed={(psw & flag.mask) != 0}
-            onPressedChange={(pressed) => handleChange(flag.mask, pressed)}
-            size="sm"
-          >
-            {flag.name}
-          </Toggle>
-        ))}
-      </div>
-    </div>
-  )
-}

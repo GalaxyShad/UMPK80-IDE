@@ -10,7 +10,7 @@ import CodeEditorTab from '@/components/CodeEditorTab.tsx'
 
 const tabsMap = {
   [CodeEditorTab.name]: ['Code Editor', () => <CodeEditorTab />],
-  [UmpkTab.name]: ['UMPK-80',() => <UmpkTab />],
+  [UmpkTab.name]: ['UMPK-80', () => <UmpkTab />],
   [TerminalTab.name]: ['Terminal', () => <TerminalTab />],
   [UmpkStackTab.name]: ['UMPK-80 Stack', () => <UmpkStackTab />],
   [UmpkRamTab.name]: ['UMPK-80 RAM', () => <UmpkRamTab />],

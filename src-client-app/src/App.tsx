@@ -1,9 +1,9 @@
 import DockLayout from '@/DockLayout.tsx'
-import { ThemeProvider } from '@/components/theme-provider.tsx'
+import { ThemeProvider } from '@/components/ThemeProvider.tsx'
 
 function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <DockLayout />
     </ThemeProvider>
   )

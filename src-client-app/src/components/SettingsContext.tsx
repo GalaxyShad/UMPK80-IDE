@@ -42,9 +42,9 @@ export function SettingsContext({ children }: { children: React.ReactNode }) {
   const trySetTranslatorCommand = async () => {
     const result = await setStoreTranslatorCommand(translatorCommand)
 
-    setIsOutputError(!result.ok)
+    setIsOutputError(!result.isSuccess)
 
-    if (result.ok) {
+    if (result.isSuccess) {
       console.log(result)
       setOutput(result.value)
     } else {

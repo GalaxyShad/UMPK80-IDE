@@ -25,7 +25,8 @@ const fetchState = async () => {
 
 export default function DockLayout() {
   useEffect(() => {
-    window.requestAnimationFrame(fetchState)
+    const id = window.requestAnimationFrame(fetchState)
+    return () => window.cancelAnimationFrame(id)
   }, [])
 
   const [model, factory, saveLayout] = useDockLayout()
@@ -35,7 +36,7 @@ export default function DockLayout() {
       <Toolbar />
       <div className="flex flex-row w-full h-full">
         <SettingsContext>
-          <SideMenu/>
+          <SideMenu />
           {model && <Layout model={model} factory={factory} onModelChange={saveLayout} />}
         </SettingsContext>
       </div>

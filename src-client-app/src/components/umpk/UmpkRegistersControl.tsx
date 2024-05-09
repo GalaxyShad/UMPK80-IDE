@@ -4,6 +4,7 @@ import { HexInput } from '@/components/ui/HexInput'
 import { useUMPK80Store } from '@/store/umpkStore.ts'
 import { RegisterName } from '@/services/umpkService.ts'
 import { cn } from '@/lib/utils.ts'
+import React from 'react'
 
 
 export default function UmpkRegistersControl() {
@@ -24,9 +25,8 @@ export default function UmpkRegistersControl() {
   return (
     <div className="grid grid-cols-[0fr_1fr_0fr_1fr] gap-x-2 gap-y-2 font-mono items-center h-full">
       {registerOrder.map((registerName) => (
-        <>
+        <React.Fragment key={registerName}>
           <Label
-            key={'ll' + registerName}
             htmlFor={registerName}
             className="text-foreground/40"
           >
@@ -34,7 +34,6 @@ export default function UmpkRegistersControl() {
           </Label>
           <HexInput
             id={registerName}
-            key={'hh' + registerName}
             value={registers[registerName]}
             onBlur={data => setRegister(registerName, data)}
             readOnly={registerName === 'm'}
@@ -45,7 +44,7 @@ export default function UmpkRegistersControl() {
               registers[registerName] === 0 && 'text-foreground/20',
             )}
           />
-        </>
+        </React.Fragment>
       ))}
     </div>
   )

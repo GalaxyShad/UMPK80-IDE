@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 
 import 'react-virtualized/styles.css'
+import '@xterm/xterm/css/xterm.css'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

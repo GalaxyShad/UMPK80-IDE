@@ -125,6 +125,7 @@ pub fn umpk_get_instruction(code: u8) -> UMPK80Instruction {
 
 pub struct Umpk80 {
     ptr: *mut c_void,
+    display_address: u16,
     speaker_volume: f32,
 }
 
@@ -143,7 +144,7 @@ impl Umpk80 {
             if ptr.is_null() {
                 panic!("Failed to create UMPK80 instance");
             }
-            Self { ptr: ptr, speaker_volume: 0.01 }
+            Self { ptr: ptr, speaker_volume: 0.01, display_address: 0 }
         }
     }
 
@@ -267,6 +268,10 @@ impl Umpk80 {
     pub fn memory_write(&self, address: u16, data: u8) {
         unsafe { UMPK80_MemoryWrite(self.ptr, address, data); }
     }
+
+    pub fn get_display_address(&self) -> u16 { self.display_address }
+
+    pub fn set_display_address(&mut self, adr: u16) { self.display_address = adr; }
 }
 
 unsafe impl Send for Umpk80 {}

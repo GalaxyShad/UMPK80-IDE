@@ -1,12 +1,14 @@
 import { IJsonModel, Model, TabNode } from 'flexlayout-react'
+import { ReactNode, useEffect, useState } from 'react'
+
 import UmpkTab from '@/tabs/UmpkTab.tsx'
 import TerminalTab from '@/tabs/TerminalTab.tsx'
-import { UmpkStackTab } from '@/tabs/UmpkStackTab.tsx'
-import UmpkRamTab, { RomTab } from '@/tabs/UmpkRamTab..tsx'
-import UmpkProgramView from '@/components/umpk/UmpkProgramView.tsx'
-import Intel8080AssemblyGuideTab from '@/components/Intel8080AssemblyGuideTab.tsx'
-import { ReactNode, useEffect, useState } from 'react'
-import CodeEditorTab from '@/components/CodeEditorTab.tsx'
+import UmpkStackTab from '@/tabs/UmpkStackTab.tsx'
+import UmpkRomTab from '@/tabs/UmpkRamTab.tsx'
+import UmpkRamTab from '@/tabs/UmpkRamTab.tsx'
+import UmpkProgramTab from '@/tabs/UmpkProgramTab.tsx'
+import Intel8080AssemblyGuideTab from '@/tabs/Intel8080AssemblyGuideTab.tsx'
+import CodeEditorTab from '@/tabs/CodeEditorTab.tsx'
 
 const tabsMap = {
   [CodeEditorTab.name]: ['Code Editor', () => <CodeEditorTab />],
@@ -14,8 +16,8 @@ const tabsMap = {
   [TerminalTab.name]: ['Terminal', () => <TerminalTab />],
   [UmpkStackTab.name]: ['UMPK-80 Stack', () => <UmpkStackTab />],
   [UmpkRamTab.name]: ['UMPK-80 RAM', () => <UmpkRamTab />],
-  [RomTab.name]: ['UMPK-80 ROM', () => <RomTab />],
-  [UmpkProgramView.name]: ['UMPK-80 Program', () => <UmpkProgramView />],
+  [UmpkRomTab.name]: ['UMPK-80 ROM', () => <UmpkRomTab />],
+  [UmpkProgramTab.name]: ['UMPK-80 Program', () => <UmpkProgramTab />],
   [Intel8080AssemblyGuideTab.name]: ['Intel 8080 Assembly Guide', () => <Intel8080AssemblyGuideTab />],
 } as Record<string, [string, () => ReactNode]>
 
@@ -46,7 +48,7 @@ const defaultLayout = {
 function layoutFactory(node: TabNode): ReactNode {
   const component = node.getComponent()
 
-  return tabsMap[component ?? ''][1]()
+  return node.isVisible() && tabsMap[component ?? ''][1]()
 }
 
 type UseDockLayoutReturn = [Model | undefined, (node: TabNode) => ReactNode, (model: Model) => void]

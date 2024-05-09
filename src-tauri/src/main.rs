@@ -2,6 +2,7 @@ use rodio::source::SineWave;
 use rodio::Source;
 use rodio::{Decoder, OutputStream, Sink};
 use serde::{Deserialize, Serialize};
+use std::error::Error;
 use std::f32::consts::PI;
 use std::fs::File;
 use std::io::Read;
@@ -15,7 +16,6 @@ use std::thread::JoinHandle;
 use std::time;
 use std::time::Duration;
 use std::{array, vec};
-use std::error::Error;
 use tauri::Window;
 use tauri::{command, State};
 use tauri::{App, Manager};
@@ -26,9 +26,9 @@ use umpk80::Umpk80RegisterPair;
 mod squarewave;
 mod umpk80;
 
+use crate::umpk80::Intel8080Disassembler;
 use squarewave::SquareWave;
 use umpk80::Umpk80;
-use crate::umpk80::Intel8080Disassembler;
 
 #[derive(Serialize, Deserialize, Clone)]
 struct RegistersPayload {
@@ -47,10 +47,11 @@ struct RegistersPayload {
 
 #[derive(Serialize, Deserialize, Clone)]
 struct TypePayload {
-    digit: [u8; 6],
+    display: [u8; 6],
     pg: u16,
     io: u8,
     registers: RegistersPayload,
+    display_address: u16,
 
     stack_start: u16,
     stack: Vec<u8>,
@@ -72,7 +73,7 @@ impl AppState {
 
         let thread_umpk = Arc::clone(&umpk80);
         let umpk_thread_handle = thread::spawn(move || loop {
-            let umpk = thread_umpk.lock().unwrap();
+            let mut umpk = thread_umpk.lock().unwrap();
             umpk.tick();
 
             if umpk.get_cpu_program_counter() == 0x0447 {
@@ -81,6 +82,16 @@ impl AppState {
                 let volume = umpk.get_speaker_volume();
 
                 play_tone((frequency) * 1.5, duration * 3, volume);
+            }
+
+            if umpk.get_cpu_program_counter() == 0x0364 {
+                let b = umpk.get_cpu_register(Umpk80Register::B);
+                let c=umpk.get_cpu_register(Umpk80Register::C);
+                let bc = ((b as u16) << 8) | c as u16;
+
+                println!("FETA3 {:#04X}", bc);
+
+                umpk.set_display_address(bc)
             }
         });
 
@@ -191,11 +202,12 @@ fn umpk_get_state(state: State<AppState>) -> TypePayload {
     let stack = array::from_fn::<u8, 0x0100, _>(|i| umpk80.memory_read(0x0BB0 - i as u16)).to_vec();
 
     TypePayload {
-        digit: display,
+        display,
         pg,
         io,
         registers,
         stack,
+        display_address: umpk80.get_display_address(),
         stack_start: 0x0BB0,
     }
 }
@@ -254,7 +266,9 @@ fn process_string(
 
     let mut source_file = File::create(&source_file_path).map_err(|x| x.to_string())?;
 
-    source_file.write_all(input_string.as_bytes()).map_err(|x| x.to_string())?;
+    source_file
+        .write_all(input_string.as_bytes())
+        .map_err(|x| x.to_string())?;
 
     let translator_path = state.translator_path.lock().unwrap();
 
@@ -294,7 +308,7 @@ struct DisassembledLinePayload {
     address: u16,
     mnemonic: String,
     arguments: Vec<u8>,
-    bytes: Vec<u8>
+    bytes: Vec<u8>,
 }
 
 #[tauri::command]

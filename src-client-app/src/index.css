@@ -91,3 +91,12 @@
 .flexlayout__tabset-selected {
     background-image: none !important;
 }
+
+.flexlayout__tab {
+    background-color: unset !important;
+    color: unset !important;
+}
+
+.flexlayout__tabset {
+    background-color: unset !important;
+}

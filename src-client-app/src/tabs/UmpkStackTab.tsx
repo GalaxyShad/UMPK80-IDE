@@ -1,14 +1,10 @@
-'use client'
-
-import { useUMPK80Store } from '@/store/umpk'
-
-import 'react-virtualized/styles.css'
-
+import { useUMPK80Store } from '@/store/umpkStore.ts'
 import { AutoSizer, Column, Table } from 'react-virtualized'
 
-export function UmpkStackTab() {
-  const stack = useUMPK80Store((state) => state.stack)
-  const stackStart = useUMPK80Store((state) => state.stackStart)
+export default function UmpkStackTab() {
+  //TODO
+  const stack = [] as number[]//useUMPK80Store((state) => state.stack)
+  const stackStart = 0//useUMPK80Store((state) => state.stackStart)
   const stackPointer = useUMPK80Store((state) => state.registers.sp)
 
   const hexToString = (x: number, pad = 2) => x.toString(16).padStart(pad, '0').toUpperCase()

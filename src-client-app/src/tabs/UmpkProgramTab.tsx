@@ -1,30 +1,25 @@
 import { useEffect, useState } from 'react'
 import { AutoSizer, Column, Index, Table } from 'react-virtualized'
-import { invoke } from '@tauri-apps/api/tauri'
 import { cn } from '@/lib/utils.ts'
+import { useUMPK80Store } from '@/store/umpkStore.ts'
+import { UMPK80DisassembledLine, umpkGetDisassembledROM } from '@/services/umpkService.ts'
 
-interface DisassembledLinePayload {
-  address: number
-  mnemonic: string
-  arguments: number[]
-  bytes: number[]
-}
+function UmpkProgramTab() {
+  const [rom, setRom] = useState<UMPK80DisassembledLine[]>([])
 
-function UmpkProgramView() {
-  const [rom, setRom] = useState<DisassembledLinePayload[]>([])
+  const pc = useUMPK80Store(s => s.display_address)
+
+  const romFlattenMap = rom.flatMap(x => x.bytes.map(() => x))
 
   useEffect(() => {
     (async () => {
-      const res = await invoke<DisassembledLinePayload[]>('umpk_get_disassembled_rom')
-
-      console.log({ res })
-
+      const res = await umpkGetDisassembledROM()
       setRom(res)
     })()
   }, [])
 
   const rowGetter = ({ index }: Index) => ({
-    address: rom[index].address.toHexString(),
+    address: rom[index].address.toHexString(2) + ':',
     instruction:
       rom[index].mnemonic +
       ' ' +
@@ -38,16 +33,21 @@ function UmpkProgramView() {
   })
 
   return (
-    <div className="flex w-full h-full font-mono text-sm">
+    <div className="flex w-full h-full font-mono text-sm text-foreground/90">
       <AutoSizer>
         {({ height, width }) => (
           <Table
+            scrollToIndex={rom.indexOf(romFlattenMap[pc])}
             width={width}
             height={height}
             headerHeight={20}
             rowHeight={20}
             rowCount={rom.length}
-            // rowClassName={({index}) => ((stackStart - index) === stackPointer) ? "text-primary" : "text-neutral-600"}
+            rowClassName={({ index }) => cn(
+              'hover:bg-primary/20',
+              rom[index]?.bytes[0] === 0 && 'text-foreground/30',
+              (rom[index] == romFlattenMap[pc]) && 'text-primary',
+            )}
             rowGetter={rowGetter}
           >
             <Column label="ADR" dataKey="address" width={50} />
@@ -56,7 +56,6 @@ function UmpkProgramView() {
               label="ASM"
               dataKey="instruction"
               width={100}
-              className={cn('text-neutral-700')}
             />
           </Table>
         )}
@@ -65,4 +64,4 @@ function UmpkProgramView() {
   )
 }
 
-export default UmpkProgramView
+export default UmpkProgramTab

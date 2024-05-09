@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import { SwitchVertical } from '@/components/ui/SwitchVertical'
-import { cn } from '@/lib/utils.ts'
+import { bitsToBooleanList, cn } from '@/lib/utils.ts'
+import { useUMPK80Store } from '@/store/umpkStore.ts'
 
 function Segment({ value }: { value: boolean }) {
   return (
@@ -13,47 +12,12 @@ function Segment({ value }: { value: boolean }) {
   )
 }
 
-const boolArrayToByte = (boolArray: boolean[]): number =>
-  boolArray.reduce(
-    (byte: number, current: boolean, index: number) =>
-      byte | (current ? 1 << (7 - index) : 0),
-    0,
-  )
-
-export function UmpkIOPortInput({
-                                  onChange,
-                                }: {
-  onChange: (hex: number) => void;
-}) {
-  const [input, setInput] = useState<boolean[]>(new Array(8).fill(true))
+export default function UmpkIOPortOutput() {
+  const output = useUMPK80Store(s => s.io)
 
   return (
-    <div className="min-w-[200px] flex flex-row gap-1 px-2 py-4 border justify-center rounded">
-      {input.map((x, i) => (
-        <SwitchVertical
-          key={i}
-          checked={x}
-          onCheckedChange={(checked) => {
-            const newValue = input.map((y, yi) => (yi == i ? checked : y))
-
-            setInput(newValue)
-            onChange(boolArrayToByte(newValue))
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
-const bitsToBooleanList = (value: number, bitsCount = 8): boolean[] =>
-  [...Array<boolean>(bitsCount)]
-    .map((_, i) => ((value >> i) & 1) != 0)
-    .reverse()
-
-export function UmpkIOPortOutput({ value }: { value: number }) {
-  return (
-    <div className="flex flex-row gap-1 px-2 py-4 border justify-center rounded">
-      {bitsToBooleanList(value).map((x, i) => (
+    <div className="flex flex-row gap-1 px-2 border h-full items-center justify-center rounded">
+      {bitsToBooleanList(output).map((x, i) => (
         <Segment value={x} key={i} />
       ))}
     </div>

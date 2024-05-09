@@ -1,66 +1,52 @@
-'use client'
 import { Label } from '@/components/ui/Label.tsx'
 import { HexInput } from '@/components/ui/HexInput'
 
-import { invoke } from '@tauri-apps/api/tauri'
-import { RegistersPayload } from '@/store/umpk.ts'
+import { useUMPK80Store } from '@/store/umpkStore.ts'
+import { RegisterName } from '@/services/umpkService.ts'
+import { cn } from '@/lib/utils.ts'
 
-interface Props {
-  registers: RegistersPayload;
-}
 
-export default function UmpkRegistersControl({ registers }: Props) {
-  function handleChange(registerName: string, data: number) {
-    console.log({ registerName, data })
-    invoke('umpk_set_register', { registerName, data }).then(() => console.log('good')).catch(e => console.error(e))
-  }
+export default function UmpkRegistersControl() {
+  const registers = useUMPK80Store(s => s.registers)
+  const setRegister = useUMPK80Store(s => s.setRegister)
 
-  const registerList = [
-    ['A', registers.a],
-    ['M', registers.m],
-    ['B', registers.b],
-    ['C', registers.c],
-    ['D', registers.d],
-    ['E', registers.e],
-    ['H', registers.h],
-    ['L', registers.l],
-  ] as [string, number][]
+  const registerOrder = [
+    'a', 'm',
+    'b', 'c',
+    'd', 'e',
+    'h', 'l',
+    'pc',
+    'sp',
+  ] as RegisterName[]
+
+  const isTwoByte = (reg: RegisterName): boolean => (reg === 'pc' || reg === 'sp')
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-2 font-mono">
-      {registerList.map((reg, i) => (
-        <div key={i} className="flex items-center space-x-2 h-full">
-          <Label className="w-8" htmlFor={reg[0]}>{reg[0]} </Label>
+    <div className="grid grid-cols-[0fr_1fr_0fr_1fr] gap-x-2 gap-y-2 font-mono items-center h-full">
+      {registerOrder.map((registerName) => (
+        <>
+          <Label
+            key={'ll' + registerName}
+            htmlFor={registerName}
+            className="text-foreground/40"
+          >
+            {registerName.toUpperCase()}
+          </Label>
           <HexInput
-            value={reg[1]}
-            onBlur={(x) => handleChange(reg[0].toLowerCase(), x)}
-            className="h-full"
-            id={reg[0]}
-            readOnly={reg[0] == 'M'}
+            id={registerName}
+            key={'hh' + registerName}
+            value={registers[registerName]}
+            onBlur={data => setRegister(registerName, data)}
+            readOnly={registerName === 'm'}
+            bytesLen={1 + +isTwoByte(registerName)}
+            className={cn(
+              'w-full h-full',
+              isTwoByte(registerName) && 'col-span-3',
+              registers[registerName] === 0 && 'text-foreground/20',
+            )}
           />
-        </div>
+        </>
       ))}
-
-      <div className="flex items-center space-x-2 h-full col-span-2">
-        <Label className="w-8" htmlFor="pc">PC</Label>
-        <HexInput
-          value={registers.pc}
-          bytesLen={2}
-          className="h-full"
-          onBlur={(x) => handleChange('pc', x)}
-          id="pc"
-        />
-      </div>
-      <div className="flex items-center space-x-2 h-full col-span-2">
-        <Label className="w-8" htmlFor="sp">SP</Label>
-        <HexInput
-          value={registers.sp}
-          bytesLen={2}
-          className="h-full"
-          onBlur={(x) => handleChange('sp', x)}
-          id="sp"
-        />
-      </div>
     </div>
   )
 }

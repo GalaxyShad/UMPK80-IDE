@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 export default function Intel8080AssemblyGuideTab() {
   return (
     <div className="flex h-full w-full">

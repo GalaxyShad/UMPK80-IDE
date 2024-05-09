@@ -6,17 +6,25 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const bitsToBooleanList = (value: number, bitsCount = 8) =>
-  [...Array(bitsCount)].map((_, i) => (value >> i) & 1).reverse()
+  [...Array<boolean>(bitsCount)].map((_, i) => ((value >> i) & 1) === 1).reverse()
+
+export const boolArrayToByte = (boolArray: boolean[]): number =>
+  boolArray.reduce(
+    (byte: number, current: boolean, index: number) =>
+      byte | (current ? 1 << (7 - index) : 0),
+    0,
+  )
 
 declare global {
   interface Number {
-    toHexString(): string
+    toHexString(byteCount?: number): string
   }
 }
 
-Number.prototype.toHexString = function () {
+Number.prototype.toHexString = function(byteCount: number = 1) {
   return this.valueOf()
     .toString(16)
-    .padStart(this.valueOf() > 0xff ? 4 : 2, '0')
+    .padStart(byteCount * 2, '0')
     .toUpperCase()
 }
+

@@ -75,3 +75,7 @@ export async function umpkGetState(): Promise<UMPK80State> {
 export async function umpkGetDisassembledROM(): Promise<UMPK80DisassembledLine[]> {
   return await invoke<UMPK80DisassembledLine[]>('umpk_get_disassembled_rom')
 }
+
+export async function umpkWriteToMemory(address: number, data: number) {
+  await invoke('umpk_write_to_memory', { address, data })
+}

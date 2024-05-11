@@ -153,6 +153,11 @@ fn umpk_get_ram(state: State<AppState>) -> Vec<u8> {
 }
 
 #[tauri::command]
+fn umpk_write_to_memory(state: State<AppState>, address: u16, data: u8 ) {
+    state.umpk80.lock().unwrap().memory_write(address, data)
+}
+
+#[tauri::command]
 fn umpk_set_register(state: State<AppState>, register_name: &str, data: u16) -> Result<(), String> {
     let umpk = state.umpk80.lock().unwrap();
 
@@ -347,6 +352,7 @@ fn main() {
             umpk_get_ram,
             umpk_get_state,
             umpk_get_disassembled_rom,
+            umpk_write_to_memory,
             process_string,
             load_source_code_from_file,
             save_source_code_to_file,

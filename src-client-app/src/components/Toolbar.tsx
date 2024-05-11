@@ -9,16 +9,18 @@ import { Switch } from '@/components/ui/Switch.tsx'
 import { forwardRef } from 'react'
 import { cn } from '@/lib/utils.ts'
 import { useTheme } from '@/components/ThemeProvider.tsx'
-import { translatorTerminal } from '@/services/translatorTerminal.ts'
+import { useTranslatorStore } from '@/store/translator-store.ts'
 
 function useToolbarActions() {
-  const editorSourceCode = useEditorStore((state) => state.sourceCode)
-  const setEditorSourceCode = useEditorStore((state) => state.setSourceCode)
+  const editorSourceCode = useEditorStore(s => s.sourceCode)
+  const setEditorSourceCode = useEditorStore(s => s.setSourceCode)
+  const terminal = useTranslatorStore(s => s.terminal)
+
 
   const playClick = async () => {
     const result = await translateAndRun(editorSourceCode)
 
-    translatorTerminal.writeln(result.isSuccess ? result.value[0] : result.error)
+    terminal?.writeln(result.isSuccess ? result.value[0] : result.error)
   }
 
   const openClick = async () => {
@@ -35,7 +37,7 @@ function useToolbarActions() {
     const result = await loadSourceCodeFromFile(filePath as string)
 
     if (!result.isSuccess) {
-      translatorTerminal.writeln(result.error)
+      terminal?.writeln(result.error)
       return
     }
 
@@ -59,7 +61,7 @@ function useToolbarActions() {
     const result = await saveSourceCodeToFile(filePath, editorSourceCode)
 
     if (!result.isSuccess) {
-      translatorTerminal.writeln(result.error)
+      terminal?.writeln(result.error)
     }
   }
 

@@ -1,5 +1,5 @@
 import { IJsonModel, Model, TabNode } from 'flexlayout-react'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 
 import UmpkTab from '@/tabs/UmpkTab.tsx'
 import TerminalTab from '@/tabs/TerminalTab.tsx'
@@ -35,12 +35,15 @@ const defaultLayout = {
       {
         type: 'tabset',
         weight: 100,
+        id: 'main',
         children: Object.keys(tabsMap).map((key) => ({
+          id: key,
           type: 'tab',
           name: tabsMap[key][0],
           component: key,
+          enableClose: (key !== UmpkTab.name),
         })),
-      },
+      }
     ],
   },
 } as IJsonModel
@@ -51,27 +54,22 @@ function layoutFactory(node: TabNode): ReactNode {
   return node.isVisible() && tabsMap[component ?? ''][1]()
 }
 
-type UseDockLayoutReturn = [Model | undefined, (node: TabNode) => ReactNode, (model: Model) => void]
+const saveLayout = () => localStorage.setItem('layout', JSON.stringify(dockLayoutModel?.toJson()))
 
-export function useDockLayout(): UseDockLayoutReturn {
-  const [flexLayoutModel, setFlexLayoutModel] = useState<Model>()
+let dockLayoutModel: Model | undefined = undefined
 
-  const loadLayout = () => {
-    try {
-      const savedLayoutJson = JSON.parse(localStorage.getItem('layout') ?? 'undefined')
+const loadLayout = () => {
+  try {
+    const savedLayoutJson = JSON.parse(localStorage.getItem('layout') ?? 'undefined')
 
-      setFlexLayoutModel(Model.fromJson(savedLayoutJson))
-    } catch (e) {
-      console.error(e)
+    dockLayoutModel = Model.fromJson(savedLayoutJson)
+  } catch (e) {
+    console.warn(e)
 
-      setFlexLayoutModel(Model.fromJson(defaultLayout))
-    }
+    dockLayoutModel = Model.fromJson(defaultLayout)
   }
-
-  const saveLayout = (model: Model) =>
-    localStorage.setItem('layout', JSON.stringify(model.toJson()))
-
-  useEffect(loadLayout, [])
-
-  return [flexLayoutModel, layoutFactory, saveLayout]
 }
+
+loadLayout()
+
+export { dockLayoutModel, saveLayout, layoutFactory }

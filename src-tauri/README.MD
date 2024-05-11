@@ -7,13 +7,13 @@
 
 ### UI
 - [x] IO refactor
-- [ ] side bar open windows
+- [x] side bar open windows
 - [ ] export to word
 - [ ] instruction table (doc)
 - [ ] read ROM program from monitor repo
 - [ ] save path configuration? 
 - [ ] translator setup instruction
-- [ ] read programs from excel ?
+- [x] read programs from excel (via clipboard)
 - [ ] read programs from binary
 - - [ ] disassemble from binary
 - [ ] editor code preview
@@ -21,9 +21,10 @@
 - [ ] refresh screen if register changed
 - [ ] set address on click in program tab
 - [ ] save editor settings
-- [ ] RAM editing
+- [x] RAM editing
 - [ ] create new File
-- [ ] fix buggy hex editor
+- [x] fix buggy hex editor
+- [ ] decompile from RAM
 
 ## Translator
 - [ ] color errors 

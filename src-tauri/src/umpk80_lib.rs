@@ -319,7 +319,7 @@ impl Drop for Intel8080Disassembler {
 
 #[cfg(test)]
 mod tests {
-    use crate::umpk80::{I8080DisassembleResult, Intel8080Disassembler, Umpk80, UMPK80_GetInstruction, UMPK80Instruction, Umpk80Register, umpk_get_instruction};
+    use crate::umpk80_lib::{I8080DisassembleResult, Intel8080Disassembler, Umpk80, UMPK80_GetInstruction, UMPK80Instruction, Umpk80Register, umpk_get_instruction};
 
     static OS_FILE: &[u8] = include_bytes!("../../core/data/scaned-os-fixed.bin");
 

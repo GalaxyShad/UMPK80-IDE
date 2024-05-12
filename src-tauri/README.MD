@@ -6,25 +6,32 @@
 - [ ] use tauri async commands
 
 ### UI
-- [x] IO refactor
-- [x] side bar open windows
 - [ ] export to word
 - [ ] instruction table (doc)
+- [ ] fix stack
 - [ ] read ROM program from monitor repo
 - [ ] save path configuration? 
 - [ ] translator setup instruction
-- [x] read programs from excel (via clipboard)
-- [ ] read programs from binary
-- - [ ] disassemble from binary
 - [ ] editor code preview
-- [ ] toolbar hotkeys
-- [ ] refresh screen if register changed
+- [ ] refresh screen if  register changed
 - [ ] set address on click in program tab
 - [ ] save editor settings
-- [x] RAM editing
 - [ ] create new File
-- [x] fix buggy hex editor
+- [ ] add to program disassemble
+
+#### Maybe
 - [ ] decompile from RAM
+- [ ] tooltips for data
+- [ ] toolbar hotkeys
+- [ ] read programs from binary
+- [ ] disassemble from binary
+
+#### Done
+- [x] side bar open windows
+- [x] RAM editing
+- [x] fix buggy hex editor
+- [x] IO refactor
+- [x] read programs from excel (via clipboard)
 
 ## Translator
 - [ ] color errors 

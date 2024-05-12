@@ -1,5 +1,10 @@
 import { Button } from '@/components/ui/Button'
-import { BetweenHorizonalStart, BookText, Layers, MemoryStick, Settings, Terminal } from 'lucide-react'
+import {
+  BetweenHorizonalStart,
+  BookText,
+  Layers, MemoryStick,
+  Settings, Terminal,
+} from 'lucide-react'
 import { DialogTrigger } from '@/components/ui/Dialog'
 import { dockLayoutModel } from '@/hooks/useDockLayout.tsx'
 import { Actions, DockLocation } from 'flexlayout-react'

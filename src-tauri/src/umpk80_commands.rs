@@ -41,6 +41,7 @@ pub struct DisassembledLinePayload {
     mnemonic: String,
     arguments: Vec<u8>,
     bytes: Vec<u8>,
+    comment: String
 }
 
 pub struct Umpk80State(pub Arc<Mutex<Umpk80>>);
@@ -203,6 +204,7 @@ pub async fn umpk_get_disassembled_rom() -> Vec<DisassembledLinePayload> {
                     _ => Vec::new(),
                 },
                 bytes: x.bytes,
+                comment: "".to_string()
             });
 
             acc

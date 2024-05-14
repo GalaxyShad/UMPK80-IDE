@@ -14,7 +14,7 @@ mod editor_commands;
 mod translator_commands;
 
 use crate::editor_commands::{load_source_code_from_file, save_source_code_to_file};
-use crate::translator_commands::{process_string, translator_set_execution_command, TranslatorState};
+use crate::translator_commands::{translate, translate_and_build, translator_set_execution_command, TranslatorState};
 use crate::umpk80_commands::{Umpk80State, umpk_get_disassembled_rom, umpk_get_ram, umpk_get_rom, umpk_get_state, umpk_press_key, umpk_release_key, umpk_set_io_input, umpk_set_register, umpk_set_speaker_volume, umpk_write_to_memory};
 
 fn main() {
@@ -32,7 +32,7 @@ fn main() {
             umpk_get_state,
             umpk_get_disassembled_rom,
             umpk_write_to_memory,
-            process_string,
+            translate_and_build,
             load_source_code_from_file,
             save_source_code_to_file,
             translator_set_execution_command

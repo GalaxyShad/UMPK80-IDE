@@ -10,7 +10,7 @@
 - [ ] instruction table (doc)
 - [ ] fix stack
 - [ ] read ROM program from monitor repo
-- [ ] save path configuration? 
+- [to test] save path configuration? 
 - [ ] translator setup instruction
 - [ ] editor code preview
 - [ ] refresh screen if  register changed
@@ -27,6 +27,7 @@
 - [ ] disassemble from binary
 
 #### Done
+- [x] better API translator
 - [x] side bar open windows
 - [x] RAM editing
 - [x] fix buggy hex editor

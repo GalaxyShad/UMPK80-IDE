@@ -5,25 +5,29 @@ import { Terminal } from '@xterm/xterm'
 
 interface TranslatorState {
   translateCommand: string,
-  terminal?: Terminal
+  terminal?: Terminal,
+  fromAddress: number,
 
+  setFromAddress: (address: number) => void,
   setTranslateCommand: (command: string) => Promise<Result<string>>,
   setTerminal: (terminal: Terminal) => void
 }
 
 export const useTranslatorStore = create<TranslatorState>()((set) => ({
   terminal: undefined,
-  translateCommand: 'i8080',
+  translateCommand: localStorage.getItem('translateCommand') ?? 'i8080',
+  fromAddress: 0x0800,
 
   setTerminal: (terminal: Terminal) => set({ terminal }),
 
+  setFromAddress: (fromAddress: number) => set({ fromAddress }),
+
   setTranslateCommand: async (command: string): Promise<Result<string>> => {
     try {
-      const result = await invoke('translator_set_execution_command', { command })
+      set({ translateCommand: command })
+      localStorage.setItem('translateCommand', command)
 
-      set(state => ({ ...state, translateCommand: command }))
-
-      return Ok(result as string)
+      return Ok('Ok')
     } catch (e) {
       return Err(e as string)
     }

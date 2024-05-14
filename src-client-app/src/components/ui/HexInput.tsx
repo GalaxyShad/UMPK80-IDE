@@ -7,56 +7,60 @@ import { Input } from './Input.jsx'
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onBlur'> {
   value?: number;
+  minValue?: number;
   onChange?: (value: number) => void;
   onBlur?: (value: number) => void;
   bytesLen?: number;
 }
 
-const formatHex = (x: number, pad: number = 2) => x.toString(16).toUpperCase().padStart(pad, '0')
-
+// works, but FIXME pls
 const HexInput = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, bytesLen, ...props }) => {
+  ({ className, bytesLen, minValue = 0, ...props }) => {
     const hexPad = (bytesLen ?? 1) * 2
 
     const refInput = useRef<HTMLInputElement | null>(null)
-    const [strValue, setStrValue] = useState<string>(formatHex(props.value ?? 0, hexPad))
+    const [strValue, setStrValue] = useState<string>((props.value ?? minValue).toHexString(bytesLen))
 
     useEffect(() => {
-      setStrValue(formatHex(props.value ?? 0, hexPad))
+      setStrValue((props.value ?? minValue).toHexString(bytesLen))
 
       refInput.current?.classList.add('border-primary/75')
 
-      setTimeout(() => refInput.current?.classList.remove('border-primary/75'), 100)
-    }, [props.value, hexPad])
+      const id = setTimeout(() => refInput.current?.classList.remove('border-primary/75'), 100)
+
+      return () => clearTimeout(id)
+    }, [props.value, hexPad, bytesLen, minValue])
 
     function change(e: React.ChangeEvent<HTMLInputElement>) {
       const input = e.currentTarget.value.toUpperCase()
 
       const regHex = new RegExp(`^[0-9A-F]{1,${hexPad}}$`)
-      console.log(regHex)
 
       if (regHex.test(input) || input === '') {
+        console.log({input})
+
         const hex = Number.parseInt(input, 16)
 
         setStrValue(input)
 
-        props.onChange?.(hex)
+        props.onChange?.(Number.isNaN(hex) ? 0 : (hex < minValue ? minValue : hex))
       }
 
     }
 
     function blur(e: React.FocusEvent<HTMLInputElement>) {
       if (e.currentTarget.value === '') {
-        setStrValue(formatHex(0, hexPad))
+        setStrValue((minValue).toHexString(bytesLen))
 
-        props.onChange?.(0)
-        props.onBlur?.(0)
+        props.onChange?.(minValue)
+        props.onBlur?.(minValue)
 
         return
       }
 
       const hex = Number.parseInt(e.currentTarget.value, 16)
-      props.onBlur?.(hex)
+      setStrValue(hex < minValue ? minValue.toHexString(bytesLen) : e.currentTarget.value)
+      props.onBlur?.(hex < minValue ? minValue : hex)
     }
 
     return (

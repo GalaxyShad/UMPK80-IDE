@@ -1,26 +1,40 @@
 import { Button, ButtonProps } from '@/components/ui/Button'
 import { File, FolderOpen, Hammer, Lightbulb, Play, RedoDot, Save, Square } from 'lucide-react'
-import { Input } from '@/components/ui/Input'
 import { open, save } from '@tauri-apps/api/dialog'
 import { useEditorStore } from '@/store/editor-store'
 import { ExportToWordIcon } from '@/assets/ExportToWordIcon.tsx'
-import { loadSourceCodeFromFile, saveSourceCodeToFile, translateAndRun } from '@/services/translatorService.ts'
+import { loadSourceCodeFromFile, saveSourceCodeToFile, translateAndBuild } from '@/services/translatorService.ts'
 import { Switch } from '@/components/ui/Switch.tsx'
 import { forwardRef } from 'react'
 import { cn } from '@/lib/utils.ts'
 import { useTheme } from '@/components/ThemeProvider.tsx'
 import { useTranslatorStore } from '@/store/translator-store.ts'
+import { HexInput } from '@/components/ui/HexInput.tsx'
 
 function useToolbarActions() {
   const editorSourceCode = useEditorStore(s => s.sourceCode)
   const setEditorSourceCode = useEditorStore(s => s.setSourceCode)
   const terminal = useTranslatorStore(s => s.terminal)
+  const fromAddress = useTranslatorStore(s => s.fromAddress)
+  const setFromAddress = useTranslatorStore(s => s.setFromAddress)
+  const translatorPath = useTranslatorStore(s => s.translateCommand)
 
+  const onFromAddressChange = (x: number) => {
+    setFromAddress(x)
+  }
 
   const playClick = async () => {
-    const result = await translateAndRun(editorSourceCode)
+    const result = await translateAndBuild(editorSourceCode, translatorPath, fromAddress)
 
-    terminal?.writeln(result.isSuccess ? result.value[0] : result.error)
+    if (result.isSuccess) {
+
+      console.log({result})
+
+      terminal?.writeln(result.value.binary_exists ? `\x1b[32m${result.value.stdout}\n` : `\x1b[31m${result.value.stderr}\n`)
+    } else {
+        terminal?.writeln('\x1b[31m' + result.error + '\n')
+    }
+
   }
 
   const openClick = async () => {
@@ -65,7 +79,7 @@ function useToolbarActions() {
     }
   }
 
-  return { playClick, openClick, saveClick }
+  return { playClick, openClick, saveClick, onFromAddressChange: onFromAddressChange, fromAddress }
 }
 
 
@@ -83,7 +97,7 @@ const ToolbarButton = forwardRef<HTMLButtonElement, ButtonProps>(
 )
 
 export default function Toolbar() {
-  const { openClick, saveClick, playClick } = useToolbarActions()
+  const { openClick, saveClick, playClick, onFromAddressChange, fromAddress } = useToolbarActions()
 
   const { setTheme } = useTheme()
 
@@ -102,7 +116,8 @@ export default function Toolbar() {
       </span>
 
       <span className="flex flex-row gap-1">
-        <Input className="max-h-6 w-16" defaultValue={2048} />
+        <HexInput className="max-h-6 w-16" minValue={0x0800} bytesLen={2} onBlur={onFromAddressChange}
+                  value={fromAddress} />
         <ToolbarButton>
           <Hammer size={16} className="text-gray-300" />
         </ToolbarButton>

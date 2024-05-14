@@ -9,10 +9,26 @@ async function tryOrErrorAsString<T>(cb: () => Promise<T>): Promise<Result<T>> {
   }
 }
 
-type TranslateAndRunResult = [string, Uint8Array];
-export const translateAndRun = async (sourceCode: string): Promise<Result<TranslateAndRunResult>> =>
-  tryOrErrorAsString(async () =>
-    await invoke<TranslateAndRunResult>('process_string', { inputString: sourceCode }))
+export interface TranslateAndRunResult {
+  run_command: string,
+
+  stdout: string,
+  stderr: string,
+
+  binary_exists: boolean,
+
+  exit_status_display: string,
+  exit_status_code: number,
+  exit_status_success: boolean,
+}
+
+export const translateAndBuild = async (assemblyCode: string, pathToExecutable: string, dstRamOffset: number): Promise<Result<TranslateAndRunResult>> => {
+    try {
+      return Ok(await invoke<TranslateAndRunResult>('translate_and_build', { assemblyCode, pathToExecutable, dstRamOffset }))
+    } catch (e) {
+      return Err(e as string)
+    }
+}
 
 export const loadSourceCodeFromFile = async (filePath: string): Promise<Result<string>> =>
   tryOrErrorAsString(async () =>

@@ -13,6 +13,7 @@ export default function TerminalTab() {
       theme: {
         background: '#fdf6e300',
       },
+      convertEol: true
     })
 
     if (refDivTerminal.current !== null) {

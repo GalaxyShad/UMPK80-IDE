@@ -1,11 +1,12 @@
 use std::env;
+use cc::Build;
 
 fn main() {
     env::set_var("CC_ENABLE_DEBUG_OUTPUT", "1");
     env::set_var("VSLANG", "1033");
     env::set_var("RUST_LOG", "debug");
 
-    cc::Build::new()
+    Build::new()
         .cpp(true)
         .flag("-std=c++11")
         .include("../core/src")

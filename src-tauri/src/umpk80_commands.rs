@@ -37,11 +37,11 @@ pub struct UmpkStatePayload {
 
 #[derive(Serialize, Deserialize)]
 pub struct DisassembledLinePayload {
-    address: u16,
-    mnemonic: String,
-    arguments: Vec<u8>,
-    bytes: Vec<u8>,
-    comment: String
+    pub address: u16,
+    pub mnemonic: String,
+    pub arguments: Vec<u8>,
+    pub bytes: Vec<u8>,
+    pub comment: String
 }
 
 pub struct Umpk80State(pub Arc<Mutex<Umpk80>>);

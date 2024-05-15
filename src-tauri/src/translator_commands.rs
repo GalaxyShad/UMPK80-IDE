@@ -1,17 +1,19 @@
-use crate::umpk80_commands::{DisassembledLinePayload, Umpk80State};
 use core::default::Default;
-use csv::ReaderBuilder;
-use log::__private_api::log;
-use log::error;
-use serde::{Deserialize, Serialize};
+use std::fmt;
+use std::fmt::{Debug, Formatter};
 use std::fs::File;
 use std::future::Future;
-use std::io::{BufReader, Error, ErrorKind, Read, Stdout, Write};
+use std::io::{BufRead, BufReader, Error, Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::{Command, ExitStatus};
+use std::process::{ExitStatus, Output};
 use std::sync::Mutex;
+
+use serde::{Deserialize, Serialize};
 use tauri::State;
 use tempfile::TempDir;
+
+use crate::translator_lib::SomeIntel8080Translator;
+use crate::umpk80_commands::DisassembledLinePayload;
 
 pub struct TranslatorState {
     translator_path: Mutex<String>,
@@ -31,24 +33,14 @@ impl TranslatorState {
 pub fn translator_set_execution_command(
     state: State<TranslatorState>,
     command: &str,
+    exe_path: &str,
 ) -> Result<String, String> {
-    let mut cmd = Command::new(command);
+    let res = SomeIntel8080Translator::new(Path::new(exe_path))
+        .version()
+        .execute()
+        .map_err(|err| err.to_string())?;
 
-    let output = cmd
-        .arg("--version")
-        .output()
-        .map_err(|err| format!("[Command error] {err}"))?;
-
-    let mut translator_path = state.translator_path.lock().unwrap();
-
-    *translator_path = String::from(command);
-
-    let mut output_string = String::new();
-    let mut err_output_string = String::new();
-    BufReader::new(&output.stdout[..]).read_to_string(&mut output_string);
-    BufReader::new(&output.stderr[..]).read_to_string(&mut err_output_string);
-
-    Ok(output_string)
+    Ok(String::from_utf8(res.stdout).unwrap())
 }
 
 struct TryTranslateResult {
@@ -65,108 +57,152 @@ struct TryTranslateResult {
 }
 
 enum TryTranslateErrorType {
-    TempDirCreate,
-    TempAssemblyFileCreate,
-    TempAssemblyFileWrite,
+    SourceCodeCreateTempFile,
     ExecutableRun,
+    BinaryFileOpen,
 }
 
 struct TryTranslateError {
-    run_command: String,
     kind: TryTranslateErrorType,
-    inner_error: Error,
+    inner: Error,
 }
 
-fn try_translate(
-    assembly_code: String,
-    path_to_executable: String,
-    generate_listing_word: bool,
-    generate_listing_markdown: bool,
-) -> Result<TryTranslateResult, TryTranslateError> {
-    let temp_dir = TempDir::new().map_err(|err| TryTranslateError {
-        run_command: "".to_string(),
-        kind: TryTranslateErrorType::TempDirCreate,
-        inner_error: err,
-    })?;
+impl fmt::Display for TryTranslateError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.inner)
+    }
+}
+
+impl Debug for TryTranslateError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.inner)
+    }
+}
+
+fn make_temp_assembly_source_code_file(
+    source_code: &str,
+) -> Result<(TempDir, File, PathBuf), Error> {
+    let temp_dir = TempDir::new()?;
 
     let source_file_path = Path::join(temp_dir.path(), "a.asm");
 
-    let mut source_file = File::create(&source_file_path).map_err(|why| {
-        error!("Cannot create temp file for translator. {}", why);
+    let mut source_file = File::create(&source_file_path)?;
+    source_file.write_all(source_code.as_bytes())?;
 
-        TryTranslateError {
-            run_command: "".to_string(),
-            kind: TryTranslateErrorType::TempAssemblyFileCreate,
-            inner_error: why,
-        }
-    })?;
+    Ok((temp_dir, source_file, source_file_path))
+}
 
-    source_file
-        .write_all(assembly_code.as_bytes())
-        .map_err(|why| {
-            error!("Unable to write source code to temp file. {}", why);
+struct TranslateAssemblyToBinaryResult {
+    output: Output,
+    binary_data: Vec<u8>,
+}
 
-            TryTranslateError {
-                run_command: "".to_string(),
-                kind: TryTranslateErrorType::TempAssemblyFileWrite,
-                inner_error: why,
-            }
+fn translate_assembly_to_binary(
+    source_code: &str,
+    translator_exe_path: &Path,
+) -> Result<TranslateAssemblyToBinaryResult, TryTranslateError> {
+    let (temp_dir, temp_src_file, temp_src_file_path) =
+        make_temp_assembly_source_code_file(source_code).map_err(|err| TryTranslateError {
+            kind: TryTranslateErrorType::SourceCodeCreateTempFile,
+            inner: err,
         })?;
 
-    let mut command = Command::new(&path_to_executable);
+    let translate_output = SomeIntel8080Translator::new(translator_exe_path)
+        .source_code_path(&temp_src_file_path)
+        .binary()
+        .csv()
+        .execute()
+        .map_err(|err| TryTranslateError {
+            kind: TryTranslateErrorType::ExecutableRun,
+            inner: err,
+        })?;
 
-    command.arg(&source_file_path);
-    command.args([
-        "--bin",
-        "-c",
-        if generate_listing_word { "-w" } else { "" },
-        if generate_listing_markdown { "-m" } else { "" },
-    ]);
+    let binary_file_path = temp_src_file_path.with_extension("i8080asm.bin");
+    let csv_file_path = temp_src_file_path.with_extension("i8080asm.csv");
 
-    let run_command_string = format!("{:?}", command);
+    let mut binary_data = Vec::new();
 
-    let output = command.output().map_err(|err| TryTranslateError {
-        run_command: run_command_string.clone(),
-        kind: TryTranslateErrorType::ExecutableRun,
-        inner_error: err,
-    })?;
+    if binary_file_path.is_file() {
+        let mut binary_file = File::open(&binary_file_path).map_err(|err| TryTranslateError {
+            kind: TryTranslateErrorType::BinaryFileOpen,
+            inner: err,
+        })?;
+        binary_file
+            .read_to_end(&mut binary_data)
+            .map_err(|err| TryTranslateError {
+                kind: TryTranslateErrorType::BinaryFileOpen,
+                inner: err,
+            })?;
+    }
 
-    let binary_file_path = Path::join(temp_dir.path(), "a.i8080asm.bin");
-    let binary_word_path = Path::join(temp_dir.path(), "a.i8080asm.docx");
-    let binary_markdown_path = Path::join(temp_dir.path(), "a.i8080asm.md");
-    let result_markdown_path = Path::join(temp_dir.path(), "a.i8080asm.csv");
+    if binary_file_path.is_file() {
+        let output_str = String::from_utf8(translate_output.stdout.clone()).unwrap();
 
-    Ok(TryTranslateResult {
-        run_command: run_command_string.clone(),
+        for i in output_str.split("\n").skip(1) {}
+    }
 
-        stdout: String::from_utf8(output.stdout.clone()).unwrap(),
-        stderr: String::from_utf8(output.stderr.clone()).unwrap(),
-        exit_status: output.status,
-
-        result_binary_path: if binary_file_path.is_file() {
-            Some(binary_file_path)
-        } else {
-            None
-        },
-        result_word_path: if binary_word_path.is_file() {
-            Some(binary_word_path)
-        } else {
-            None
-        },
-        result_markdown_path: if binary_markdown_path.is_file() {
-            Some(binary_markdown_path)
-        } else {
-            None
-        },
-        result_csv_path: if result_markdown_path.is_file() {
-            Some(result_markdown_path)
-        } else {
-            None
-        },
+    Ok(TranslateAssemblyToBinaryResult {
+        output: translate_output,
+        binary_data,
     })
 }
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize)]
+pub struct AssemblyListingLine {
+    pub address: Option<u16>,
+    pub bytes: Vec<u8>,
+    pub label: String,
+    pub assembly_code: String,
+    pub comment: String,
+}
+
+fn parse_assembly_line(line: &str) -> AssemblyListingLine {
+    let parts: Vec<&str> = line.split(['|', ';']).collect();
+    if parts.len() < 5 {
+        panic!("Invalid format");
+    }
+
+    let address = match u16::from_str_radix(parts[0].trim(), 16) {
+        Ok(x) => Some(x),
+        Err(_) => None,
+    };
+
+    let bytes_str = parts[1].trim();
+    println!("{:?}", bytes_str);
+    let bytes: Vec<u8> = bytes_str
+        .chars()
+        .collect::<Vec<char>>()
+        .chunks(2)
+        .map(|chunk| u8::from_str_radix(&chunk.iter().collect::<String>(), 16).unwrap())
+        .collect();
+
+    let label = parts[2].trim().to_string();
+
+    let assembly_code = parts[3].trim().to_string();
+
+    let comment = parts[4].trim().to_string();
+
+    AssemblyListingLine {
+        address,
+        label,
+        assembly_code,
+        bytes,
+        comment,
+    }
+}
+
+pub fn parse_monitor_system() -> Vec<AssemblyListingLine> {
+    let file = File::open("./monitor.i8080asm.txt").unwrap();
+
+    BufReader::new(file)
+        .lines()
+        .skip(1)
+        .flatten()
+        .map(|x| parse_assembly_line(&x))
+        .collect()
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct TranslateAndBuildPayload {
     run_command: String,
 
@@ -180,147 +216,61 @@ pub struct TranslateAndBuildPayload {
     exit_status_success: bool,
 }
 
-pub fn translate(
-    assembly_code: String,
-    path_to_executable: String,
-    generate_listing_word: bool,
-    generate_listing_markdown: bool,
-) -> Result<TryTranslateResult, String> {
-    return match try_translate(
-        assembly_code,
-        path_to_executable,
-        generate_listing_word,
-        generate_listing_markdown,
-    ) {
-        Ok(x) => Ok(x),
-        Err(x) => Err(match x.kind {
-            TryTranslateErrorType::TempDirCreate => {
-                format!("🥺  Cannot create temp dir. {}", x.inner_error.to_string())
-            }
-            TryTranslateErrorType::TempAssemblyFileCreate => {
-                format!(
-                    "🥺  Cannot create temp file for translator. {}",
-                    x.inner_error.to_string()
-                )
-            }
-            TryTranslateErrorType::TempAssemblyFileWrite => {
-                format!(
-                    "🥺  Unable to write source code to temp file. {}",
-                    x.inner_error.to_string()
-                )
-            }
-            TryTranslateErrorType::ExecutableRun => {
-                format!(
-                        "🥺  Unable to run translator executable \"{}\".\n\
-                    Reason: {}\n\
-                    Message: {}\n\
-                    {}",
-                        x.run_command,
-                        x.inner_error.kind().to_string(),
-                        x.inner_error.to_string(),
-                        match x.inner_error.kind() {
-                            ErrorKind::NotFound => "💡  Hint: check that executable \"i8080\" of translator \"SomeIntel8080Translator\" is in $PATH variables or configure custom path in IDE settings",
-                            _ => ""
-                        }
-                    )
-            }
-        }),
-    };
-}
-
-#[tauri::command]
-pub async fn translate_and_build(
-    umpk_state: State<'_, Umpk80State>,
-    assembly_code: String,
-    path_to_executable: String,
-    dst_ram_offset: u16,
-) -> Result<TranslateAndBuildPayload, String> {
-    let translate_result = translate(assembly_code, path_to_executable, false, false)?;
-
-    let mut binary_exists = false;
-    if let Some(binary_path) = translate_result.result_binary_path {
-        let mut binary_file = File::open(&binary_path).map_err(|err| {
-            format!(
-                "Can't open result binary file \"{:?}\". {}",
-                binary_path,
-                err.to_string()
-            )
-        })?;
-
-        let mut binary_data = Vec::new();
-        binary_file.read_to_end(&mut binary_data).map_err(|err| {
-            format!(
-                "Can't read result binary file \"{:?}\". {}",
-                binary_path,
-                err.to_string()
-            )
-        })?;
-
-        let umpk80 = umpk_state.0.lock().unwrap();
-        umpk80.load_program(&binary_data, binary_data.len() as u16, dst_ram_offset);
-
-        binary_exists = true;
-    }
-
-    if let Some(csv_path) = translate_result.result_csv_path {
-        let mut rdr = csv::Reader::from_path(csv_path);
-        for result in rdr.unwrap().records() {
-            // The iterator yields Result<StringRecord, Error>, so we check the
-            // error here.
-            let record = result.map_err(|e| e.to_string())?;
-            println!("{:?}", record);
-        }
-    }
-
-    return Ok(TranslateAndBuildPayload {
-        run_command: translate_result.run_command,
-
-        stdout: translate_result.stdout,
-        stderr: translate_result.stderr,
-
-        exit_status_display: translate_result.exit_status.to_string(),
-        exit_status_code: translate_result.exit_status.code().unwrap_or_else(|| -1),
-        exit_status_success: translate_result.exit_status.success(),
-
-        binary_exists,
-    });
-}
-
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
-    use std::io::Read;
-    use crate::translator_commands::{translate, translate_and_build};
-    use crate::umpk80_lib::{Umpk80, Umpk80Register};
+    use std::path::Path;
+
+    use crate::translator_commands::{
+        parse_assembly_line, parse_monitor_system, translate_assembly_to_binary,
+    };
 
     #[test]
-    fn test_generate_binary() {
-        let res = translate(
-            "ORG 0800h".to_string(),
-            "i8080".to_string(),
-            false,
-            false)
-            .unwrap();
+    fn test__translate_assembly_to_binary__first_element_is_27() {
+        let res = translate_assembly_to_binary("DAA", Path::new("i8080")).unwrap();
 
-        assert_eq!(res.exit_status.success(), true)
+        assert_eq!(res.binary_data[0], 0x27);
     }
 
     #[test]
-    fn test_load_binary() {
-        let res = translate(
-            "DAA".to_string(),
-            "i8080".to_string(),
-            false,
-            false)
-            .unwrap();
+    fn test__parse_assembly_line() {
+        let res = parse_assembly_line("1234 | 21AF12 | MLA:  | LXI H,12AFH ; SOME COMMENT  ");
 
-        assert!(res.result_binary_path.is_some());
+        assert_eq!(res.address.unwrap(), 0x1234);
 
-        let mut binary_file = File::open(&res.result_binary_path.unwrap()).unwrap();
+        assert_eq!(res.bytes[0], [0x21, 0xAF, 0x12]);
+        assert_eq!(res.label, "MLA:");
 
-        let mut binary_data = Vec::new();
-        binary_file.read_to_end(&mut binary_data);
+        assert_eq!(res.assembly_code, "LXI H,12AFH");
+        assert_eq!(res.comment, "SOME COMMENT");
+    }
 
-        assert_eq!(binary_data[0], 0x27)
+    #[test]
+    fn test__parse_assembly_line__empty() {
+        let res = parse_assembly_line(" |  |   |  ;  ");
+
+        assert!(res.address.is_none());
+
+        assert_eq!(res.bytes.len(), 0);
+
+        assert_eq!(res.label, "");
+
+        assert_eq!(res.assembly_code, "");
+        assert_eq!(res.comment, "");
+    }
+
+    #[test]
+    fn test__parse_monitor_system() {
+        let res = parse_monitor_system();
+
+        let line105 = &res[103];
+
+        assert_eq!(line105.address, Some(0x0041));
+        assert_eq!(line105.bytes, [0xC2, 0xC8, 0x00]);
+        assert_eq!(line105.label, "");
+        assert_eq!(line105.assembly_code, "JNZ PPER");
+        assert_eq!(
+            line105.comment,
+            "- ЕСЛИ НЕТ (ПОПАЛИ НА RST 0 ИЗ-ЗА ОШИБКИ СТЕКА ПОЛЬЗОВАТЕЛЯ)"
+        );
     }
 }

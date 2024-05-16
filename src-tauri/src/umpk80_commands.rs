@@ -115,6 +115,13 @@ pub async fn umpk_get_state(state: State<'_, Umpk80State>) -> Result<UmpkStatePa
 }
 
 #[tauri::command]
+pub async fn umpk_run_from(state: State<'_, Umpk80State>, address: u16) -> Result<(),()> {
+    let umpk80 = state.0.lock().unwrap();
+    umpk80.run_from(address);
+    Ok(())
+}
+
+#[tauri::command]
 pub async fn umpk_press_key(state: State<'_, Umpk80State>, key: u8) -> Result<(),()> {
     let umpk80 = state.0.lock().unwrap();
     umpk80.press_key(key);

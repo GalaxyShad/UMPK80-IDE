@@ -6,11 +6,8 @@
 - [ ] use tauri async commands
 
 ### UI
-- [ ] export to word
 - [ ] instruction table (doc)
 - [ ] fix stack
-- [ ] read ROM program from monitor repo
-- [to test] save path configuration? 
 - [ ] translator setup instruction
 - [ ] editor code preview
 - [ ] refresh screen if  register changed
@@ -27,6 +24,9 @@
 - [ ] disassemble from binary
 
 #### Done
+- [to test] save path configuration? 
+- [x] read ROM program from monitor repo
+- [x] export to word
 - [x] better API translator
 - [x] side bar open windows
 - [x] RAM editing

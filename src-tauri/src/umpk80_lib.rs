@@ -1,5 +1,6 @@
 use std::ffi::CStr;
 use libc::{c_void, size_t};
+use crate::umpk80_lib::Umpk80Register::B;
 
 #[repr(C)]
 pub enum Umpk80Register {
@@ -214,6 +215,12 @@ impl Umpk80 {
         unsafe { UMPK80_CpuStackPointer(self.ptr) }
     }
 
+    pub fn run_from(&self, address: u16) {
+        self.set_cpu_register(Umpk80Register::C, (address & 0xFF) as u8);
+        self.set_cpu_register(Umpk80Register::B, ((address & 0xFF00) >> 8) as u8);
+
+        self.cpu_jump_to(0x03C2);
+    }
     
     pub fn load_program(&self, program: &[u8], program_size: u16, dst_address: u16) {
         unsafe {

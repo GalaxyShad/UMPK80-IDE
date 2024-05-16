@@ -1,19 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fmt::format;
-use std::{
-    env, fmt,
-    fmt::{Debug, Formatter},
-    fs,
-    fs::File,
-    io::BufRead,
-    io::BufReader,
-    io::Error,
-    io::Read,
-    io::Write,
-    path::{Path, PathBuf},
-    process::Command,
-    process::Output,
-};
+use std::{env, fmt, fmt::{Debug, Formatter}, fs, fs::File, io::BufRead, io::BufReader, io::Error, io::Read, io::Write, path::{Path, PathBuf}, process::Command, process::Output, thread, time};
 use tempfile::TempDir;
 
 use crate::translator_lib::SomeIntel8080Translator;
@@ -128,7 +115,7 @@ pub fn translate_assembly_to_binary(
 enum TranslateFileType {
     Csv,
     Docx,
-    Markdown,
+    Md,
     Txt,
 }
 
@@ -156,7 +143,7 @@ pub fn translate_to_file_and_open(
     match file_type {
         TranslateFileType::Csv => translate_output.csv(),
         TranslateFileType::Docx => translate_output.docx(),
-        TranslateFileType::Markdown => translate_output.markdown(),
+        TranslateFileType::Md => translate_output.markdown(),
         TranslateFileType::Txt => &mut translate_output,
     };
 
@@ -170,7 +157,7 @@ pub fn translate_to_file_and_open(
     let out_file_path = temp_src_file_path
         .with_extension(format!("i8080asm.{}", file_type.to_string().to_lowercase()));
 
-    Command::new(match env::consts::OS {
+    let mut cmd = Command::new(match env::consts::OS {
         "macos" => "open",
         "linux" => "xdg-open",
         "windows" => "",
@@ -182,6 +169,14 @@ pub fn translate_to_file_and_open(
         kind: TryTranslateErrorType::BinaryFileOpen,
         inner: err,
     })?;
+
+    cmd.wait().map_err(|err| TryTranslateError {
+        kind: TryTranslateErrorType::BinaryFileOpen,
+        inner: err,
+    })?;
+
+    // Wait some time before file got deleted
+    thread::sleep(time::Duration::from_millis(1500));
 
     Ok(())
 }
@@ -211,7 +206,7 @@ pub fn translate_to_markdown_and_open(
     source_code: &str,
     translator_exe_path: &Path,
 ) -> Result<(), TryTranslateError> {
-    translate_to_file_and_open(source_code, translator_exe_path, TranslateFileType::Markdown)
+    translate_to_file_and_open(source_code, translator_exe_path, TranslateFileType::Md)
 }
 
 pub fn parse_assembly_line(line: &str) -> AssemblyListingLine {
@@ -248,8 +243,8 @@ pub fn parse_assembly_line(line: &str) -> AssemblyListingLine {
     }
 }
 
-pub fn parse_monitor_system() -> Vec<AssemblyListingLine> {
-    let file = File::open("./monitor.i8080asm.txt").unwrap();
+pub fn parse_monitor_system(path: &Path) -> Vec<AssemblyListingLine> {
+    let file = File::open(path).unwrap();
 
     BufReader::new(file)
         .lines()
@@ -319,7 +314,7 @@ mod tests {
 
     #[test]
     fn test__parse_monitor_system() {
-        let res = parse_monitor_system();
+        let res = parse_monitor_system(Path::new("monitor.i8080asm.txt"));
 
         let line105 = &res[103];
 

@@ -68,6 +68,10 @@ export async function umpkSetRegister(registerName: RegisterName, data: number) 
   await invoke('umpk_set_register', { registerName, data })
 }
 
+export async function umpkRunFromAddress(address: number) {
+  await invoke('umpk_run_from', { address })
+}
+
 export async function umpkGetState(): Promise<UMPK80State> {
   return await invoke<UMPK80State>('umpk_get_state')
 }

@@ -20,7 +20,7 @@
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
-      "copyright": "",
+      "copyright": "@GalaxyShad",
       "deb": {
         "depends": []
       },
@@ -41,7 +41,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "./monitor.i8080asm.txt"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {

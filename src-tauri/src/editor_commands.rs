@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{Read, Write};
 
 #[tauri::command]
-pub fn save_source_code_to_file(file_path: &str, source_code: &str) -> Result<(), String> {
+pub fn editor_save_source_code_to_file(file_path: &str, source_code: &str) -> Result<(), String> {
     let mut f = File::create(file_path).map_err(|err| err.to_string())?;
     f.write_all(source_code.as_bytes())
         .map_err(|err| err.to_string())?;
@@ -11,7 +11,7 @@ pub fn save_source_code_to_file(file_path: &str, source_code: &str) -> Result<()
 }
 
 #[tauri::command]
-pub fn load_source_code_from_file(file_path: &str) -> Result<String, String> {
+pub fn editor_load_source_code_from_file(file_path: &str) -> Result<String, String> {
     let mut f = File::open(file_path).map_err(|err| err.to_string())?;
 
     let mut contents = String::new();

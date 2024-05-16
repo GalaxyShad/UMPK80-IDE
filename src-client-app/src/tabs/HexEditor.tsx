@@ -71,7 +71,7 @@ function HexEditorCell({ value, onChange, onPaste, readonly = false }: HexEditor
     if (data === '')
       return
 
-    const arr = data.split('\n').map(x => Number.parseInt(x, 16))
+    const arr = data.split('\n').map(x => Number.parseInt(x.replace('h', ''), 16))
 
     e.preventDefault()
 

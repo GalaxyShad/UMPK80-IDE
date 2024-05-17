@@ -39,6 +39,9 @@ export interface UMPK80DisassembledLine {
   bytes: number[],
 }
 
+export async function umpkGetStack(): Promise<Uint8Array> {
+  return await invoke<Uint8Array>('umpk_get_stack')
+}
 
 export async function umpkPressKey(key: KeyboardKey) {
   await invoke('umpk_press_key', { key })

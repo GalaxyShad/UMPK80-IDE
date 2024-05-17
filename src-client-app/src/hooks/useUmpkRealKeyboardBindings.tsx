@@ -44,6 +44,8 @@ export function useUmpkRealKeyboardBindings(): [
 
     const key = keyMap[e.code]
 
+    e.preventDefault()
+
     if (key !== undefined) {
       setPressedKeys((x) => [...x, key])
 
@@ -55,6 +57,8 @@ export function useUmpkRealKeyboardBindings(): [
     if (e.target !== refUmpk.current) return
 
     const key = keyMap[e.code]
+    
+    e.preventDefault()
 
     if (key !== undefined) {
       setPressedKeys((prevPressedKeys) => prevPressedKeys.filter((pk) => pk !== key))

@@ -1,16 +1,27 @@
 import { useUMPK80Store } from '@/store/umpkStore.ts'
 import { AutoSizer, Column, Table } from 'react-virtualized'
+import { useEffect, useState } from 'react'
+import { umpkGetRAM } from '@/services/umpkService.ts'
+import { cn } from '@/lib/utils.ts'
 
 export default function UmpkStackTab() {
-  //TODO
-  const stack = [] as number[]//useUMPK80Store((state) => state.stack)
-  const stackStart = 0//useUMPK80Store((state) => state.stackStart)
-  const stackPointer = useUMPK80Store((state) => state.registers.sp)
+  const [stack, setStack] = useState<Uint8Array>(new Uint8Array())
 
-  const hexToString = (x: number, pad = 2) => x.toString(16).padStart(pad, '0').toUpperCase()
+  const stackStart = 0x0BB0
+  const getStack = useUMPK80Store(s => s.getStack)
+  const stackPointer = useUMPK80Store(s => s.registers.sp)
+
+  useEffect(() => {
+    const int = setInterval(async () => {
+      const stack = await getStack()
+      setStack(stack)
+    }, 10)
+
+    return () => clearInterval(int)
+  }, [getStack])
 
   return (
-    <div className="h-full w-full overflow-auto mx-2 font-mono">
+    <div className="h-full w-full overflow-auto mx-2 font-mono text-sm">
       <AutoSizer>
         {({ height, width }) => (
           <Table
@@ -18,17 +29,27 @@ export default function UmpkStackTab() {
             height={height}
             headerHeight={20}
             rowHeight={20}
-            rowCount={stack.length}
-            rowClassName={({ index }) =>
-              stackStart - index === stackPointer ? 'text-primary' : 'text-neutral-600'
-            }
+            rowCount={stack.length / 2}
             rowGetter={({ index }) => ({
-              adr: hexToString(stackStart - index, 4) + ':',
-              data: hexToString(stack[index]),
+              adr: (stackStart - index * 2).toHexString(2) + ':',
+              low: stack[index * 2],
+              high: stack[index * 2 + 1],
+              isCurrentSp: (index === Math.floor((stackStart - stackPointer) / 2)),
             })}
           >
-            <Column label="ADR" dataKey="adr" width={50} />
-            <Column width={50} label="DATA" dataKey="data" />
+            <Column width={45} label="ADR" dataKey="adr" />
+            <Column width={18} label="L" dataKey="low" cellRenderer={x => <p
+              className={cn(
+                (x.cellData === 0) && 'text-foreground/20',
+                x.rowData.isCurrentSp && 'text-primary/65',
+                x.rowData.isCurrentSp && ((stackPointer % 2) === 0) && 'text-primary',
+              )}>{x.cellData.toHexString()}</p>} />
+            <Column width={18} label="H" dataKey="high" cellRenderer={x => <p
+              className={cn(
+                (x.cellData === 0) && 'text-foreground/20',
+                x.rowData.isCurrentSp && 'text-primary/65',
+                x.rowData.isCurrentSp && ((stackPointer % 2) === 1) && 'text-primary',
+              )}>{x.cellData.toHexString()}</p>} />
           </Table>
         )}
       </AutoSizer>

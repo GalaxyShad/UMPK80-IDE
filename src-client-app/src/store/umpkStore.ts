@@ -3,7 +3,7 @@ import {
   KeyboardKey,
   RegisterName,
   UMPK80State,
-  UMPK80StateRegistersPayload,
+  UMPK80StateRegistersPayload, umpkGetStack,
   umpkGetState,
   umpkPressKey,
   umpkReleaseKey, umpkRunFromAddress,
@@ -19,6 +19,7 @@ interface UMPK80Actions {
   setSpeakerVolume: (volume: number) => Promise<void>,
   setRegister: (registerName: RegisterName, data: number) => Promise<void>,
   runFromAddress: (address: number) => Promise<void>,
+  getStack: () => Promise<Uint8Array>
 }
 
 type UMPK80StoreState = UMPK80State & UMPK80Actions;
@@ -63,5 +64,7 @@ export const useUMPK80Store = create<UMPK80StoreState>()((setState) => {
     setSpeakerVolume: async (volume: number) => {
       await umpkSetSpeakerVolume(volume)
     },
+
+    getStack: async (): Promise<Uint8Array> => await umpkGetStack(),
   } as UMPK80StoreState
 })

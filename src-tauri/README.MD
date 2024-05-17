@@ -1,16 +1,9 @@
 # TODO
 
-## IDE
-
-### Tauri
-- [ ] use tauri async commands
-
-### UI
+### Key Features
 - [ ] instruction table (doc)
-- [ ] fix stack
 - [ ] translator setup instruction
 - [ ] editor code preview
-- [ ] refresh screen if  register changed
 - [ ] set address on click in program tab
 - [ ] save editor settings
 - [ ] create new File
@@ -22,8 +15,11 @@
 - [ ] toolbar hotkeys
 - [ ] read programs from binary
 - [ ] disassemble from binary
+- [ ] refresh screen if register changed
 
 #### Done
+- [x] use tauri async commands
+- [x] fix stack
 - [to test] save path configuration? 
 - [x] read ROM program from monitor repo
 - [x] export to word

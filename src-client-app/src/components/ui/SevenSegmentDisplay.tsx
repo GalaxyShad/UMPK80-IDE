@@ -30,7 +30,7 @@ export default function SevenSegmentDisplay({ value, className }: DisplaySegment
           <polygon
             key={i}
             points={s}
-            className={cn(displayStates[i] ? 'fill-primary' : 'fill-transparent')}
+            className={cn(displayStates[i] ? 'fill-primary' : 'fill-primary/10')}
           />)}
       </svg>
     </figure>

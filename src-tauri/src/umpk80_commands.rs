@@ -1,10 +1,10 @@
-use std::{array, thread};
-use std::sync::{Arc, Mutex};
-use serde::{Deserialize, Serialize};
-use tauri::{command, State};
-use crate::{umpk80_lib};
 use crate::tone::play_tone;
+use crate::umpk80_lib;
 use crate::umpk80_lib::{Intel8080Disassembler, Umpk80, Umpk80Register, Umpk80RegisterPair};
+use serde::{Deserialize, Serialize};
+use std::sync::{Arc, Mutex};
+use std::{array, thread};
+use tauri::{command, State};
 
 static OS_FILE: &[u8] = include_bytes!("../../core/data/scaned-os-fixed.bin");
 
@@ -41,7 +41,7 @@ pub struct DisassembledLinePayload {
     pub mnemonic: String,
     pub arguments: Vec<u8>,
     pub bytes: Vec<u8>,
-    pub comment: String
+    pub comment: String,
 }
 
 pub struct Umpk80State(pub Arc<Mutex<Umpk80>>);
@@ -59,7 +59,8 @@ impl Umpk80State {
             umpk.tick();
 
             if umpk.get_cpu_program_counter() == 0x0447 {
-                let frequency = (0xFF - umpk.get_cpu_register(umpk80_lib::Umpk80Register::B)) as f32;
+                let frequency =
+                    (0xFF - umpk.get_cpu_register(umpk80_lib::Umpk80Register::B)) as f32;
                 let duration = umpk.get_cpu_register(umpk80_lib::Umpk80Register::D) as u64;
                 let volume = umpk.get_speaker_volume();
 
@@ -69,7 +70,7 @@ impl Umpk80State {
             let FETA3 = 0x0364;
             if umpk.get_cpu_program_counter() == FETA3 {
                 let b = umpk.get_cpu_register(Umpk80Register::B);
-                let c=umpk.get_cpu_register(Umpk80Register::C);
+                let c = umpk.get_cpu_register(Umpk80Register::C);
                 let bc = ((b as u16) << 8) | c as u16;
 
                 umpk.set_display_address(bc)
@@ -115,35 +116,44 @@ pub async fn umpk_get_state(state: State<'_, Umpk80State>) -> Result<UmpkStatePa
 }
 
 #[tauri::command]
-pub async fn umpk_run_from(state: State<'_, Umpk80State>, address: u16) -> Result<(),()> {
+pub async fn umpk_get_stack(state: State<'_, Umpk80State>) -> Result<Vec<u8>, ()> {
+    let umpk = state.0.lock().unwrap();
+
+    let stack = array::from_fn::<u8, 0x0100, _>(|i| umpk.memory_read(0x0BB0 - i as u16)).to_vec();
+
+    Ok(stack)
+}
+
+#[tauri::command]
+pub async fn umpk_run_from(state: State<'_, Umpk80State>, address: u16) -> Result<(), ()> {
     let umpk80 = state.0.lock().unwrap();
     umpk80.run_from(address);
     Ok(())
 }
 
 #[tauri::command]
-pub async fn umpk_press_key(state: State<'_, Umpk80State>, key: u8) -> Result<(),()> {
+pub async fn umpk_press_key(state: State<'_, Umpk80State>, key: u8) -> Result<(), ()> {
     let umpk80 = state.0.lock().unwrap();
     umpk80.press_key(key);
     Ok(())
 }
 
 #[tauri::command]
-pub async fn umpk_release_key(state: State<'_, Umpk80State>, key: u8) -> Result<(),()> {
+pub async fn umpk_release_key(state: State<'_, Umpk80State>, key: u8) -> Result<(), ()> {
     let umpk80 = state.0.lock().unwrap();
     umpk80.release_key(key);
     Ok(())
 }
 
 #[tauri::command]
-pub async fn umpk_set_io_input(state: State<'_, Umpk80State>, io: u8) -> Result<(),()> {
+pub async fn umpk_set_io_input(state: State<'_, Umpk80State>, io: u8) -> Result<(), ()> {
     let umpk80 = state.0.lock().unwrap();
     umpk80.set_port_io_input(io);
     Ok(())
 }
 
 #[tauri::command]
-pub async fn umpk_set_speaker_volume(state: State<'_, Umpk80State>, volume: f32) -> Result<(),()> {
+pub async fn umpk_set_speaker_volume(state: State<'_, Umpk80State>, volume: f32) -> Result<(), ()> {
     state.0.lock().unwrap().set_speaker_volume(volume);
     Ok(())
 }
@@ -163,13 +173,21 @@ pub async fn umpk_get_ram(state: State<'_, Umpk80State>) -> Result<Vec<u8>, ()> 
 }
 
 #[tauri::command]
-pub async fn umpk_write_to_memory(state: State<'_, Umpk80State>, address: u16, data: u8 ) -> Result<(),()> {
+pub async fn umpk_write_to_memory(
+    state: State<'_, Umpk80State>,
+    address: u16,
+    data: u8,
+) -> Result<(), ()> {
     state.0.lock().unwrap().memory_write(address, data);
     Ok(())
 }
 
 #[tauri::command]
-pub async fn umpk_set_register(state: State<'_, Umpk80State>, register_name: &str, data: u16) -> Result<(), String> {
+pub async fn umpk_set_register(
+    state: State<'_, Umpk80State>,
+    register_name: &str,
+    data: u16,
+) -> Result<(), String> {
     let umpk = state.0.lock().unwrap();
 
     match register_name {
@@ -211,7 +229,7 @@ pub async fn umpk_get_disassembled_rom() -> Vec<DisassembledLinePayload> {
                     _ => Vec::new(),
                 },
                 bytes: x.bytes,
-                comment: "".to_string()
+                comment: "".to_string(),
             });
 
             acc

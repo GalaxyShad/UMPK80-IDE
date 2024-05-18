@@ -9,6 +9,7 @@ import UmpkRamTab from '@/tabs/UmpkRamTab.tsx'
 import UmpkProgramTab from '@/tabs/UmpkProgramTab.tsx'
 import Intel8080AssemblyGuideTab from '@/tabs/Intel8080AssemblyGuideTab.tsx'
 import CodeEditorTab from '@/tabs/CodeEditorTab.tsx'
+import { Intel8080CommandsTab } from '@/tabs/Intel8080CommandsTab.tsx'
 
 const tabsMap = {
   [CodeEditorTab.name]: ['Code Editor', () => <CodeEditorTab />],
@@ -19,6 +20,7 @@ const tabsMap = {
   [UmpkRomTab.name]: ['UMPK-80 ROM', () => <UmpkRomTab />],
   [UmpkProgramTab.name]: ['UMPK-80 Program', () => <UmpkProgramTab />],
   [Intel8080AssemblyGuideTab.name]: ['Intel 8080 Assembly Guide', () => <Intel8080AssemblyGuideTab />],
+  [Intel8080CommandsTab.name]: ['Intel 8080 Commands', () => <Intel8080CommandsTab />],
 } as Record<string, [string, () => ReactNode]>
 
 const defaultLayout = {

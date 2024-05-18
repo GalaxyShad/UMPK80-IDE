@@ -5,7 +5,8 @@ import { useEditorStore } from '@/store/editor-store'
 import {
   loadSourceCodeFromFile,
   saveSourceCodeToFile,
-  translateAndBuild, translateTo,
+  translateAndBuild,
+  translateTo,
   TranslateToType,
 } from '@/services/translatorService.ts'
 import { Switch } from '@/components/ui/Switch.tsx'
@@ -33,9 +34,6 @@ function useToolbarActions() {
 
   const sourceCodeExportTo = async (type: TranslateToType) => {
     const result = await translateTo(type, editorSourceCode, translatorPath)
-
-
-    console.log({result})
 
     if (!result.isSuccess) {
       terminal?.writeln('\x1b[31m' + result.error + '\n')

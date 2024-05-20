@@ -38,5 +38,5 @@ export default function TerminalTab() {
     }
   }, [setTerminal])
 
-  return <div className="w-full h-full" ref={refDivTerminal} />
+  return <div className="w-full h-full bg-black" ref={refDivTerminal} />
 }

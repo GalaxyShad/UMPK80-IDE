@@ -32,7 +32,7 @@ pub async fn translator_version(exe_path: String) -> Result<String, String> {
         .execute()
         .map_err(|err| err.to_string())?;
 
-    Ok(String::from_utf8(res.stdout).unwrap())
+    Ok(String::from_utf8(res.stderr).unwrap()) // Change
 }
 
 #[tauri::command]

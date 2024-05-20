@@ -5,8 +5,7 @@ interface EditorState {
   setSourceCode: (code: string) => void,
 }
 
-export const useEditorStore = create<EditorState>()((set) => ({
-  sourceCode: `
+export const defaultCode = `
 ORG 0800h
 
 _H EQU 76h
@@ -31,6 +30,9 @@ INIT:
 LOOP:
     CALL 01C8h
     JMP LOOP
-`,
+`
+
+export const useEditorStore = create<EditorState>()((set) => ({
+  sourceCode: defaultCode,
   setSourceCode: (code: string) => set((state) => ({ ...state, sourceCode: code })),
 }))

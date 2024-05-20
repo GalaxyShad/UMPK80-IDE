@@ -29,7 +29,7 @@ export default function UmpkTab() {
 
   return (
     <div
-      className="h-full w-full"
+      className="h-full w-full max-w-[600px] mx-auto focus:outline-none"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
@@ -44,7 +44,7 @@ export default function UmpkTab() {
 
         <UmpkRegistersControl />
         <div className="grid grid-rows-3 gap-2 h-full w-full">
-          <div className="flex h-full border rounded text-secondary justify-center items-center text-center min-h-16">
+          <div className="flex h-full border rounded text-foreground/20 justify-center items-center text-center min-h-16">
             UMPK80-IDE<br /> by @GalaxyShad 2024
           </div>
           <UmpkIOPortOutput />

@@ -1,7 +1,6 @@
 import { useUMPK80Store } from '@/store/umpkStore.ts'
 import { AutoSizer, Column, Table } from 'react-virtualized'
 import { useEffect, useState } from 'react'
-import { umpkGetRAM } from '@/services/umpkService.ts'
 import { cn } from '@/lib/utils.ts'
 
 export default function UmpkStackTab() {
@@ -21,7 +20,7 @@ export default function UmpkStackTab() {
   }, [getStack])
 
   return (
-    <div className="h-full w-full overflow-auto mx-2 font-mono text-sm">
+    <div className="h-full w-full overflow-hidden font-mono text-sm">
       <AutoSizer>
         {({ height, width }) => (
           <Table

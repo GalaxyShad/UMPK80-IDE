@@ -1,15 +1,12 @@
 # TODO
 
-### Key Features
-- [ ] instruction table (doc)
-- [ ] translator setup instruction
-- [ ] editor code preview
-- [ ] set address on click in program tab
-- [ ] save editor settings
-- [ ] create new File
-- [ ] add to program disassemble
+### DEMO 24.05
 
-#### Maybe
+#### TODO
+- [ ] set address on click in program tab
+- [ ] editor code preview
+- [ ] save editor settings
+- [ ] translator setup instruction
 - [ ] decompile from RAM
 - [ ] tooltips for data
 - [ ] toolbar hotkeys
@@ -18,9 +15,12 @@
 - [ ] refresh screen if register changed
 
 #### Done
+- [to review] instruction table (doc)
+- [to test] save path configuration?
+- [x] create new File
+- [x] add to program disassemble
 - [x] use tauri async commands
 - [x] fix stack
-- [to test] save path configuration? 
 - [x] read ROM program from monitor repo
 - [x] export to word
 - [x] better API translator

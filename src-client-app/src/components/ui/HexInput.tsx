@@ -37,8 +37,6 @@ const HexInput = React.forwardRef<HTMLInputElement, InputProps>(
       const regHex = new RegExp(`^[0-9A-F]{1,${hexPad}}$`)
 
       if (regHex.test(input) || input === '') {
-        console.log({input})
-
         const hex = Number.parseInt(input, 16)
 
         setStrValue(input)

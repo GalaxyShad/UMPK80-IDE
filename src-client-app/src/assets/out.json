@@ -172,7 +172,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "09",
@@ -210,7 +210,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "A ← (BC)",
-    "rusDescription": "Загрузить A из ячейки  с адресом Loc(BC)"
+    "rusDescription": "Загрузить A из ячейки с адресом Loc(BC)"
   },
   {
     "hexOpcode": "0B",
@@ -331,7 +331,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "11",
@@ -488,7 +488,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "19",
@@ -682,7 +682,7 @@
     ],
     "bytesCount": 0,
     "flagsAffected": [],
-    "functionDescription": "(adr)  ← L, (adr + 1) ← H",
+    "functionDescription": "(adr) ← L, (adr + 1) ← H",
     "rusDescription": "Записать HL по адресу a16"
   },
   {
@@ -802,7 +802,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "29",
@@ -1116,7 +1116,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "39",
@@ -1472,7 +1472,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "C ← E",
-    "rusDescription": "Переслать из E  в C"
+    "rusDescription": "Переслать из E в C"
   },
   {
     "hexOpcode": "4C",
@@ -1490,7 +1490,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "C ← H",
-    "rusDescription": "Переслать из H  в C"
+    "rusDescription": "Переслать из H в C"
   },
   {
     "hexOpcode": "4D",
@@ -1508,7 +1508,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "C ← L",
-    "rusDescription": "Переслать из L  в C"
+    "rusDescription": "Переслать из L в C"
   },
   {
     "hexOpcode": "4E",
@@ -1526,7 +1526,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "C ← (HL)",
-    "rusDescription": "Переслать из Loc(HL)  в C"
+    "rusDescription": "Переслать из Loc(HL) в C"
   },
   {
     "hexOpcode": "4F",
@@ -1706,7 +1706,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "E ← B",
-    "rusDescription": "Переслать из B  в E"
+    "rusDescription": "Переслать из B в E"
   },
   {
     "hexOpcode": "59",
@@ -1724,7 +1724,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "E ← C",
-    "rusDescription": "Переслать из C  в E"
+    "rusDescription": "Переслать из C в E"
   },
   {
     "hexOpcode": "5A",
@@ -4178,7 +4178,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "CC",
@@ -4455,7 +4455,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "DA",
@@ -4532,7 +4532,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "DE",
@@ -4845,7 +4845,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "EE",
@@ -5160,7 +5160,7 @@
     "bytesCount": 0,
     "flagsAffected": [],
     "functionDescription": "undocumented",
-    "rusDescription": "Не задокументированно"
+    "rusDescription": "Не задокументировано"
   },
   {
     "hexOpcode": "FE",

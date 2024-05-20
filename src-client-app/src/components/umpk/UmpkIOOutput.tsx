@@ -6,7 +6,7 @@ function Segment({ value }: { value: boolean }) {
     <div
       className={cn(
         'w-5 h-9 rounded-sm border',
-        value ? 'bg-primary' : 'bg-primary-foreground',
+        value ? 'bg-primary' : 'bg-primary/15',
       )}
     />
   )

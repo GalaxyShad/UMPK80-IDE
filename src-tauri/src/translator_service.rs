@@ -69,6 +69,7 @@ pub fn translate_assembly_to_binary(
     let translate_output = SomeIntel8080Translator::new(translator_exe_path)
         .source_code_path(&temp_src_file_path)
         .binary()
+        .same_line_bytes()
         .execute()
         .map_err(|err| TryTranslateError {
             kind: TryTranslateErrorType::ExecutableRun,

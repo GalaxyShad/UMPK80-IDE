@@ -1,6 +1,4 @@
 import { create } from 'zustand'
-import { invoke } from '@tauri-apps/api/tauri'
-import { Err, Ok, Result } from '@/lib/result.ts'
 import { Terminal } from '@xterm/xterm'
 
 interface TranslatorState {
@@ -9,7 +7,7 @@ interface TranslatorState {
   fromAddress: number,
 
   setFromAddress: (address: number) => void,
-  setTranslateCommand: (command: string) => Promise<Result<string>>,
+  setTranslateCommand: (command: string) => void,
   setTerminal: (terminal: Terminal) => void
 }
 
@@ -22,14 +20,8 @@ export const useTranslatorStore = create<TranslatorState>()((set) => ({
 
   setFromAddress: (fromAddress: number) => set({ fromAddress }),
 
-  setTranslateCommand: async (command: string): Promise<Result<string>> => {
-    try {
+  setTranslateCommand: async (command: string) => {
       set({ translateCommand: command })
       localStorage.setItem('translateCommand', command)
-
-      return Ok('Ok')
-    } catch (e) {
-      return Err(e as string)
-    }
   },
 }))

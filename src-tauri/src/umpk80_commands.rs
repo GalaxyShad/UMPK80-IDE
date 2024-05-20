@@ -125,6 +125,19 @@ pub async fn umpk_get_stack(state: State<'_, Umpk80State>) -> Result<Vec<u8>, ()
 }
 
 #[tauri::command]
+pub async fn umpk_set_volume(state: State<'_, Umpk80State>, volume: f32) -> Result<(), ()> {
+    let mut umpk80 = state.0.lock().unwrap();
+    umpk80.set_speaker_volume(volume);
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn umpk_get_volume(state: State<'_, Umpk80State>) -> Result<f32, ()> {
+    let umpk80 = state.0.lock().unwrap();
+    Ok(umpk80.get_speaker_volume())
+}
+
+#[tauri::command]
 pub async fn umpk_run_from(state: State<'_, Umpk80State>, address: u16) -> Result<(), ()> {
     let umpk80 = state.0.lock().unwrap();
     umpk80.run_from(address);

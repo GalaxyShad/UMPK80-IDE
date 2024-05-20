@@ -10,8 +10,8 @@ async function tryOrErrorAsString<T>(cb: () => Promise<T>): Promise<Result<T>> {
 }
 
 export interface AssemblyListingLine {
-  address?: number,
-  bytes: Uint8Array,
+  address: number | null,
+  bytes: number[],
   label: string,
   assemblyCode: string,
   comment: string,
@@ -42,7 +42,7 @@ export const translatorGetMonitorSystem = async (): Promise<Result<AssemblyListi
       bytes: x.bytes,
       label: x.label,
       comment: x.comment,
-      assemblyCode: x.assemblyCode
+      assemblyCode: (x as any).assembly_code
     })))
   } catch (e) {
     return Err(e as string)
@@ -84,7 +84,7 @@ export const translateAndBuild = async (sourceCode: string, exePath: string, ram
 
       listing: {
         address?: number,
-        bytes: Uint8Array,
+        bytes: number[],
         label: string,
         assembly_code: string,
         comment: string,
@@ -120,8 +120,8 @@ export const translateAndBuild = async (sourceCode: string, exePath: string, ram
 
 export const loadSourceCodeFromFile = async (filePath: string): Promise<Result<string>> =>
   tryOrErrorAsString(async () =>
-    await invoke<string>('load_source_code_from_file', { filePath }))
+    await invoke<string>('editor_load_source_code_from_file', { filePath }))
 
 export const saveSourceCodeToFile = async (filePath: string, sourceCode: string): Promise<Result> =>
   tryOrErrorAsString(async () =>
-    await invoke('save_source_code_to_file', { filePath, sourceCode }))
+    await invoke('editor_save_source_code_to_file', { filePath, sourceCode }))

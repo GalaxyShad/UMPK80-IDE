@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '@/components/ui/Button'
-import { File, FolderOpen, Hammer, Lightbulb, Play, RedoDot, Save, Square } from 'lucide-react'
+import { File, FolderOpen, Hammer, Lightbulb, Loader2, Play, RedoDot, Save, Square } from 'lucide-react'
 import { open, save } from '@tauri-apps/api/dialog'
 import { useEditorStore } from '@/store/editor-store'
 import {
@@ -10,7 +10,7 @@ import {
   TranslateToType,
 } from '@/services/translatorService.ts'
 import { Switch } from '@/components/ui/Switch.tsx'
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 import { cn } from '@/lib/utils.ts'
 import { useTheme } from '@/components/ThemeProvider.tsx'
 import { useTranslatorStore } from '@/store/translator-store.ts'
@@ -31,6 +31,9 @@ function useToolbarActions() {
   const umpkPressKey = useUMPK80Store(s => s.pressKey)
   const umpkReleaseKey = useUMPK80Store(s => s.releaseKey)
 
+  const umpkUpdateRAMListing = useUMPK80Store(s => s.updateRamListing)
+
+  const [isBuilding, setIsBuilding] = useState<boolean>(false)
 
   const sourceCodeExportTo = async (type: TranslateToType) => {
     const result = await translateTo(type, editorSourceCode, translatorPath)
@@ -44,16 +47,28 @@ function useToolbarActions() {
     setFromAddress(x)
   }
 
+  const newFileClick = async () => {
+    setEditorSourceCode('ORG 0800h')
+  }
+
   const buildClick = async () => {
-    const result = await translateAndBuild(editorSourceCode, translatorPath, fromAddress - 0x0800)
+    setIsBuilding(true)
+
+    const ramShift = fromAddress - 0x0800
+
+    const result = await translateAndBuild(editorSourceCode, translatorPath, ramShift)
 
     if (result.isSuccess) {
       terminal?.writeln(result.value.binaryExists
         ? `\x1b[32m${result.value.stdout}\n`
         : `\x1b[31m${result.value.stderr}\n`)
+
+      umpkUpdateRAMListing(result.value.listing)
     } else {
       terminal?.writeln('\x1b[31m' + result.error + '\n')
     }
+
+    setIsBuilding(false)
   }
 
   const playClick = async () => {
@@ -122,7 +137,9 @@ function useToolbarActions() {
     saveClick,
     onFromAddressChange: onFromAddressChange,
     fromAddress,
-    sourceCodeExportTo
+    sourceCodeExportTo,
+    isBuilding,
+    newFileClick
   }
 }
 
@@ -150,16 +167,18 @@ export default function Toolbar() {
     playClick,
     onFromAddressChange,
     fromAddress,
-    sourceCodeExportTo
+    sourceCodeExportTo,
+    isBuilding,
+    newFileClick
   } = useToolbarActions()
 
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
 
   return (
     <div className="flex flex-row py-1 px-2 gap-4 justify-between">
       <span className="flex flex-row gap-1">
-        <ToolbarButton>
-          <File size={16} className="text-white" />
+        <ToolbarButton onClick={newFileClick}>
+          <File size={16} className="text-foreground" />
         </ToolbarButton>
         <ToolbarButton>
           <FolderOpen onClick={openClick} size={16} className="text-yellow-400" />
@@ -173,7 +192,8 @@ export default function Toolbar() {
         <HexInput className="max-h-6 w-16" minValue={0x0800} bytesLen={2} onBlur={onFromAddressChange}
                   value={fromAddress} />
         <ToolbarButton>
-          <Hammer onClick={buildClick} size={16} className="text-gray-300" />
+          {!isBuilding && <Hammer onClick={buildClick} size={16} className="text-gray-300" />}
+          {isBuilding && <Loader2 size={16} className='animate-spin'/>}
         </ToolbarButton>
         <ToolbarButton onClick={playClick}>
           <Play size={16} className="text-green-400" />
@@ -188,7 +208,7 @@ export default function Toolbar() {
 
       <span className="flex flex-row gap-1">
         <ToolbarButton onClick={() => sourceCodeExportTo('docx')} className="w-fit border px-2">
-          <p className="text-[10px] text-blue-800">DOCX</p>
+          <p className="text-[10px] text-blue-600">DOCX</p>
         </ToolbarButton>
         <ToolbarButton onClick={() => sourceCodeExportTo('csv')} className="w-fit border px-2">
           <p className="text-[10px] text-green-600 my-auto">CSV</p>
@@ -202,8 +222,8 @@ export default function Toolbar() {
       </span>
 
       <span className="flex flex-row gap-1 items-center">
-        <Lightbulb className="text-white/25" size={16} />
-        <Switch onCheckedChange={(checked) => setTheme((checked) ? 'light' : 'dark')} />
+        <Lightbulb className="text-foreground/25" size={16} />
+        <Switch checked={theme === 'light'} onCheckedChange={(checked) => setTheme((checked) ? 'light' : 'dark')} />
       </span>
     </div>
   )

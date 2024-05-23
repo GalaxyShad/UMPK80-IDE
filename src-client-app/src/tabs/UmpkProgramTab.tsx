@@ -2,60 +2,106 @@ import { useEffect, useState } from 'react'
 import { AutoSizer, Column, Index, Table } from 'react-virtualized'
 import { cn } from '@/lib/utils.ts'
 import { useUMPK80Store } from '@/store/umpkStore.ts'
-import { UMPK80DisassembledLine, umpkGetDisassembledROM } from '@/services/umpkService.ts'
+import { AssemblyListingLine, translatorGetMonitorSystem } from '@/services/translatorService.ts'
 
 function UmpkProgramTab() {
-  const [rom, setRom] = useState<UMPK80DisassembledLine[]>([])
+  const [romListing, setRomListing] = useState<AssemblyListingLine[]>([])
+  const ramListing = useUMPK80Store(s => s.ramListing)
 
   const pc = useUMPK80Store(s => s.display_address)
 
-  const romFlattenMap = rom.flatMap(x => x.bytes.map(() => x))
+  const completeListing = [...romListing, ...ramListing]
+
+  const fetchRomListing = async () => {
+    const res = await translatorGetMonitorSystem()
+
+    if (!res.isSuccess) return
+
+    setRomListing([
+      ...res.value,
+      ...(new Array(30)).fill({}).map((_, i) => ({
+        address: 0x07E2 + i,
+        bytes: [0x00],
+        label: '',
+        assemblyCode: 'NOP',
+        comment: '',
+      } as AssemblyListingLine)),
+    ])
+  }
 
   useEffect(() => {
-    (async () => {
-      const res = await umpkGetDisassembledROM()
-      setRom(res)
-    })()
+    fetchRomListing().then()
   }, [])
 
-  const rowGetter = ({ index }: Index) => ({
-    address: rom[index].address.toHexString(2) + ':',
-    instruction:
-      rom[index].mnemonic +
-      ' ' +
-      rom[index].arguments.map((x) => x.toHexString()).join('') +
-      (rom[index].arguments.length !== 0 ? 'h' : ''),
-    bytes: `${rom[index].bytes[0].toHexString()} ${rom[index].bytes
-      .slice(1, 3)
-      .map((x) => x.toHexString())
-      .join('')}`,
-    isNop: rom[index].mnemonic === 'NOP',
-  })
+  const rowGetter = ({ index }: Index) => {
+    const line = completeListing[index]
+
+    if (line === undefined)
+      return {
+        address: null,
+        bytes: [0],
+        assemblyCode: 'NOP',
+        comment: '',
+        label: '',
+        isNop: true,
+      } as AssemblyListingLine
+
+    const address = (line.address !== null)
+      ? line.address.toHexString(2) + ':'
+      : ''
+
+    const bytes = line.bytes.length !== 0
+      ? Array.from(line.bytes).map((x, i) => (i === 1 ? ' ' : '') + x.toHexString()).join('')
+      : ''
+
+    const label = line.label
+    const instruction = line.assemblyCode
+    const comment = '; ' + line.comment
+
+    return {
+      address, bytes, label, instruction, comment,
+      isNop: bytes === '00',
+    }
+  }
 
   return (
     <div className="flex w-full h-full font-mono text-sm text-foreground/90">
       <AutoSizer>
         {({ height, width }) => (
           <Table
-            scrollToIndex={rom.indexOf(romFlattenMap[pc])}
+            scrollToIndex={completeListing.findIndex(x => x.address !== null && x.address === pc)}
+            scrollToAlignment="center"
             width={width}
             height={height}
             headerHeight={20}
             rowHeight={20}
-            rowCount={rom.length}
+            rowCount={completeListing.length}
             rowClassName={({ index }) => cn(
               'hover:bg-primary/20',
-              rom[index]?.bytes[0] === 0 && 'text-foreground/30',
-              (rom[index] == romFlattenMap[pc]) && 'text-primary',
+              completeListing[index]?.bytes[0] === 0 && 'text-foreground/30',
+              completeListing?.[index] && completeListing[index].address !== null && completeListing[index].address === pc && 'text-primary',
             )}
             rowGetter={rowGetter}
           >
-            <Column label="ADR" dataKey="address" width={50} />
-            <Column label="MC" dataKey="bytes" width={75} />
+            <Column label="ADR" dataKey="address" width={80} minWidth={50} />
+            <Column label="MC" dataKey="bytes" width={150} minWidth={70} />
+            <Column
+              label="LABEL"
+              dataKey="label"
+              width={100}
+              minWidth={50}
+            />
             <Column
               label="ASM"
               dataKey="instruction"
-              width={100}
+              width={200}
+              minWidth={120}
+            />
+            <Column
+              label="ASM"
+              dataKey="comment"
+              width={500}
+              className="text-green-500/40"
             />
           </Table>
         )}

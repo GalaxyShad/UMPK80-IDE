@@ -86,3 +86,11 @@ export async function umpkGetDisassembledROM(): Promise<UMPK80DisassembledLine[]
 export async function umpkWriteToMemory(address: number, data: number) {
   await invoke('umpk_write_to_memory', { address, data })
 }
+
+export async function umpkGetVolume(): Promise<number> {
+  return await invoke('umpk_get_volume')
+}
+
+export async function umpkSetVolume(volume: number) {
+  await invoke('umpk_get_volume', { volume })
+}

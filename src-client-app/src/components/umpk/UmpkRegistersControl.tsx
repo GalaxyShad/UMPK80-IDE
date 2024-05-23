@@ -35,7 +35,7 @@ export default function UmpkRegistersControl() {
           <HexInput
             id={registerName}
             value={registers[registerName]}
-            onBlur={data => setRegister(registerName, data)}
+            onBlur={data => registerName !== 'm' && setRegister(registerName, data)}
             readOnly={registerName === 'm'}
             bytesLen={1 + +isTwoByte(registerName)}
             className={cn(

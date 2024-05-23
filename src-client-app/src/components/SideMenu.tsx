@@ -10,6 +10,7 @@ import UmpkRomTab from '@/tabs/UmpkRomTab.tsx'
 import UmpkRamTab from '@/tabs/UmpkRamTab.tsx'
 import TerminalTab from '@/tabs/TerminalTab.tsx'
 import { Intel8080CommandsTab } from '@/tabs/Intel8080CommandsTab.tsx'
+import CodeEditorTab from '@/tabs/CodeEditorTab.tsx'
 
 function addOrSelectTab(name: string, componentName: string) {
   dockLayoutModel?.doAction(Actions.selectTab(componentName))
@@ -32,6 +33,10 @@ export default function SideMenu() {
   return (
     <div className="flex flex-col w-12 h-full bg-card justify-between items-center py-2 border-r">
       <div className="flex flex-col gap-2">
+        <Button onClick={() => addOrSelectTab('Code Editor', CodeEditorTab.name)}
+                className="text-neutral-600" size="icon" variant="ghost">
+          <CodeIcon />
+        </Button>
         <Button onClick={() => addOrSelectTab('UMPK80-Program', UmpkProgramTab.name)}
                 className="text-neutral-600" size="icon" variant="ghost">
           <BetweenHorizonalStart />

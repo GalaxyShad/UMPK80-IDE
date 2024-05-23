@@ -24,3 +24,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input"
 
 export { Input }
+
+export interface ISVGProps extends React.SVGProps<SVGSVGElement> {
+  size?: number;
+  className?: string;
+}
+

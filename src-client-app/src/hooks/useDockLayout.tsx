@@ -24,36 +24,59 @@ const tabsMap = {
 } as Record<string, [string, () => ReactNode]>
 
 const defaultLayout = {
-  global: {
-    splitterSize: 4,
-    tabEnableRename: false,
-    tabEnableRenderOnDemand: false,
+  'global': {
+    'splitterSize':
+      4, 'tabEnableRename':
+      false, 'tabEnableRenderOnDemand':
+      false,
   },
-  borders: [],
-  layout: {
-    type: 'row',
-    weight: 100,
-    children: [
-      {
-        type: 'tabset',
-        weight: 100,
-        id: 'main',
-        children: Object.keys(tabsMap).map((key) => ({
-          id: key,
-          type: 'tab',
-          name: tabsMap[key][0],
-          component: key,
-          enableClose: (key !== UmpkTab.name),
-        })),
-      }
-    ],
-  },
+  'borders': [],
+  'layout':
+    {
+      'type':
+        'row', 'id':
+        '#177df9cb-602e-4f01-afb1-ce9fabce4124', 'children':
+        [{
+          'type': 'row',
+          'id': '#36511cc6-9d8f-4f9e-9b68-b321ada2b5ca',
+          'weight': 59.87599645704163,
+          'children': [{
+            'type': 'tabset',
+            'id': '#04dafc5e-7c06-49b1-b45b-e75e049c8eb0',
+            'weight': 74.16173570019724,
+            'children': [{ 'type': 'tab', 'id': 'CodeEditorTab', 'name': 'Code Editor', 'component': 'CodeEditorTab' }],
+          }, {
+            'type': 'tabset',
+            'id': '#0411aee0-547b-4ca5-926d-7aa202da594e',
+            'weight': 25.838264299802763,
+            'children': [{ 'type': 'tab', 'id': 'TerminalTab', 'name': 'Terminal', 'component': 'TerminalTab' }],
+          }],
+        }, {
+          'type': 'tabset',
+          'id': 'main',
+          'weight': 40.12400354295837,
+          'children': [{
+            'type': 'tab',
+            'id': 'UmpkTab',
+            'name': 'UMPK-80',
+            'component': 'UmpkTab',
+            'enableClose': false,
+          }],
+          'active': true,
+        }],
+    },
 } as IJsonModel
+
 
 function layoutFactory(node: TabNode): ReactNode {
   const component = node.getComponent()
 
-  return node.isVisible() && tabsMap[component ?? ''][1]()
+  try {
+    return node.isVisible() && tabsMap[component ?? ''][1]()
+  } catch (e) {
+    console.error(e)
+    localStorage.setItem('layout', '')
+  }
 }
 
 const saveLayout = () => localStorage.setItem('layout', JSON.stringify(dockLayoutModel?.toJson()))

@@ -5,7 +5,8 @@ import { useEditorStore } from '@/store/editor-store'
 import {
   loadSourceCodeFromFile,
   saveSourceCodeToFile,
-  translateAndBuild, translateTo,
+  translateAndBuild,
+  translateTo,
   TranslateToType,
 } from '@/services/translatorService.ts'
 import { Switch } from '@/components/ui/Switch.tsx'

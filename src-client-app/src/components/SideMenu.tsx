@@ -1,10 +1,5 @@
 import { Button } from '@/components/ui/Button'
-import {
-  BetweenHorizonalStart,
-  BookText, CodeIcon,
-  Layers, MemoryStick,
-  Settings, Terminal,
-} from 'lucide-react'
+import { BetweenHorizonalStart, BookText, Layers, MemoryStick, Settings, Table2Icon, Terminal } from 'lucide-react'
 import { DialogTrigger } from '@/components/ui/Dialog'
 import { dockLayoutModel } from '@/hooks/useDockLayout.tsx'
 import { Actions, DockLocation } from 'flexlayout-react'
@@ -14,6 +9,7 @@ import UmpkProgramTab from '@/tabs/UmpkProgramTab.tsx'
 import UmpkRomTab from '@/tabs/UmpkRomTab.tsx'
 import UmpkRamTab from '@/tabs/UmpkRamTab.tsx'
 import TerminalTab from '@/tabs/TerminalTab.tsx'
+import { Intel8080CommandsTab } from '@/tabs/Intel8080CommandsTab.tsx'
 import CodeEditorTab from '@/tabs/CodeEditorTab.tsx'
 
 function addOrSelectTab(name: string, componentName: string) {
@@ -63,6 +59,11 @@ export default function SideMenu() {
       </div>
 
       <div className="flex flex-col gap-2">
+        <Button onClick={() => addOrSelectTab('Intel 8080 Commands', Intel8080CommandsTab.name)}
+                className="text-neutral-600" size="icon"
+                variant="ghost">
+          <Table2Icon />
+        </Button>
         <Button onClick={() => addOrSelectTab('Terminal', TerminalTab.name)} className="text-neutral-600" size="icon"
                 variant="ghost">
           <Terminal />

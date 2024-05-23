@@ -1,0 +1,5214 @@
+[
+  {
+    "hexOpcode": "00",
+    "decimalOpcode": "000",
+    "binaryOpcode": "00000000",
+    "mnemonic": "NOP",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "-",
+    "rusDescription": "Нет операции"
+  },
+  {
+    "hexOpcode": "01",
+    "decimalOpcode": "001",
+    "binaryOpcode": "00000001",
+    "mnemonic": "LXI",
+    "argument1": "B",
+    "argument2": "DATA16",
+    "cycles": "10",
+    "mask": "00rr0001",
+    "flags": "",
+    "tags": [
+      "16bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← byte 3, C ← byte 2",
+    "rusDescription": "Загрузить в BC непосредственные данные d16"
+  },
+  {
+    "hexOpcode": "02",
+    "decimalOpcode": "002",
+    "binaryOpcode": "00000010",
+    "mnemonic": "STAX",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "000r0010",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(BC) ← A",
+    "rusDescription": "Записать A по адресу Loc(BC)"
+  },
+  {
+    "hexOpcode": "03",
+    "decimalOpcode": "003",
+    "binaryOpcode": "00000011",
+    "mnemonic": "INX",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr0011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "BC = BC + 1",
+    "rusDescription": "Инкрементировать BС"
+  },
+  {
+    "hexOpcode": "04",
+    "decimalOpcode": "004",
+    "binaryOpcode": "00000100",
+    "mnemonic": "INR",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "B ← B + 1",
+    "rusDescription": "Инкрементировать B"
+  },
+  {
+    "hexOpcode": "05",
+    "decimalOpcode": "005",
+    "binaryOpcode": "00000101",
+    "mnemonic": "DCR",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "B ← B - 1",
+    "rusDescription": "Декрементировать B"
+  },
+  {
+    "hexOpcode": "06",
+    "decimalOpcode": "006",
+    "binaryOpcode": "00000110",
+    "mnemonic": "MVI",
+    "argument1": "B",
+    "argument2": "DATA8",
+    "cycles": "7",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← byte 2",
+    "rusDescription": "Загрузить в B непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "07",
+    "decimalOpcode": "007",
+    "binaryOpcode": "00000111",
+    "mnemonic": "RLC",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "- - - - C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "A = A << 1, bit 0 = prev bit 7, CY = prev bit 7",
+    "rusDescription": "Сдвинуть A влево на один разряд с переносом"
+  },
+  {
+    "hexOpcode": "08",
+    "decimalOpcode": "008",
+    "binaryOpcode": "00001000",
+    "mnemonic": "NOP?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "09",
+    "decimalOpcode": "009",
+    "binaryOpcode": "00001001",
+    "mnemonic": "DAD",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "00rr1001",
+    "flags": "- - - - C",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "HL = HL + BC",
+    "rusDescription": "Сложить BC с HL"
+  },
+  {
+    "hexOpcode": "0A",
+    "decimalOpcode": "010",
+    "binaryOpcode": "00001010",
+    "mnemonic": "LDAX",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "000r1010",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← (BC)",
+    "rusDescription": "Загрузить A из ячейки с адресом Loc(BC)"
+  },
+  {
+    "hexOpcode": "0B",
+    "decimalOpcode": "011",
+    "binaryOpcode": "00001011",
+    "mnemonic": "DCX",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr1011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "BC = BC - 1",
+    "rusDescription": "Декрементировать BC"
+  },
+  {
+    "hexOpcode": "0C",
+    "decimalOpcode": "012",
+    "binaryOpcode": "00001100",
+    "mnemonic": "INR",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "C ← C + 1",
+    "rusDescription": "Инкрементировать C"
+  },
+  {
+    "hexOpcode": "0D",
+    "decimalOpcode": "013",
+    "binaryOpcode": "00001101",
+    "mnemonic": "DCR",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "C ← C - 1",
+    "rusDescription": "Декрементировать C"
+  },
+  {
+    "hexOpcode": "0E",
+    "decimalOpcode": "014",
+    "binaryOpcode": "00001110",
+    "mnemonic": "MVI",
+    "argument1": "C",
+    "argument2": "DATA8",
+    "cycles": "7",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← byte 2",
+    "rusDescription": "Загрузить в C непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "0F",
+    "decimalOpcode": "015",
+    "binaryOpcode": "00001111",
+    "mnemonic": "RRC",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "- - - - C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "A = A >> 1, bit 7 = prev bit 0, CY = prev bit 0",
+    "rusDescription": "Сдвинуть A вправо на один разряд с переносом"
+  },
+  {
+    "hexOpcode": "10",
+    "decimalOpcode": "016",
+    "binaryOpcode": "00010000",
+    "mnemonic": "NOP?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "11",
+    "decimalOpcode": "017",
+    "binaryOpcode": "00010001",
+    "mnemonic": "LXI",
+    "argument1": "D",
+    "argument2": "DATA16",
+    "cycles": "10",
+    "mask": "00rr0001",
+    "flags": "",
+    "tags": [
+      "16bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← byte 3, E ← byte 2",
+    "rusDescription": "Загрузить в DE непосредственные данные d16"
+  },
+  {
+    "hexOpcode": "12",
+    "decimalOpcode": "018",
+    "binaryOpcode": "00010010",
+    "mnemonic": "STAX",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "000r0010",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(DE) ← A",
+    "rusDescription": "Записать A по адресу Loc(DE)"
+  },
+  {
+    "hexOpcode": "13",
+    "decimalOpcode": "019",
+    "binaryOpcode": "00010011",
+    "mnemonic": "INX",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr0011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "DE = DE + 1",
+    "rusDescription": "Инкрементировать DE"
+  },
+  {
+    "hexOpcode": "14",
+    "decimalOpcode": "020",
+    "binaryOpcode": "00010100",
+    "mnemonic": "INR",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "D ← D + 1",
+    "rusDescription": "Инкрементировать D"
+  },
+  {
+    "hexOpcode": "15",
+    "decimalOpcode": "021",
+    "binaryOpcode": "00010101",
+    "mnemonic": "DCR",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "D ← D - 1",
+    "rusDescription": "Декрементировать D"
+  },
+  {
+    "hexOpcode": "16",
+    "decimalOpcode": "022",
+    "binaryOpcode": "00010110",
+    "mnemonic": "MVI",
+    "argument1": "D",
+    "argument2": "DATA8",
+    "cycles": "7",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← byte 2",
+    "rusDescription": "Загрузить в D непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "17",
+    "decimalOpcode": "023",
+    "binaryOpcode": "00010111",
+    "mnemonic": "RAL",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "- - - - C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "A = A << 1, bit 0 = prev CY, CY = prev bit 7",
+    "rusDescription": "Циклический сдвиг CY + A влево"
+  },
+  {
+    "hexOpcode": "18",
+    "decimalOpcode": "024",
+    "binaryOpcode": "00011000",
+    "mnemonic": "NOP?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "19",
+    "decimalOpcode": "025",
+    "binaryOpcode": "00011001",
+    "mnemonic": "DAD",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "00rr1001",
+    "flags": "- - - - C",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "HL = HL + DE",
+    "rusDescription": "Сложить DE с HL"
+  },
+  {
+    "hexOpcode": "1A",
+    "decimalOpcode": "026",
+    "binaryOpcode": "00011010",
+    "mnemonic": "LDAX",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "000r1010",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← (DE)",
+    "rusDescription": "Загрузить A из ячейки с адресом Loc(DE)"
+  },
+  {
+    "hexOpcode": "1B",
+    "decimalOpcode": "027",
+    "binaryOpcode": "00011011",
+    "mnemonic": "DCX",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr1011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "DE = DE - 1",
+    "rusDescription": "Декрементировать DE"
+  },
+  {
+    "hexOpcode": "1C",
+    "decimalOpcode": "028",
+    "binaryOpcode": "00011100",
+    "mnemonic": "INR",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "E ← E + 1",
+    "rusDescription": "Инкрементировать E"
+  },
+  {
+    "hexOpcode": "1D",
+    "decimalOpcode": "029",
+    "binaryOpcode": "00011101",
+    "mnemonic": "DCR",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "E ← E - 1",
+    "rusDescription": "Декрементировать E"
+  },
+  {
+    "hexOpcode": "1E",
+    "decimalOpcode": "030",
+    "binaryOpcode": "00011110",
+    "mnemonic": "MVI",
+    "argument1": "E",
+    "argument2": "DATA8",
+    "cycles": "7",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← byte 2",
+    "rusDescription": "Загрузить в E непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "1F",
+    "decimalOpcode": "031",
+    "binaryOpcode": "00011111",
+    "mnemonic": "RAR",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "- - - - C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "A = A >> 1, bit 7 = prev bit 7, CY = prev bit 0",
+    "rusDescription": "Циклический сдвиг CY + A вправо"
+  },
+  {
+    "hexOpcode": "20",
+    "decimalOpcode": "032",
+    "binaryOpcode": "00100000",
+    "mnemonic": "NOP?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Считать маску прерывания (только в 8085)"
+  },
+  {
+    "hexOpcode": "21",
+    "decimalOpcode": "033",
+    "binaryOpcode": "00100001",
+    "mnemonic": "LXI",
+    "argument1": "H",
+    "argument2": "DATA16",
+    "cycles": "10",
+    "mask": "00rr0001",
+    "flags": "",
+    "tags": [
+      "16bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← byte 3, L ← byte 2",
+    "rusDescription": "Загрузить в HL непосредственные данные d16"
+  },
+  {
+    "hexOpcode": "22",
+    "decimalOpcode": "034",
+    "binaryOpcode": "00100010",
+    "mnemonic": "SHLD",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "16",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(adr) ← L, (adr + 1) ← H",
+    "rusDescription": "Записать HL по адресу a16"
+  },
+  {
+    "hexOpcode": "23",
+    "decimalOpcode": "035",
+    "binaryOpcode": "00100011",
+    "mnemonic": "INX",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr0011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "HL = HL + 1",
+    "rusDescription": "Инкрементировать HL"
+  },
+  {
+    "hexOpcode": "24",
+    "decimalOpcode": "036",
+    "binaryOpcode": "00100100",
+    "mnemonic": "INR",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "H ← H + 1",
+    "rusDescription": "Инкрементировать H"
+  },
+  {
+    "hexOpcode": "25",
+    "decimalOpcode": "037",
+    "binaryOpcode": "00100101",
+    "mnemonic": "DCR",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "H ← H - 1",
+    "rusDescription": "Декрементировать H"
+  },
+  {
+    "hexOpcode": "26",
+    "decimalOpcode": "038",
+    "binaryOpcode": "00100110",
+    "mnemonic": "MVI",
+    "argument1": "H",
+    "argument2": "DATA8",
+    "cycles": "7",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← byte 2",
+    "rusDescription": "Загрузить в H непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "27",
+    "decimalOpcode": "039",
+    "binaryOpcode": "00100111",
+    "mnemonic": "DAA",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "S",
+      "Z",
+      "AC",
+      "P",
+      "CY"
+    ],
+    "functionDescription": "special",
+    "rusDescription": "Инструкция DAA выполняет две операции:\n\nЕсли младшие 4 бита в байте аккумулятора (биты 0-3) представляют собой цифру BCD больше 9 или если вспомогательный бит переноса установлен в 1, то эти четыре бита автоматически увеличиваются на 6. Если нет, то аккумулятор не затрагивается.\n\nЕсли старшие 4 бита в байте аккумулятора (биты 4-7) представляют собой цифру BCD больше 9 или если бит переноса установлен в 1 после предыдущей операции, то эти четыре бита автоматически увеличиваются на 6. Если нет, то аккумулятор не изменяется.\n\n"
+  },
+  {
+    "hexOpcode": "28",
+    "decimalOpcode": "040",
+    "binaryOpcode": "00101000",
+    "mnemonic": "NOP?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "29",
+    "decimalOpcode": "041",
+    "binaryOpcode": "00101001",
+    "mnemonic": "DAD",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "00rr1001",
+    "flags": "- - - - C",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "HL = HL + HL",
+    "rusDescription": "Сложить HL с HL (удвоение HL)"
+  },
+  {
+    "hexOpcode": "2A",
+    "decimalOpcode": "042",
+    "binaryOpcode": "00101010",
+    "mnemonic": "LHLD",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "16",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← (adr), H ← (adr + 1)",
+    "rusDescription": "Загрузить в HL содержимое ячейки с адресом a16"
+  },
+  {
+    "hexOpcode": "2B",
+    "decimalOpcode": "043",
+    "binaryOpcode": "00101011",
+    "mnemonic": "DCX",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr1011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "HL = HL - 1",
+    "rusDescription": "Декрементировать HL"
+  },
+  {
+    "hexOpcode": "2C",
+    "decimalOpcode": "044",
+    "binaryOpcode": "00101100",
+    "mnemonic": "INR",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "L ← L + 1",
+    "rusDescription": "Инкрементировать L"
+  },
+  {
+    "hexOpcode": "2D",
+    "decimalOpcode": "045",
+    "binaryOpcode": "00101101",
+    "mnemonic": "DCR",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "L ← L - 1",
+    "rusDescription": "Декрементировать L"
+  },
+  {
+    "hexOpcode": "2E",
+    "decimalOpcode": "046",
+    "binaryOpcode": "00101110",
+    "mnemonic": "MVI",
+    "argument1": "L",
+    "argument2": "DATA8",
+    "cycles": "7",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← byte 2",
+    "rusDescription": "Загрузить в L непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "2F",
+    "decimalOpcode": "047",
+    "binaryOpcode": "00101111",
+    "mnemonic": "CMA",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← !A",
+    "rusDescription": "Инвертировать A"
+  },
+  {
+    "hexOpcode": "30",
+    "decimalOpcode": "048",
+    "binaryOpcode": "00110000",
+    "mnemonic": "NOP?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": ""
+  },
+  {
+    "hexOpcode": "31",
+    "decimalOpcode": "049",
+    "binaryOpcode": "00110001",
+    "mnemonic": "LXI",
+    "argument1": "SP",
+    "argument2": "DATA16",
+    "cycles": "10",
+    "mask": "00rr0001",
+    "flags": "",
+    "tags": [
+      "16bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "SP.hi ← byte 3, SP.lo ← byte 2",
+    "rusDescription": "Загрузить в SP непосредственные данные d16"
+  },
+  {
+    "hexOpcode": "32",
+    "decimalOpcode": "050",
+    "binaryOpcode": "00110010",
+    "mnemonic": "STA",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "13",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(adr) ← A",
+    "rusDescription": "Записать A по адресу a16"
+  },
+  {
+    "hexOpcode": "33",
+    "decimalOpcode": "051",
+    "binaryOpcode": "00110011",
+    "mnemonic": "INX",
+    "argument1": "SP",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr0011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "SP = SP + 1",
+    "rusDescription": "Инкрементировать SP"
+  },
+  {
+    "hexOpcode": "34",
+    "decimalOpcode": "052",
+    "binaryOpcode": "00110100",
+    "mnemonic": "INR",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "(HL) ← (HL) + 1",
+    "rusDescription": "Инкрементировать содержимое Loc(HL)"
+  },
+  {
+    "hexOpcode": "35",
+    "decimalOpcode": "053",
+    "binaryOpcode": "00110101",
+    "mnemonic": "DCR",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "(HL) ← (HL) - 1",
+    "rusDescription": "Декрементировать содержимое Loc(HL)"
+  },
+  {
+    "hexOpcode": "36",
+    "decimalOpcode": "054",
+    "binaryOpcode": "00110110",
+    "mnemonic": "MVI",
+    "argument1": "M",
+    "argument2": "DATA8",
+    "cycles": "10",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← byte 2",
+    "rusDescription": "Загрузить в Loc(HL) непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "37",
+    "decimalOpcode": "055",
+    "binaryOpcode": "00110111",
+    "mnemonic": "STC",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "CY = 1",
+    "rusDescription": "Установить флаг переноса (CY = 1)"
+  },
+  {
+    "hexOpcode": "38",
+    "decimalOpcode": "056",
+    "binaryOpcode": "00111000",
+    "mnemonic": "NOP?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "00xxx000",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "39",
+    "decimalOpcode": "057",
+    "binaryOpcode": "00111001",
+    "mnemonic": "DAD",
+    "argument1": "SP",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "00rr1001",
+    "flags": "- - - - C",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "HL = HL + SP",
+    "rusDescription": "Сложить SP с HL"
+  },
+  {
+    "hexOpcode": "3A",
+    "decimalOpcode": "058",
+    "binaryOpcode": "00111010",
+    "mnemonic": "LDA",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "13",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← (adr)",
+    "rusDescription": "Загрузить A из ячейки с адресом a16"
+  },
+  {
+    "hexOpcode": "3B",
+    "decimalOpcode": "059",
+    "binaryOpcode": "00111011",
+    "mnemonic": "DCX",
+    "argument1": "SP",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rr1011",
+    "flags": "",
+    "tags": [
+      "16bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "SP = SP - 1",
+    "rusDescription": "Декрементировать SP"
+  },
+  {
+    "hexOpcode": "3C",
+    "decimalOpcode": "060",
+    "binaryOpcode": "00111100",
+    "mnemonic": "INR",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "A ← A + 1",
+    "rusDescription": "Инкрементировать A"
+  },
+  {
+    "hexOpcode": "3D",
+    "decimalOpcode": "061",
+    "binaryOpcode": "00111101",
+    "mnemonic": "DCR",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "00rrr100",
+    "flags": "S Z A P -",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "AC"
+    ],
+    "functionDescription": "A ← A - 1",
+    "rusDescription": "Декрементировать A"
+  },
+  {
+    "hexOpcode": "3E",
+    "decimalOpcode": "062",
+    "binaryOpcode": "00111110",
+    "mnemonic": "MVI",
+    "argument1": "A",
+    "argument2": "DATA8",
+    "cycles": "7",
+    "mask": "00rrr110",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← byte 2",
+    "rusDescription": "Загрузить в A непосредственно данные d8"
+  },
+  {
+    "hexOpcode": "3F",
+    "decimalOpcode": "063",
+    "binaryOpcode": "00111111",
+    "mnemonic": "CMC",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "- - - - C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "CY"
+    ],
+    "functionDescription": "CY = !CY",
+    "rusDescription": "Инвертировать перенос"
+  },
+  {
+    "hexOpcode": "40",
+    "decimalOpcode": "064",
+    "binaryOpcode": "01000000",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "B",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← B",
+    "rusDescription": "Переслать из B в B"
+  },
+  {
+    "hexOpcode": "41",
+    "decimalOpcode": "065",
+    "binaryOpcode": "01000001",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "C",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← C",
+    "rusDescription": "Переслать из C в B"
+  },
+  {
+    "hexOpcode": "42",
+    "decimalOpcode": "066",
+    "binaryOpcode": "01000010",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "D",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← D",
+    "rusDescription": "Переслать из D в B"
+  },
+  {
+    "hexOpcode": "43",
+    "decimalOpcode": "067",
+    "binaryOpcode": "01000011",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "E",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← E",
+    "rusDescription": "Переслать из E в B"
+  },
+  {
+    "hexOpcode": "44",
+    "decimalOpcode": "068",
+    "binaryOpcode": "01000100",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "H",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← H",
+    "rusDescription": "Переслать из H в B"
+  },
+  {
+    "hexOpcode": "45",
+    "decimalOpcode": "069",
+    "binaryOpcode": "01000101",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "L",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← L",
+    "rusDescription": "Переслать из L в B"
+  },
+  {
+    "hexOpcode": "46",
+    "decimalOpcode": "070",
+    "binaryOpcode": "01000110",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "M",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← (HL)",
+    "rusDescription": "Переслать из Loc(HL) в B"
+  },
+  {
+    "hexOpcode": "47",
+    "decimalOpcode": "071",
+    "binaryOpcode": "01000111",
+    "mnemonic": "MOV",
+    "argument1": "B",
+    "argument2": "A",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "B ← A",
+    "rusDescription": "Переслать из A в B"
+  },
+  {
+    "hexOpcode": "48",
+    "decimalOpcode": "072",
+    "binaryOpcode": "01001000",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "B",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← B",
+    "rusDescription": "Переслать из B в C"
+  },
+  {
+    "hexOpcode": "49",
+    "decimalOpcode": "073",
+    "binaryOpcode": "01001001",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "C",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← C",
+    "rusDescription": "Переслать из C в C"
+  },
+  {
+    "hexOpcode": "4A",
+    "decimalOpcode": "074",
+    "binaryOpcode": "01001010",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "D",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← D",
+    "rusDescription": "Переслать из D в C"
+  },
+  {
+    "hexOpcode": "4B",
+    "decimalOpcode": "075",
+    "binaryOpcode": "01001011",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "E",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← E",
+    "rusDescription": "Переслать из E в C"
+  },
+  {
+    "hexOpcode": "4C",
+    "decimalOpcode": "076",
+    "binaryOpcode": "01001100",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "H",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← H",
+    "rusDescription": "Переслать из H в C"
+  },
+  {
+    "hexOpcode": "4D",
+    "decimalOpcode": "077",
+    "binaryOpcode": "01001101",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "L",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← L",
+    "rusDescription": "Переслать из L в C"
+  },
+  {
+    "hexOpcode": "4E",
+    "decimalOpcode": "078",
+    "binaryOpcode": "01001110",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "M",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← (HL)",
+    "rusDescription": "Переслать из Loc(HL) в C"
+  },
+  {
+    "hexOpcode": "4F",
+    "decimalOpcode": "079",
+    "binaryOpcode": "01001111",
+    "mnemonic": "MOV",
+    "argument1": "C",
+    "argument2": "A",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← A",
+    "rusDescription": "Переслать из A в C"
+  },
+  {
+    "hexOpcode": "50",
+    "decimalOpcode": "080",
+    "binaryOpcode": "01010000",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "B",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← B",
+    "rusDescription": "Переслать из B в D"
+  },
+  {
+    "hexOpcode": "51",
+    "decimalOpcode": "081",
+    "binaryOpcode": "01010001",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "C",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← C",
+    "rusDescription": "Переслать из C в D"
+  },
+  {
+    "hexOpcode": "52",
+    "decimalOpcode": "082",
+    "binaryOpcode": "01010010",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "D",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← D",
+    "rusDescription": "Переслать из D в D"
+  },
+  {
+    "hexOpcode": "53",
+    "decimalOpcode": "083",
+    "binaryOpcode": "01010011",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "E",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← E",
+    "rusDescription": "Переслать из E в D"
+  },
+  {
+    "hexOpcode": "54",
+    "decimalOpcode": "084",
+    "binaryOpcode": "01010100",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "H",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← H",
+    "rusDescription": "Переслать из H в D"
+  },
+  {
+    "hexOpcode": "55",
+    "decimalOpcode": "085",
+    "binaryOpcode": "01010101",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "L",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← L",
+    "rusDescription": "Переслать из L в D"
+  },
+  {
+    "hexOpcode": "56",
+    "decimalOpcode": "086",
+    "binaryOpcode": "01010110",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "M",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← (HL)",
+    "rusDescription": "Переслать из Loc(HL) в D"
+  },
+  {
+    "hexOpcode": "57",
+    "decimalOpcode": "087",
+    "binaryOpcode": "01010111",
+    "mnemonic": "MOV",
+    "argument1": "D",
+    "argument2": "A",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "D ← A",
+    "rusDescription": "Переслать из A в D"
+  },
+  {
+    "hexOpcode": "58",
+    "decimalOpcode": "088",
+    "binaryOpcode": "01011000",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "B",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← B",
+    "rusDescription": "Переслать из B в E"
+  },
+  {
+    "hexOpcode": "59",
+    "decimalOpcode": "089",
+    "binaryOpcode": "01011001",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "C",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← C",
+    "rusDescription": "Переслать из C в E"
+  },
+  {
+    "hexOpcode": "5A",
+    "decimalOpcode": "090",
+    "binaryOpcode": "01011010",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "D",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← D",
+    "rusDescription": "Переслать из D в E"
+  },
+  {
+    "hexOpcode": "5B",
+    "decimalOpcode": "091",
+    "binaryOpcode": "01011011",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "E",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← E",
+    "rusDescription": "Переслать из E в E"
+  },
+  {
+    "hexOpcode": "5C",
+    "decimalOpcode": "092",
+    "binaryOpcode": "01011100",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "H",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← H",
+    "rusDescription": "Переслать из H в E"
+  },
+  {
+    "hexOpcode": "5D",
+    "decimalOpcode": "093",
+    "binaryOpcode": "01011101",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "L",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← L",
+    "rusDescription": "Переслать из L в E"
+  },
+  {
+    "hexOpcode": "5E",
+    "decimalOpcode": "094",
+    "binaryOpcode": "01011110",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "M",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← (HL)",
+    "rusDescription": "Переслать из Loc(HL) в E"
+  },
+  {
+    "hexOpcode": "5F",
+    "decimalOpcode": "095",
+    "binaryOpcode": "01011111",
+    "mnemonic": "MOV",
+    "argument1": "E",
+    "argument2": "A",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← A",
+    "rusDescription": "Переслать из A в E"
+  },
+  {
+    "hexOpcode": "60",
+    "decimalOpcode": "096",
+    "binaryOpcode": "01100000",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "B",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← B",
+    "rusDescription": "Переслать из B в H"
+  },
+  {
+    "hexOpcode": "61",
+    "decimalOpcode": "097",
+    "binaryOpcode": "01100001",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "C",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← C",
+    "rusDescription": "Переслать из C в H"
+  },
+  {
+    "hexOpcode": "62",
+    "decimalOpcode": "098",
+    "binaryOpcode": "01100010",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "D",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← D",
+    "rusDescription": "Переслать из D в H"
+  },
+  {
+    "hexOpcode": "63",
+    "decimalOpcode": "099",
+    "binaryOpcode": "01100011",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "E",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← E",
+    "rusDescription": "Переслать из E в H"
+  },
+  {
+    "hexOpcode": "64",
+    "decimalOpcode": "100",
+    "binaryOpcode": "01100100",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "H",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← H",
+    "rusDescription": "Переслать из H в H"
+  },
+  {
+    "hexOpcode": "65",
+    "decimalOpcode": "101",
+    "binaryOpcode": "01100101",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "L",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← L",
+    "rusDescription": "Переслать из L в H"
+  },
+  {
+    "hexOpcode": "66",
+    "decimalOpcode": "102",
+    "binaryOpcode": "01100110",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "M",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← (HL)",
+    "rusDescription": "Переслать из Loc(HL) в H"
+  },
+  {
+    "hexOpcode": "67",
+    "decimalOpcode": "103",
+    "binaryOpcode": "01100111",
+    "mnemonic": "MOV",
+    "argument1": "H",
+    "argument2": "A",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ← A",
+    "rusDescription": "Переслать из A в H"
+  },
+  {
+    "hexOpcode": "68",
+    "decimalOpcode": "104",
+    "binaryOpcode": "01101000",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "B",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← B",
+    "rusDescription": "Переслать из B в L"
+  },
+  {
+    "hexOpcode": "69",
+    "decimalOpcode": "105",
+    "binaryOpcode": "01101001",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "C",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← C",
+    "rusDescription": "Переслать из C в L"
+  },
+  {
+    "hexOpcode": "6A",
+    "decimalOpcode": "106",
+    "binaryOpcode": "01101010",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "D",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← D",
+    "rusDescription": "Переслать из D в L"
+  },
+  {
+    "hexOpcode": "6B",
+    "decimalOpcode": "107",
+    "binaryOpcode": "01101011",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "E",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← E",
+    "rusDescription": "Переслать из E в L"
+  },
+  {
+    "hexOpcode": "6C",
+    "decimalOpcode": "108",
+    "binaryOpcode": "01101100",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "H",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← H",
+    "rusDescription": "Переслать из H в L"
+  },
+  {
+    "hexOpcode": "6D",
+    "decimalOpcode": "109",
+    "binaryOpcode": "01101101",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "L",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← L",
+    "rusDescription": "Переслать из L в L"
+  },
+  {
+    "hexOpcode": "6E",
+    "decimalOpcode": "110",
+    "binaryOpcode": "01101110",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "M",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← (HL)",
+    "rusDescription": "Переслать из Loc(HL) в L"
+  },
+  {
+    "hexOpcode": "6F",
+    "decimalOpcode": "111",
+    "binaryOpcode": "01101111",
+    "mnemonic": "MOV",
+    "argument1": "L",
+    "argument2": "A",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← A",
+    "rusDescription": "Переслать из A в L"
+  },
+  {
+    "hexOpcode": "70",
+    "decimalOpcode": "112",
+    "binaryOpcode": "01110000",
+    "mnemonic": "MOV",
+    "argument1": "M",
+    "argument2": "B",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← B",
+    "rusDescription": "Переслать из B в Loc(HL)"
+  },
+  {
+    "hexOpcode": "71",
+    "decimalOpcode": "113",
+    "binaryOpcode": "01110001",
+    "mnemonic": "MOV",
+    "argument1": "M",
+    "argument2": "C",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← C",
+    "rusDescription": "Переслать из C в Loc(HL)"
+  },
+  {
+    "hexOpcode": "72",
+    "decimalOpcode": "114",
+    "binaryOpcode": "01110010",
+    "mnemonic": "MOV",
+    "argument1": "M",
+    "argument2": "D",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← D",
+    "rusDescription": "Переслать из D в Loc(HL)"
+  },
+  {
+    "hexOpcode": "73",
+    "decimalOpcode": "115",
+    "binaryOpcode": "01110011",
+    "mnemonic": "MOV",
+    "argument1": "M",
+    "argument2": "E",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← E",
+    "rusDescription": "Переслать из E в Loc(HL)"
+  },
+  {
+    "hexOpcode": "74",
+    "decimalOpcode": "116",
+    "binaryOpcode": "01110100",
+    "mnemonic": "MOV",
+    "argument1": "M",
+    "argument2": "H",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← H",
+    "rusDescription": "Переслать из H в Loc(HL)"
+  },
+  {
+    "hexOpcode": "75",
+    "decimalOpcode": "117",
+    "binaryOpcode": "01110101",
+    "mnemonic": "MOV",
+    "argument1": "M",
+    "argument2": "L",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← L",
+    "rusDescription": "Переслать из L в Loc(HL)"
+  },
+  {
+    "hexOpcode": "76",
+    "decimalOpcode": "118",
+    "binaryOpcode": "01110110",
+    "mnemonic": "HLT",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Misc"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "special",
+    "rusDescription": "Останов процессора"
+  },
+  {
+    "hexOpcode": "77",
+    "decimalOpcode": "119",
+    "binaryOpcode": "01110111",
+    "mnemonic": "MOV",
+    "argument1": "M",
+    "argument2": "A",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(HL) ← A",
+    "rusDescription": "Переслать из A в Loc(HL)"
+  },
+  {
+    "hexOpcode": "78",
+    "decimalOpcode": "120",
+    "binaryOpcode": "01111000",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "B",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← B",
+    "rusDescription": "Переслать из B в A"
+  },
+  {
+    "hexOpcode": "79",
+    "decimalOpcode": "121",
+    "binaryOpcode": "01111001",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "C",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← C",
+    "rusDescription": "Переслать из C в A"
+  },
+  {
+    "hexOpcode": "7A",
+    "decimalOpcode": "122",
+    "binaryOpcode": "01111010",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "D",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← D",
+    "rusDescription": "Переслать из D в A"
+  },
+  {
+    "hexOpcode": "7B",
+    "decimalOpcode": "123",
+    "binaryOpcode": "01111011",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "E",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← E",
+    "rusDescription": "Переслать из E в A"
+  },
+  {
+    "hexOpcode": "7C",
+    "decimalOpcode": "124",
+    "binaryOpcode": "01111100",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "H",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← H",
+    "rusDescription": "Переслать из H в A"
+  },
+  {
+    "hexOpcode": "7D",
+    "decimalOpcode": "125",
+    "binaryOpcode": "01111101",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "L",
+    "cycles": "5",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← L",
+    "rusDescription": "Переслать из L в A"
+  },
+  {
+    "hexOpcode": "7E",
+    "decimalOpcode": "126",
+    "binaryOpcode": "01111110",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "M",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← (HL)",
+    "rusDescription": "Переслать из Loc(HL) в A"
+  },
+  {
+    "hexOpcode": "7F",
+    "decimalOpcode": "127",
+    "binaryOpcode": "01111111",
+    "mnemonic": "MOV",
+    "argument1": "A",
+    "argument2": "A",
+    "cycles": "7",
+    "mask": "01dddsss",
+    "flags": "",
+    "tags": [
+      "8bit load"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "A ← A",
+    "rusDescription": "Переслать из A в A"
+  },
+  {
+    "hexOpcode": "80",
+    "decimalOpcode": "128",
+    "binaryOpcode": "10000000",
+    "mnemonic": "ADD",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + B",
+    "rusDescription": "Добавляет содержимое B к содержимому A"
+  },
+  {
+    "hexOpcode": "81",
+    "decimalOpcode": "129",
+    "binaryOpcode": "10000001",
+    "mnemonic": "ADD",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + C",
+    "rusDescription": "Добавляет содержимое C к содержимому A"
+  },
+  {
+    "hexOpcode": "82",
+    "decimalOpcode": "130",
+    "binaryOpcode": "10000010",
+    "mnemonic": "ADD",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + D",
+    "rusDescription": "Добавляет содержимое D к содержимому A"
+  },
+  {
+    "hexOpcode": "83",
+    "decimalOpcode": "131",
+    "binaryOpcode": "10000011",
+    "mnemonic": "ADD",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + E",
+    "rusDescription": "Добавляет содержимое E к содержимому A"
+  },
+  {
+    "hexOpcode": "84",
+    "decimalOpcode": "132",
+    "binaryOpcode": "10000100",
+    "mnemonic": "ADD",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + H",
+    "rusDescription": "Добавляет содержимое H к содержимому A"
+  },
+  {
+    "hexOpcode": "85",
+    "decimalOpcode": "133",
+    "binaryOpcode": "10000101",
+    "mnemonic": "ADD",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + L",
+    "rusDescription": "Добавляет содержимое L к содержимому A"
+  },
+  {
+    "hexOpcode": "86",
+    "decimalOpcode": "134",
+    "binaryOpcode": "10000110",
+    "mnemonic": "ADD",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + (HL)",
+    "rusDescription": "Добавляет содержимое Loc(HL) к содержимому A"
+  },
+  {
+    "hexOpcode": "87",
+    "decimalOpcode": "135",
+    "binaryOpcode": "10000111",
+    "mnemonic": "ADD",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + A",
+    "rusDescription": "Добавляет содержимое A к содержимому A"
+  },
+  {
+    "hexOpcode": "88",
+    "decimalOpcode": "136",
+    "binaryOpcode": "10001000",
+    "mnemonic": "ADC",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + B + CY",
+    "rusDescription": "Добавляет содержимое B к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "89",
+    "decimalOpcode": "137",
+    "binaryOpcode": "10001001",
+    "mnemonic": "ADC",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + C + CY",
+    "rusDescription": "Добавляет содержимое C к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "8A",
+    "decimalOpcode": "138",
+    "binaryOpcode": "10001010",
+    "mnemonic": "ADC",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + D + CY",
+    "rusDescription": "Добавляет содержимое D к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "8B",
+    "decimalOpcode": "139",
+    "binaryOpcode": "10001011",
+    "mnemonic": "ADC",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + E + CY",
+    "rusDescription": "Добавляет содержимое E к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "8C",
+    "decimalOpcode": "140",
+    "binaryOpcode": "10001100",
+    "mnemonic": "ADC",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + H + CY",
+    "rusDescription": "Добавляет содержимое H к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "8D",
+    "decimalOpcode": "141",
+    "binaryOpcode": "10001101",
+    "mnemonic": "ADC",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + L + CY",
+    "rusDescription": "Добавляет содержимое L к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "8E",
+    "decimalOpcode": "142",
+    "binaryOpcode": "10001110",
+    "mnemonic": "ADC",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + (HL) + CY",
+    "rusDescription": "Добавляет содержимое Loc(HL) к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "8F",
+    "decimalOpcode": "143",
+    "binaryOpcode": "10001111",
+    "mnemonic": "ADC",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + A + CY",
+    "rusDescription": "Добавляет содержимое A к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "90",
+    "decimalOpcode": "144",
+    "binaryOpcode": "10010000",
+    "mnemonic": "SUB",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - B",
+    "rusDescription": "Вычетает содержимое B из содержимого А"
+  },
+  {
+    "hexOpcode": "91",
+    "decimalOpcode": "145",
+    "binaryOpcode": "10010001",
+    "mnemonic": "SUB",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - C",
+    "rusDescription": "Вычетает содержимое C из содержимого А"
+  },
+  {
+    "hexOpcode": "92",
+    "decimalOpcode": "146",
+    "binaryOpcode": "10010010",
+    "mnemonic": "SUB",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + D",
+    "rusDescription": "Вычетает содержимое D из содержимого А"
+  },
+  {
+    "hexOpcode": "93",
+    "decimalOpcode": "147",
+    "binaryOpcode": "10010011",
+    "mnemonic": "SUB",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - E",
+    "rusDescription": "Вычетает содержимое E из содержимого А"
+  },
+  {
+    "hexOpcode": "94",
+    "decimalOpcode": "148",
+    "binaryOpcode": "10010100",
+    "mnemonic": "SUB",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + H",
+    "rusDescription": "Вычетает содержимое H из содержимого А"
+  },
+  {
+    "hexOpcode": "95",
+    "decimalOpcode": "149",
+    "binaryOpcode": "10010101",
+    "mnemonic": "SUB",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - L",
+    "rusDescription": "Вычетает содержимое L из содержимого А"
+  },
+  {
+    "hexOpcode": "96",
+    "decimalOpcode": "150",
+    "binaryOpcode": "10010110",
+    "mnemonic": "SUB",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + (HL)",
+    "rusDescription": "Вычетает содержимое Loc(HL) из содержимого А"
+  },
+  {
+    "hexOpcode": "97",
+    "decimalOpcode": "151",
+    "binaryOpcode": "10010111",
+    "mnemonic": "SUB",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - A",
+    "rusDescription": "Вычетает содержимое А из содержимого А (очистить А)"
+  },
+  {
+    "hexOpcode": "98",
+    "decimalOpcode": "152",
+    "binaryOpcode": "10011000",
+    "mnemonic": "SBB",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - B - CY",
+    "rusDescription": "Вычетает содержимое B из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "99",
+    "decimalOpcode": "153",
+    "binaryOpcode": "10011001",
+    "mnemonic": "SBB",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - C - CY",
+    "rusDescription": "Вычетает содержимое C из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "9A",
+    "decimalOpcode": "154",
+    "binaryOpcode": "10011010",
+    "mnemonic": "SBB",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - D - CY",
+    "rusDescription": "Вычетает содержимое D из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "9B",
+    "decimalOpcode": "155",
+    "binaryOpcode": "10011011",
+    "mnemonic": "SBB",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - E - CY",
+    "rusDescription": "Вычетает содержимое E из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "9C",
+    "decimalOpcode": "156",
+    "binaryOpcode": "10011100",
+    "mnemonic": "SBB",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - H - CY",
+    "rusDescription": "Вычетает содержимое H из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "9D",
+    "decimalOpcode": "157",
+    "binaryOpcode": "10011101",
+    "mnemonic": "SBB",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - L - CY",
+    "rusDescription": "Вычетает содержимое L из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "9E",
+    "decimalOpcode": "158",
+    "binaryOpcode": "10011110",
+    "mnemonic": "SBB",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - (HL) - CY",
+    "rusDescription": "Вычетает содержимое Loc(HL) из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "9F",
+    "decimalOpcode": "159",
+    "binaryOpcode": "10011111",
+    "mnemonic": "SBB",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - A - CY",
+    "rusDescription": "Вычетает содержимое А из содержимого А с заёмом (очистить А)"
+  },
+  {
+    "hexOpcode": "A0",
+    "decimalOpcode": "160",
+    "binaryOpcode": "10100000",
+    "mnemonic": "ANA",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & B",
+    "rusDescription": "Логическое И B с A"
+  },
+  {
+    "hexOpcode": "A1",
+    "decimalOpcode": "161",
+    "binaryOpcode": "10100001",
+    "mnemonic": "ANA",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & C",
+    "rusDescription": "Логическое И C с A"
+  },
+  {
+    "hexOpcode": "A2",
+    "decimalOpcode": "162",
+    "binaryOpcode": "10100010",
+    "mnemonic": "ANA",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & D",
+    "rusDescription": "Логическое И D с A"
+  },
+  {
+    "hexOpcode": "A3",
+    "decimalOpcode": "163",
+    "binaryOpcode": "10100011",
+    "mnemonic": "ANA",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & E",
+    "rusDescription": "Логическое И E с A"
+  },
+  {
+    "hexOpcode": "A4",
+    "decimalOpcode": "164",
+    "binaryOpcode": "10100100",
+    "mnemonic": "ANA",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & H",
+    "rusDescription": "Логическое И H с A"
+  },
+  {
+    "hexOpcode": "A5",
+    "decimalOpcode": "165",
+    "binaryOpcode": "10100101",
+    "mnemonic": "ANA",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & L",
+    "rusDescription": "Логическое И L с A"
+  },
+  {
+    "hexOpcode": "A6",
+    "decimalOpcode": "166",
+    "binaryOpcode": "10100110",
+    "mnemonic": "ANA",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & (HL)",
+    "rusDescription": "Логическое И Loc(HL) с A"
+  },
+  {
+    "hexOpcode": "A7",
+    "decimalOpcode": "167",
+    "binaryOpcode": "10100111",
+    "mnemonic": "ANA",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & A",
+    "rusDescription": "Проверка A"
+  },
+  {
+    "hexOpcode": "A8",
+    "decimalOpcode": "168",
+    "binaryOpcode": "10101000",
+    "mnemonic": "XRA",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ B",
+    "rusDescription": "Исключающее ИЛИ B с A"
+  },
+  {
+    "hexOpcode": "A9",
+    "decimalOpcode": "169",
+    "binaryOpcode": "10101001",
+    "mnemonic": "XRA",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ C",
+    "rusDescription": "Исключающее ИЛИ C с A"
+  },
+  {
+    "hexOpcode": "AA",
+    "decimalOpcode": "170",
+    "binaryOpcode": "10101010",
+    "mnemonic": "XRA",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ D",
+    "rusDescription": "Исключающее ИЛИ D с A"
+  },
+  {
+    "hexOpcode": "AB",
+    "decimalOpcode": "171",
+    "binaryOpcode": "10101011",
+    "mnemonic": "XRA",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ E",
+    "rusDescription": "Исключающее ИЛИ E с A"
+  },
+  {
+    "hexOpcode": "AC",
+    "decimalOpcode": "172",
+    "binaryOpcode": "10101100",
+    "mnemonic": "XRA",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ H",
+    "rusDescription": "Исключающее ИЛИ H с A"
+  },
+  {
+    "hexOpcode": "AD",
+    "decimalOpcode": "173",
+    "binaryOpcode": "10101101",
+    "mnemonic": "XRA",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ L",
+    "rusDescription": "Исключающее ИЛИ L с A"
+  },
+  {
+    "hexOpcode": "AE",
+    "decimalOpcode": "174",
+    "binaryOpcode": "10101110",
+    "mnemonic": "XRA",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ (HL)",
+    "rusDescription": "Исключающее ИЛИ Loc(HL) с A"
+  },
+  {
+    "hexOpcode": "AF",
+    "decimalOpcode": "175",
+    "binaryOpcode": "10101111",
+    "mnemonic": "XRA",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ A",
+    "rusDescription": "Исключающее ИЛИ A с A (очистка A)"
+  },
+  {
+    "hexOpcode": "B0",
+    "decimalOpcode": "176",
+    "binaryOpcode": "10110000",
+    "mnemonic": "ORA",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | B",
+    "rusDescription": "Логичеcкое ИЛИ B с A"
+  },
+  {
+    "hexOpcode": "B1",
+    "decimalOpcode": "177",
+    "binaryOpcode": "10110001",
+    "mnemonic": "ORA",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | C",
+    "rusDescription": "Логичеcкое ИЛИ C с A"
+  },
+  {
+    "hexOpcode": "B2",
+    "decimalOpcode": "178",
+    "binaryOpcode": "10110010",
+    "mnemonic": "ORA",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | D",
+    "rusDescription": "Логичеcкое ИЛИ D с A"
+  },
+  {
+    "hexOpcode": "B3",
+    "decimalOpcode": "179",
+    "binaryOpcode": "10110011",
+    "mnemonic": "ORA",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | E",
+    "rusDescription": "Логичеcкое ИЛИ E с A"
+  },
+  {
+    "hexOpcode": "B4",
+    "decimalOpcode": "180",
+    "binaryOpcode": "10110100",
+    "mnemonic": "ORA",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | H",
+    "rusDescription": "Логичеcкое ИЛИ H с A"
+  },
+  {
+    "hexOpcode": "B5",
+    "decimalOpcode": "181",
+    "binaryOpcode": "10110101",
+    "mnemonic": "ORA",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | L",
+    "rusDescription": "Логичеcкое ИЛИ L с A"
+  },
+  {
+    "hexOpcode": "B6",
+    "decimalOpcode": "182",
+    "binaryOpcode": "10110110",
+    "mnemonic": "ORA",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | (HL)",
+    "rusDescription": "Логичеcкое ИЛИ Loc(HL) с A"
+  },
+  {
+    "hexOpcode": "B7",
+    "decimalOpcode": "183",
+    "binaryOpcode": "10110111",
+    "mnemonic": "ORA",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | A",
+    "rusDescription": "Проверить A и сбросить перенос"
+  },
+  {
+    "hexOpcode": "B8",
+    "decimalOpcode": "184",
+    "binaryOpcode": "10111000",
+    "mnemonic": "CMP",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - B",
+    "rusDescription": "Сравнивает содержимое B с содержимым A"
+  },
+  {
+    "hexOpcode": "B9",
+    "decimalOpcode": "185",
+    "binaryOpcode": "10111001",
+    "mnemonic": "CMP",
+    "argument1": "C",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - C",
+    "rusDescription": "Сравнивает содержимое C с содержимым A"
+  },
+  {
+    "hexOpcode": "BA",
+    "decimalOpcode": "186",
+    "binaryOpcode": "10111010",
+    "mnemonic": "CMP",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - D",
+    "rusDescription": "Сравнивает содержимое D с содержимым A"
+  },
+  {
+    "hexOpcode": "BB",
+    "decimalOpcode": "187",
+    "binaryOpcode": "10111011",
+    "mnemonic": "CMP",
+    "argument1": "E",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - E",
+    "rusDescription": "Сравнивает содержимое E с содержимым A"
+  },
+  {
+    "hexOpcode": "BC",
+    "decimalOpcode": "188",
+    "binaryOpcode": "10111100",
+    "mnemonic": "CMP",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - H",
+    "rusDescription": "Сравнивает содержимое H с содержимым A"
+  },
+  {
+    "hexOpcode": "BD",
+    "decimalOpcode": "189",
+    "binaryOpcode": "10111101",
+    "mnemonic": "CMP",
+    "argument1": "L",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - L",
+    "rusDescription": "Сравнивает содержимое L с содержимым A"
+  },
+  {
+    "hexOpcode": "BE",
+    "decimalOpcode": "190",
+    "binaryOpcode": "10111110",
+    "mnemonic": "CMP",
+    "argument1": "M",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - (HL)",
+    "rusDescription": "Сравнивает содержимое Loc(HL) с содержимым A"
+  },
+  {
+    "hexOpcode": "BF",
+    "decimalOpcode": "191",
+    "binaryOpcode": "10111111",
+    "mnemonic": "CMP",
+    "argument1": "A",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - A",
+    "rusDescription": "Установить флаг FZ"
+  },
+  {
+    "hexOpcode": "C0",
+    "decimalOpcode": "192",
+    "binaryOpcode": "11000000",
+    "mnemonic": "RNZ",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if NZ, RET",
+    "rusDescription": "Возврат из подпрограммы, если если не нуль"
+  },
+  {
+    "hexOpcode": "C1",
+    "decimalOpcode": "193",
+    "binaryOpcode": "11000001",
+    "mnemonic": "POP",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "C ← (SP), B ← (SP + 1), SP ← SP + 2",
+    "rusDescription": "Извлечь слово из стека в BC"
+  },
+  {
+    "hexOpcode": "C2",
+    "decimalOpcode": "194",
+    "binaryOpcode": "11000010",
+    "mnemonic": "JNZ",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if NZ, PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если не нуль"
+  },
+  {
+    "hexOpcode": "C3",
+    "decimalOpcode": "195",
+    "binaryOpcode": "11000011",
+    "mnemonic": "JMP",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "09",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "PC ← adr",
+    "rusDescription": "Перейти по адресу a16"
+  },
+  {
+    "hexOpcode": "C4",
+    "decimalOpcode": "196",
+    "binaryOpcode": "11000100",
+    "mnemonic": "CNZ",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if NZ, CALL adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если не нуль"
+  },
+  {
+    "hexOpcode": "C5",
+    "decimalOpcode": "197",
+    "binaryOpcode": "11000101",
+    "mnemonic": "PUSH",
+    "argument1": "B",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(SP - 2) ← C, (SP - 1) ← B, SP ← SP - 2",
+    "rusDescription": "Поместить в стек содержимое BC"
+  },
+  {
+    "hexOpcode": "C6",
+    "decimalOpcode": "198",
+    "binaryOpcode": "11000110",
+    "mnemonic": "ADI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + data",
+    "rusDescription": "Добавляет непосредственно d8 к содержимому A"
+  },
+  {
+    "hexOpcode": "C7",
+    "decimalOpcode": "199",
+    "binaryOpcode": "11000111",
+    "mnemonic": "RST",
+    "argument1": "0",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $0",
+    "rusDescription": "Запуск программы с адреса 00h"
+  },
+  {
+    "hexOpcode": "C8",
+    "decimalOpcode": "300",
+    "binaryOpcode": "11001000",
+    "mnemonic": "RZ",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if Z, RET",
+    "rusDescription": "Возврат из подпрограммы, если нуль"
+  },
+  {
+    "hexOpcode": "C9",
+    "decimalOpcode": "201",
+    "binaryOpcode": "11001001",
+    "mnemonic": "RET",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "PC.lo ← (SP), PC.hi ← (SP + 1), SP ← SP + 2",
+    "rusDescription": "Возврат из подпрограммы"
+  },
+  {
+    "hexOpcode": "CA",
+    "decimalOpcode": "202",
+    "binaryOpcode": "11001010",
+    "mnemonic": "JZ",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if Z, PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если нуль"
+  },
+  {
+    "hexOpcode": "CB",
+    "decimalOpcode": "203",
+    "binaryOpcode": "11001011",
+    "mnemonic": "JMP?",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "CC",
+    "decimalOpcode": "204",
+    "binaryOpcode": "11001100",
+    "mnemonic": "CZ",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if Z, CALL adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если нуль"
+  },
+  {
+    "hexOpcode": "CD",
+    "decimalOpcode": "205",
+    "binaryOpcode": "11001101",
+    "mnemonic": "CALL",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(SP - 1) ← PC.hi, (SP - 2) ← PC.lo, SP ← SP - 2, PC = adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16"
+  },
+  {
+    "hexOpcode": "CE",
+    "decimalOpcode": "206",
+    "binaryOpcode": "11001110",
+    "mnemonic": "ACI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A + data + CY",
+    "rusDescription": "Добавляет непосредственно d8 к содержимому A с переносом"
+  },
+  {
+    "hexOpcode": "CF",
+    "decimalOpcode": "207",
+    "binaryOpcode": "11001111",
+    "mnemonic": "RST",
+    "argument1": "1",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $8",
+    "rusDescription": "Запуск программы с адреса 08h"
+  },
+  {
+    "hexOpcode": "D0",
+    "decimalOpcode": "208",
+    "binaryOpcode": "11010000",
+    "mnemonic": "RNC",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if NCY, RET",
+    "rusDescription": "Возврат из подпрограммы, если нет переноса"
+  },
+  {
+    "hexOpcode": "D1",
+    "decimalOpcode": "209",
+    "binaryOpcode": "11010001",
+    "mnemonic": "POP",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "E ← (SP), D ← (SP + 1), SP ← SP + 2",
+    "rusDescription": "Извлечь слово из стека в DE"
+  },
+  {
+    "hexOpcode": "D2",
+    "decimalOpcode": "210",
+    "binaryOpcode": "11010010",
+    "mnemonic": "JNC",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if NCY, PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если нет переноса"
+  },
+  {
+    "hexOpcode": "D3",
+    "decimalOpcode": "211",
+    "binaryOpcode": "11010011",
+    "mnemonic": "OUT",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Misc",
+      "io"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "special",
+    "rusDescription": "Записать A в порт pp"
+  },
+  {
+    "hexOpcode": "D4",
+    "decimalOpcode": "212",
+    "binaryOpcode": "11010100",
+    "mnemonic": "CNC",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if NCY, CALL adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если нет переноса"
+  },
+  {
+    "hexOpcode": "D5",
+    "decimalOpcode": "213",
+    "binaryOpcode": "11010101",
+    "mnemonic": "PUSH",
+    "argument1": "D",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(SP - 2) ← E, (SP - 1) ← D, SP ← SP - 2",
+    "rusDescription": "Поместить в стек содержимое DE"
+  },
+  {
+    "hexOpcode": "D6",
+    "decimalOpcode": "214",
+    "binaryOpcode": "11010110",
+    "mnemonic": "SUI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - data",
+    "rusDescription": "Вычетает непосредственно d8 из содержимого А"
+  },
+  {
+    "hexOpcode": "D7",
+    "decimalOpcode": "215",
+    "binaryOpcode": "11010111",
+    "mnemonic": "RST",
+    "argument1": "2",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $10",
+    "rusDescription": "Запуск программы с адреса 10h"
+  },
+  {
+    "hexOpcode": "D8",
+    "decimalOpcode": "216",
+    "binaryOpcode": "11011000",
+    "mnemonic": "RC",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if CY, RET",
+    "rusDescription": "Возврат из подпрограммы, если перенос"
+  },
+  {
+    "hexOpcode": "D9",
+    "decimalOpcode": "217",
+    "binaryOpcode": "11011001",
+    "mnemonic": "RET?",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "DA",
+    "decimalOpcode": "218",
+    "binaryOpcode": "11011010",
+    "mnemonic": "JC",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if CY, PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если перенос"
+  },
+  {
+    "hexOpcode": "DB",
+    "decimalOpcode": "219",
+    "binaryOpcode": "11011011",
+    "mnemonic": "IN",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "13",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Misc",
+      "io"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "special",
+    "rusDescription": "Ввести данные из порта pp"
+  },
+  {
+    "hexOpcode": "DC",
+    "decimalOpcode": "220",
+    "binaryOpcode": "11011100",
+    "mnemonic": "CC",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if CY, CALL adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если перенос"
+  },
+  {
+    "hexOpcode": "DD",
+    "decimalOpcode": "221",
+    "binaryOpcode": "11011101",
+    "mnemonic": "CALL?",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "DE",
+    "decimalOpcode": "222",
+    "binaryOpcode": "11011110",
+    "mnemonic": "SBI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A - data - CY",
+    "rusDescription": "Вычетает непосредственно d8 из содержимого А с заёмом"
+  },
+  {
+    "hexOpcode": "DF",
+    "decimalOpcode": "223",
+    "binaryOpcode": "11011111",
+    "mnemonic": "RST",
+    "argument1": "3",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $18",
+    "rusDescription": "Запуск программы с адреса 18h"
+  },
+  {
+    "hexOpcode": "E0",
+    "decimalOpcode": "224",
+    "binaryOpcode": "11100000",
+    "mnemonic": "RPO",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if PO, RET",
+    "rusDescription": "Возврат из подпрограммы, если паритет нечётный"
+  },
+  {
+    "hexOpcode": "E1",
+    "decimalOpcode": "225",
+    "binaryOpcode": "11100001",
+    "mnemonic": "POP",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ← (SP), H ← (SP + 1), SP ← SP + 2",
+    "rusDescription": "Извлечь слово из стека в HL"
+  },
+  {
+    "hexOpcode": "E2",
+    "decimalOpcode": "226",
+    "binaryOpcode": "11100010",
+    "mnemonic": "JPO",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if PO, PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если паритет нечётный"
+  },
+  {
+    "hexOpcode": "E3",
+    "decimalOpcode": "227",
+    "binaryOpcode": "11100011",
+    "mnemonic": "XTHL",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "18",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "L ↔ (SP), H ↔ (SP + 1)",
+    "rusDescription": "Обмен содержимого вершины стека с содержимым HL"
+  },
+  {
+    "hexOpcode": "E4",
+    "decimalOpcode": "228",
+    "binaryOpcode": "11100100",
+    "mnemonic": "CPO",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if PO, CALL adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если паритет нечётный"
+  },
+  {
+    "hexOpcode": "E5",
+    "decimalOpcode": "229",
+    "binaryOpcode": "11100101",
+    "mnemonic": "PUSH",
+    "argument1": "H",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(SP - 2) ← L, (SP - 1) ← H, SP ← SP - 2",
+    "rusDescription": "Поместить в стек содержимое HL"
+  },
+  {
+    "hexOpcode": "E6",
+    "decimalOpcode": "230",
+    "binaryOpcode": "11100110",
+    "mnemonic": "ANI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A & data",
+    "rusDescription": "Логическое И d8 с A"
+  },
+  {
+    "hexOpcode": "E7",
+    "decimalOpcode": "231",
+    "binaryOpcode": "11100111",
+    "mnemonic": "RST",
+    "argument1": "4",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $20",
+    "rusDescription": "Запуск программы с адреса 20h"
+  },
+  {
+    "hexOpcode": "E8",
+    "decimalOpcode": "232",
+    "binaryOpcode": "11101000",
+    "mnemonic": "RPE",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if PE, RET",
+    "rusDescription": "Возврат из подпрограммы, если паритет чётный"
+  },
+  {
+    "hexOpcode": "E9",
+    "decimalOpcode": "233",
+    "binaryOpcode": "11101001",
+    "mnemonic": "PCHL",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "PC.hi ← H, PC.lo ← L",
+    "rusDescription": "Передать управление по адресу в HL"
+  },
+  {
+    "hexOpcode": "EA",
+    "decimalOpcode": "234",
+    "binaryOpcode": "11101010",
+    "mnemonic": "JPE",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if PE, PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если паритет чётный"
+  },
+  {
+    "hexOpcode": "EB",
+    "decimalOpcode": "235",
+    "binaryOpcode": "11101011",
+    "mnemonic": "XCHG",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "H ↔ D, L ↔ E",
+    "rusDescription": "Обмен содержимым DE и HL"
+  },
+  {
+    "hexOpcode": "EC",
+    "decimalOpcode": "236",
+    "binaryOpcode": "11101100",
+    "mnemonic": "CPE",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if PE, CALL adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если паритет чётный"
+  },
+  {
+    "hexOpcode": "ED",
+    "decimalOpcode": "237",
+    "binaryOpcode": "11101101",
+    "mnemonic": "CALL?",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "EE",
+    "decimalOpcode": "238",
+    "binaryOpcode": "11101110",
+    "mnemonic": "XRI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A ^ data",
+    "rusDescription": "Исключающее ИЛИ d8 с A"
+  },
+  {
+    "hexOpcode": "EF",
+    "decimalOpcode": "239",
+    "binaryOpcode": "11101111",
+    "mnemonic": "RST",
+    "argument1": "5",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $28",
+    "rusDescription": "Запуск программы с адреса 28h"
+  },
+  {
+    "hexOpcode": "F0",
+    "decimalOpcode": "240",
+    "binaryOpcode": "11110000",
+    "mnemonic": "RP",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if P, RET",
+    "rusDescription": "Возврат из подпрограммы, если плюс"
+  },
+  {
+    "hexOpcode": "F1",
+    "decimalOpcode": "241",
+    "binaryOpcode": "11110001",
+    "mnemonic": "POP",
+    "argument1": "PSW",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "flags ← (SP), A ← (SP + 1), SP ← SP + 2",
+    "rusDescription": "Извлечь слово из стека в PSW"
+  },
+  {
+    "hexOpcode": "F2",
+    "decimalOpcode": "242",
+    "binaryOpcode": "11110010",
+    "mnemonic": "JP",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if P = 1 PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если плюс"
+  },
+  {
+    "hexOpcode": "F3",
+    "decimalOpcode": "243",
+    "binaryOpcode": "11110011",
+    "mnemonic": "DI",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Misc",
+      "interrupt"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "special",
+    "rusDescription": "Запретить прерывания"
+  },
+  {
+    "hexOpcode": "F4",
+    "decimalOpcode": "244",
+    "binaryOpcode": "11110100",
+    "mnemonic": "CP",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if P, PC ← adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если плюс"
+  },
+  {
+    "hexOpcode": "F5",
+    "decimalOpcode": "245",
+    "binaryOpcode": "11110101",
+    "mnemonic": "PUSH",
+    "argument1": "PSW",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "(SP - 2) ← flags, (SP - 1) ← A, SP ← SP - 2",
+    "rusDescription": "Поместить в стек содержимое PSW"
+  },
+  {
+    "hexOpcode": "F6",
+    "decimalOpcode": "246",
+    "binaryOpcode": "11110110",
+    "mnemonic": "ORI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A ← A | data",
+    "rusDescription": "Логичеcкое ИЛИ d8 c A"
+  },
+  {
+    "hexOpcode": "F7",
+    "decimalOpcode": "247",
+    "binaryOpcode": "11110111",
+    "mnemonic": "RST",
+    "argument1": "6",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $30",
+    "rusDescription": "Запуск программы с адреса 30h"
+  },
+  {
+    "hexOpcode": "F8",
+    "decimalOpcode": "248",
+    "binaryOpcode": "11111000",
+    "mnemonic": "RM",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5/11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if M, RET",
+    "rusDescription": "Возврат из подпрограммы, если минус"
+  },
+  {
+    "hexOpcode": "F9",
+    "decimalOpcode": "249",
+    "binaryOpcode": "11111001",
+    "mnemonic": "SPHL",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "5",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "16bit load",
+      "stack"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "SP = HL",
+    "rusDescription": "Загрузить SP из HL"
+  },
+  {
+    "hexOpcode": "FA",
+    "decimalOpcode": "250",
+    "binaryOpcode": "11111010",
+    "mnemonic": "JM",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "10",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if M, PC ← adr",
+    "rusDescription": "Перейти по адресу a16, если минус"
+  },
+  {
+    "hexOpcode": "FB",
+    "decimalOpcode": "251",
+    "binaryOpcode": "11111011",
+    "mnemonic": "EI",
+    "argument1": "",
+    "argument2": "",
+    "cycles": "4",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Misc",
+      "interrupt"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "special",
+    "rusDescription": "Разрешить прерывания"
+  },
+  {
+    "hexOpcode": "FC",
+    "decimalOpcode": "252",
+    "binaryOpcode": "11111100",
+    "mnemonic": "CM",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "11/17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "if M, CALL adr",
+    "rusDescription": "Передать управление подпрограмме по адресу a16, если минус"
+  },
+  {
+    "hexOpcode": "FD",
+    "decimalOpcode": "253",
+    "binaryOpcode": "11111101",
+    "mnemonic": "CALL?",
+    "argument1": "DATA16",
+    "argument2": "",
+    "cycles": "17",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Undocumented",
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "undocumented",
+    "rusDescription": "Не задокументировано"
+  },
+  {
+    "hexOpcode": "FE",
+    "decimalOpcode": "254",
+    "binaryOpcode": "11111110",
+    "mnemonic": "CPI",
+    "argument1": "DATA8",
+    "argument2": "",
+    "cycles": "7",
+    "mask": "",
+    "flags": "S Z A P C",
+    "tags": [
+      "8bit arithmetic"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [
+      "Z",
+      "S",
+      "P",
+      "CY",
+      "AC"
+    ],
+    "functionDescription": "A - data",
+    "rusDescription": "Сравнивает непосредственно d8 с содержимым A"
+  },
+  {
+    "hexOpcode": "FF",
+    "decimalOpcode": "255",
+    "binaryOpcode": "11111111",
+    "mnemonic": "RST",
+    "argument1": "7",
+    "argument2": "",
+    "cycles": "11",
+    "mask": "",
+    "flags": "",
+    "tags": [
+      "Jumps",
+      "branching"
+    ],
+    "bytesCount": 0,
+    "flagsAffected": [],
+    "functionDescription": "CALL $38",
+    "rusDescription": "Запуск программы с адреса 38h"
+  }
+]

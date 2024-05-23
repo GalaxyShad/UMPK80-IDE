@@ -69,10 +69,15 @@ function useToolbarActions() {
     }
 
     setIsBuilding(false)
+
+    return result.isSuccess
   }
 
   const playClick = async () => {
-    await buildClick()
+    const isSuccess = await buildClick()
+
+    if (!isSuccess) return
+
     await umpkRun(fromAddress)
   }
 

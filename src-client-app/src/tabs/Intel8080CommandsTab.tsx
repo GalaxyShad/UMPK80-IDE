@@ -29,7 +29,7 @@ export function Intel8080CommandsTab() {
     flags: "",
     tags: "",
     bytesCount: "1",
-    flagsAffected: "",
+    flagsAffected: [],
     functionDescription: "",
     rusDescription: ""
   })
@@ -60,7 +60,7 @@ export function Intel8080CommandsTab() {
             <TooltipContent alignOffset={64} align="start" className="min-w-48 max-w-96 border-primary/50">
               <div className="flex flex-row gap-2">
                 <div className="mb-2 font-bold">
-                  {cn(x.mnemonic, [x.argument1, x.argument2].filter(y => y).join(","))}
+                  {x.mnemonic} {[x.argument1, x.argument2].filter(y => y).join(",")}
                 </div>
                 <div>
                   ({x.hexOpcode})
@@ -70,7 +70,7 @@ export function Intel8080CommandsTab() {
                 {x.functionDescription}
               </div>
               <div>
-                {cn("Влияние на флаги: ", x.flags != "" ? x.flags : "отсутствует")}
+                Влияет на флаги: {x.flagsAffected.length !== 0 ? x.flagsAffected.join(' ') : "-"}
               </div>
               <div>
                 Описание: {x.rusDescription}

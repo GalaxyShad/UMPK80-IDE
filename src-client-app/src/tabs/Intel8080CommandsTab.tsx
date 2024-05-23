@@ -2,7 +2,7 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.tsx'
 import { cn } from '@/lib/utils';
 
-import { default as docIntel8080Commands } from '@/assets/out.json';
+import { default as docIntel8080Commands } from '@/assets/docCommands.json'
 
 const GroopCommand = {
   ["Undocumented"]: "text-zinc-400",
@@ -35,7 +35,7 @@ export function Intel8080CommandsTab() {
   })
 
   return (
-    <div>
+    <div className="overflow-auto min-w-[1400px]">
       <div className="grid grid-cols-16 w-full font-mono">
         {Array(16).fill(0).map((_, i) => (<div className="flex text-center justify-center">{i.toHexString()}</div>))}
       </div>
@@ -58,12 +58,12 @@ export function Intel8080CommandsTab() {
               </div>
             </TooltipTrigger>
             <TooltipContent alignOffset={64} align="start" className="min-w-48 max-w-96 border-primary/50">
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-row gap-2">
                 <div className="mb-2 font-bold">
                   {cn(x.mnemonic, [x.argument1, x.argument2].filter(y => y).join(","))}
                 </div>
                 <div>
-                  {x.hexOpcode}
+                  ({x.hexOpcode})
                 </div>
               </div>
               <div>
@@ -73,7 +73,7 @@ export function Intel8080CommandsTab() {
                 {cn("Влияние на флаги: ", x.flags != "" ? x.flags : "отсутствует")}
               </div>
               <div>
-                {x.rusDescription}
+                Описание: {x.rusDescription}
               </div>
             </TooltipContent>
           </Tooltip>

@@ -27,6 +27,7 @@ export default function UmpkFlags() {
     <UmpkIconPanel icon={<FlagIcon size={20} />}>
       {flags.map((flag, i) => (
         <Toggle
+          className="text-foreground/25"
           size="sm"
           key={i}
           pressed={(psw & flag.mask) !== 0}

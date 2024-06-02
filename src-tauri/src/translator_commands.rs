@@ -1,4 +1,5 @@
 use std::fmt::Error;
+use std::io::{stderr, stdout};
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
@@ -32,7 +33,10 @@ pub async fn translator_version(exe_path: String) -> Result<String, String> {
         .execute()
         .map_err(|err| err.to_string())?;
 
-    Ok(String::from_utf8(res.stderr).unwrap()) // Change
+    let stderr_string = String::from_utf8(res.stderr).unwrap();
+    let stdout_string = String::from_utf8(res.stdout).unwrap();
+
+    Ok(if stderr_string == "" { stdout_string } else { stderr_string })
 }
 
 #[tauri::command]

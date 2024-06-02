@@ -60,11 +60,13 @@ pub fn translate_assembly_to_binary(
     source_code: &str,
     translator_exe_path: &Path,
 ) -> Result<TranslateAssemblyToBinaryResult, TryTranslateError> {
-    let (_temp_dir, _temp_src_file, temp_src_file_path) =
+    let (_temp_dir, temp_src_file, temp_src_file_path) =
         make_temp_assembly_source_code_file(source_code).map_err(|err| TryTranslateError {
             kind: TryTranslateErrorType::SourceCodeCreateTempFile,
             inner: err,
         })?;
+
+    drop(temp_src_file);
 
     let translate_output = SomeIntel8080Translator::new(translator_exe_path)
         .source_code_path(&temp_src_file_path)
@@ -136,6 +138,8 @@ pub fn translate_to_file_and_open(
             kind: TryTranslateErrorType::SourceCodeCreateTempFile,
             inner: err,
         })?;
+
+    drop(temp_src_file);
 
     let mut translate_output = SomeIntel8080Translator::new(translator_exe_path);
 

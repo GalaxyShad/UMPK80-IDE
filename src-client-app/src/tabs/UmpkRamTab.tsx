@@ -13,7 +13,7 @@ export default function UmpkRamTab() {
   }
 
   useEffect(() => {
-    const int = setInterval(f, 1)
+    const int = setInterval(f, 50)
 
     return () => clearInterval(int)
   }, [])

@@ -18,7 +18,7 @@ export default function UmpkTab() {
   useEffect(() => {
     const observer = new ResizeObserver(() => {
       if (refUmpk.current?.offsetWidth)
-        setNumColumns((refUmpk.current?.offsetWidth > 400) ? 2 : 1)
+        setNumColumns((refUmpk.current?.offsetWidth > 460) ? 2 : 1)
     })
 
     if (refUmpk.current)

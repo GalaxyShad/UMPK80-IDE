@@ -180,7 +180,7 @@ export default function Toolbar() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <div className="flex flex-row py-1 px-2 gap-4 justify-between">
+    <div className="flex flex-row py-1 px-2 gap-x-4 gap-y-2 justify-between flex-wrap">
       <span className="flex flex-row gap-1">
         <ToolbarButton onClick={newFileClick}>
           <File size={16} className="text-foreground" />

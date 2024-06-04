@@ -14,7 +14,7 @@ export default function UmpkStackTab() {
     const int = setInterval(async () => {
       const stack = await getStack()
       setStack(stack)
-    }, 10)
+    }, 50)
 
     return () => clearInterval(int)
   }, [getStack])

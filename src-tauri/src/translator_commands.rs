@@ -1,9 +1,11 @@
 use std::fmt::Error;
 use std::io::{stderr, stdout};
 use std::path::Path;
+use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
 use tauri::State;
+use tempfile::TempDir;
 
 use crate::translator_lib::SomeIntel8080Translator;
 use crate::translator_service::{
@@ -12,6 +14,18 @@ use crate::translator_service::{
     AssemblyListingLine, TryTranslateErrorType,
 };
 use crate::umpk80_commands::Umpk80State;
+use crate::umpk80_lib::Umpk80;
+
+pub struct TempDirState(pub Arc<Mutex<TempDir>>);
+
+impl TempDirState {
+    pub fn new() -> Self {
+        let temp_dir = TempDir::new().unwrap_or_else(|_| panic!("Failed to create temporary directory"));
+        let temp_dir = Arc::new(Mutex::new(temp_dir));
+
+        Self(temp_dir)
+    }
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct TranslateAndBuildPayload {
@@ -41,18 +55,21 @@ pub async fn translator_version(exe_path: String) -> Result<String, String> {
 
 #[tauri::command]
 pub async fn translator_export_to(
+    temp_dir: State<'_, TempDirState>,
     to: String,
     source_code: String,
     exe_path: String,
 ) -> Result<(), String> {
+    let temp_path = temp_dir.0.lock().unwrap();
+
     match to.to_lowercase().as_str() {
-        "csv" => translate_to_csv_and_open(&source_code, Path::new(&exe_path))
+        "csv" => translate_to_csv_and_open(temp_path.path(), &source_code, Path::new(&exe_path))
             .map_err(|e| e.to_string())?,
-        "docx" => translate_to_docx_and_open(&source_code, Path::new(&exe_path))
+        "docx" => translate_to_docx_and_open(temp_path.path(), &source_code, Path::new(&exe_path))
             .map_err(|e| e.to_string())?,
-        "markdown" => translate_to_markdown_and_open(&source_code, Path::new(&exe_path))
+        "markdown" => translate_to_markdown_and_open(temp_path.path(), &source_code, Path::new(&exe_path))
             .map_err(|e| e.to_string())?,
-        "txt" => translate_to_txt_and_open(&source_code, Path::new(&exe_path))
+        "txt" => translate_to_txt_and_open(temp_path.path(), &source_code, Path::new(&exe_path))
             .map_err(|e| e.to_string())?,
         _ => (),
     };
@@ -63,12 +80,15 @@ pub async fn translator_export_to(
 #[tauri::command]
 pub async fn translator_build(
     umpk80state: State<'_, Umpk80State>,
+    temp_dir: State<'_, TempDirState>,
     source_code: String,
     exe_path: String,
     ram_shift: u16,
 ) -> Result<TranslateAndBuildPayload, String> {
+    let temp_path = temp_dir.0.lock().unwrap();
+
     let res =
-        translate_assembly_to_binary(&source_code, Path::new(&exe_path)).map_err(
+        translate_assembly_to_binary(temp_path.path(), &source_code, Path::new(&exe_path)).map_err(
             |err| match err.kind {
                 TryTranslateErrorType::SourceCodeCreateTempFile => {
                     format!("Cannot create source code file :(. {}", err.inner)

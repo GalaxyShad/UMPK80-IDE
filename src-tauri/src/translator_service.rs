@@ -38,16 +38,15 @@ impl Debug for TryTranslateError {
 }
 
 fn make_temp_assembly_source_code_file(
+    temp_dir: &Path,
     source_code: &str,
-) -> Result<(TempDir, File, PathBuf), Error> {
-    let temp_dir = TempDir::new()?;
-
-    let source_file_path = Path::join(temp_dir.path(), "a.asm");
+) -> Result<(File, PathBuf), Error> {
+    let source_file_path = Path::join(temp_dir, "a.asm");
 
     let mut source_file = File::create(&source_file_path)?;
     source_file.write_all(source_code.as_bytes())?;
 
-    Ok((temp_dir, source_file, source_file_path))
+    Ok((source_file, source_file_path))
 }
 
 pub struct TranslateAssemblyToBinaryResult {
@@ -57,11 +56,12 @@ pub struct TranslateAssemblyToBinaryResult {
 }
 
 pub fn translate_assembly_to_binary(
+    temp_dir: &Path,
     source_code: &str,
     translator_exe_path: &Path,
 ) -> Result<TranslateAssemblyToBinaryResult, TryTranslateError> {
-    let (_temp_dir, temp_src_file, temp_src_file_path) =
-        make_temp_assembly_source_code_file(source_code).map_err(|err| TryTranslateError {
+    let (temp_src_file, temp_src_file_path) =
+        make_temp_assembly_source_code_file(temp_dir, source_code).map_err(|err| TryTranslateError {
             kind: TryTranslateErrorType::SourceCodeCreateTempFile,
             inner: err,
         })?;
@@ -129,17 +129,16 @@ impl fmt::Display for TranslateFileType {
 }
 
 pub fn translate_to_file_and_open(
+    temp_dir: &Path,
     source_code: &str,
     translator_exe_path: &Path,
     file_type: TranslateFileType,
 ) -> Result<(), TryTranslateError> {
-    let (temp_dir, temp_src_file, temp_src_file_path) =
-        make_temp_assembly_source_code_file(source_code).map_err(|err| TryTranslateError {
+    let (temp_src_file, temp_src_file_path) =
+        make_temp_assembly_source_code_file(temp_dir, source_code).map_err(|err| TryTranslateError {
             kind: TryTranslateErrorType::SourceCodeCreateTempFile,
             inner: err,
         })?;
-
-    drop(temp_src_file);
 
     let mut translate_output = SomeIntel8080Translator::new(translator_exe_path);
 
@@ -152,6 +151,8 @@ pub fn translate_to_file_and_open(
         TranslateFileType::Txt => &mut translate_output,
     };
 
+    drop(temp_src_file);
+
     translate_output
         .execute()
         .map_err(|err| TryTranslateError {
@@ -162,56 +163,52 @@ pub fn translate_to_file_and_open(
     let out_file_path = temp_src_file_path
         .with_extension(format!("i8080asm.{}", file_type.to_string().to_lowercase()));
 
-    let mut cmd = Command::new(match env::consts::OS {
+    Command::new(match env::consts::OS {
         "macos" => "open",
         "linux" => "xdg-open",
-        "windows" => "",
-        _ => panic!("unsupported OS"),
+        "windows" => "explorer",
+        _ => { panic!("Unsupported OS") }
     })
-    .arg(out_file_path)
-    .spawn()
-    .map_err(|err| TryTranslateError {
-        kind: TryTranslateErrorType::BinaryFileOpen,
-        inner: err,
-    })?;
-
-    cmd.wait().map_err(|err| TryTranslateError {
-        kind: TryTranslateErrorType::BinaryFileOpen,
-        inner: err,
-    })?;
-
-    // Wait some time before file got deleted
-    thread::sleep(time::Duration::from_millis(1500));
+        .arg(out_file_path)
+        .spawn()
+        .map_err(|err| TryTranslateError {
+            kind: TryTranslateErrorType::BinaryFileOpen,
+            inner: err,
+        })?;
 
     Ok(())
 }
 
 pub fn translate_to_docx_and_open(
+    temp_dir: &Path,
     source_code: &str,
     translator_exe_path: &Path,
 ) -> Result<(), TryTranslateError> {
-    translate_to_file_and_open(source_code, translator_exe_path, TranslateFileType::Docx)
+    translate_to_file_and_open(temp_dir, source_code, translator_exe_path, TranslateFileType::Docx)
 }
 
 pub fn translate_to_csv_and_open(
+    temp_dir: &Path,
     source_code: &str,
     translator_exe_path: &Path,
 ) -> Result<(), TryTranslateError> {
-    translate_to_file_and_open(source_code, translator_exe_path, TranslateFileType::Csv)
+    translate_to_file_and_open(temp_dir, source_code, translator_exe_path, TranslateFileType::Csv)
 }
 
 pub fn translate_to_txt_and_open(
+    temp_dir: &Path,
     source_code: &str,
     translator_exe_path: &Path,
 ) -> Result<(), TryTranslateError> {
-    translate_to_file_and_open(source_code, translator_exe_path, TranslateFileType::Txt)
+    translate_to_file_and_open(temp_dir, source_code, translator_exe_path, TranslateFileType::Txt)
 }
 
 pub fn translate_to_markdown_and_open(
+    temp_dir: &Path,
     source_code: &str,
     translator_exe_path: &Path,
 ) -> Result<(), TryTranslateError> {
-    translate_to_file_and_open(source_code, translator_exe_path, TranslateFileType::Md)
+    translate_to_file_and_open(temp_dir, source_code, translator_exe_path, TranslateFileType::Md)
 }
 
 pub fn parse_assembly_line(line: &str) -> AssemblyListingLine {

@@ -1,3 +1,6 @@
 [submodule "core"]
 	path = core
 	url = https://github.com/GalaxyShad/UMPK-80-Emulator
+[submodule "translator"]
+	path = translator
+	url = https://github.com/GalaxyShad/Some-i8080-ASM-Translator

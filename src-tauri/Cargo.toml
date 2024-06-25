@@ -26,6 +26,7 @@ log = "0.4.21"
 csv = "1.3.0"
 thiserror = "1.0.58"
 cc = "1.0.90"
+tauri-cli = "1.5.14"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.

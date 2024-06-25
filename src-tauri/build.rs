@@ -1,4 +1,5 @@
 use std::{env};
+use std::env::consts::{ARCH, OS};
 use std::process::Command;
 use cc::Build;
 
@@ -17,13 +18,35 @@ fn main() {
         .compile("cumpk80");
 
     let target_triple = env::var("TARGET").expect("TARGET environment variable not set");
-    let rid = env::var("RID").unwrap_or_else(|_| "win-x64".to_string());
+    let mut rid;
+
+    println!("cargo::warning=ARCH-{:?}", ARCH);
+
+    if (ARCH == "x86_64") {
+        rid = match OS {
+            "linux" => "linux-x64",
+            "windows" => "win-x64",
+            "macos" => "osx-x64",
+
+            _ => { panic!("Unsupported OS") }
+        }
+    } else if (ARCH == "aarch64") {
+        rid = match OS {
+            "linux" => "linux-arm64",
+            "windows" => "win-arm64",
+            "macos" => "osx-arm64",
+
+            _ => { panic!("Unsupported OS") }
+        }
+    } else {
+        panic!("Unsupported OS")
+    }
 
     let output = Command::new("dotnet")
         .arg("publish")
         .arg("../translator/SomeAsmTranslator/SomeAsmTranslator.csproj")
         .arg("--self-contained").arg("true")
-        .arg("--runtime").arg(&rid)
+        .arg("--runtime").arg(rid)
         .arg("--output").arg("./bin")
         .arg("-p:PublishSingleFile=true")
         .arg("-p:UseAppHost=true")

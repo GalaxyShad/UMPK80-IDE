@@ -1,7 +1,9 @@
+#![windows_subsystem = "windows"]
+
 use rodio::Source;
 
-use std::vec;
-use tauri::Manager;
+use std::{fs, vec};
+use tauri::{Manager, State, WindowEvent};
 
 mod editor_commands;
 mod squarewave;
@@ -22,6 +24,20 @@ use crate::umpk80_commands::{
 
 fn main() {
     tauri::Builder::default()
+        .enable_macos_default_menu(false)
+        .on_window_event(move |event| match event.event() {
+            WindowEvent::Destroyed => {
+                let mut am: State<TempDirState> = event.window().state();
+
+                let path = {
+                    let state = am.0.lock().unwrap();
+                    state.path().to_owned()
+                };
+
+                fs::remove_dir_all(path).unwrap();
+            }
+            _ => { }
+        })
         .manage(TempDirState::new())
         .manage(Umpk80State::new())
         .invoke_handler(tauri::generate_handler![

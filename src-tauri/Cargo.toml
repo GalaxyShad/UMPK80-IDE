@@ -18,7 +18,7 @@ cc = "1.0"
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.4.0", features = [ "dialog-save", "dialog-open"] }
+tauri = { version = "1.4.0", features = [ "dialog-save", "dialog-open", "path-all"] }
 libc = "0.2.147"
 tempfile = "3.10.1"
 rodio = "0.17.3"

@@ -20,11 +20,12 @@ import { translatorGetVersion } from '@/services/translatorService.ts'
 
 export function SettingsContext({ children }: { children: React.ReactNode }) {
   const translatorStoreCommand = useTranslatorStore(s => s.translateCommand)
+  const translatorStoreDefaultCommand = useTranslatorStore(s => s.defaultTranslateCommand)
   const translatorStoreSetCommand = useTranslatorStore(s => s.setTranslateCommand)
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [path, setPath] = useState<string>(translatorStoreCommand)
-  const [isUsingCustomTranslatorPath, setIsUsingCustomTranslatorPath] = useState<boolean>(path !== 'i8080')
+  const [isUsingCustomTranslatorPath, setIsUsingCustomTranslatorPath] = useState<boolean>(path !== translatorStoreDefaultCommand)
   const [isOutputError, setIsOutputError] = useState<boolean | undefined>(undefined)
   const [output, setOutput] = useState<string>('')
 
@@ -74,12 +75,12 @@ export function SettingsContext({ children }: { children: React.ReactNode }) {
             <Checkbox
               checked={isUsingCustomTranslatorPath}
               onCheckedChange={(x: boolean) => {
-                setPath(x ? '' : 'i8080')
+                setPath(x ? '' : translatorStoreDefaultCommand)
                 setIsUsingCustomTranslatorPath(x)
               }}
               id="customPathCheckbox"
             />
-            <Label htmlFor="customPathCheckbox">Использовать абсолютный путь до транслятора</Label>
+            <Label htmlFor="customPathCheckbox">Использовать внешний транслятор</Label>
           </div>
 
           <div className="flex">

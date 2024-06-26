@@ -1,5 +1,3 @@
-use std::fmt::Error;
-use std::io::{stderr, stdout};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
@@ -14,7 +12,6 @@ use crate::translator_service::{
     AssemblyListingLine, TryTranslateErrorType,
 };
 use crate::umpk80_commands::Umpk80State;
-use crate::umpk80_lib::Umpk80;
 
 pub struct TempDirState(pub Arc<Mutex<TempDir>>);
 
@@ -131,4 +128,15 @@ pub async fn translator_get_monitor_system(
     }
 
     Ok(parse_monitor_system(&resource_path.unwrap()))
+}
+
+#[tauri::command]
+pub async fn translator_get_default_path() -> Result<String, String> {
+    let exe_path = std::env::current_exe().map_err(|e| e.to_string())?;
+
+    let exe_parent_path = exe_path.parent().unwrap();
+
+    let exe_parent_path = exe_parent_path.join(Path::new("i8080"));
+
+    Ok(exe_parent_path.into_os_string().into_string().unwrap())
 }

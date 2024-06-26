@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { Terminal } from '@xterm/xterm'
-import { join, resourceDir } from '@tauri-apps/api/path'
+import { tauri } from '@tauri-apps/api'
 
 interface TranslatorState {
   defaultTranslateCommand: string;
@@ -33,8 +33,7 @@ const useTranslatorStore = create<TranslatorState>()((set) => ({
 }));
 
 (async () => {
-  const rd = await resourceDir()
-  const defaultTranslateCommand = await join(rd, 'i8080')
+  const defaultTranslateCommand = await tauri.invoke<string>('translator_get_default_path')
 
   useTranslatorStore.setState({ defaultTranslateCommand })
 

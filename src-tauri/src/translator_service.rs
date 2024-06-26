@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
-use std::fmt::format;
+
 use std::{env, fmt, fmt::{Debug, Formatter}, fs, fs::File, io::BufRead, io::BufReader, io::Error, io::Read, io::Write, path::{Path, PathBuf}, process::Command, process::Output, thread, time};
-use tempfile::TempDir;
+
 
 use crate::translator_lib::SomeIntel8080Translator;
 
@@ -266,14 +266,14 @@ mod tests {
 
     #[test]
     fn test__translate_assembly_to_binary__first_element_is_27() {
-        let res = translate_assembly_to_binary("DAA", Path::new("i8080")).unwrap();
+        let res = translate_assembly_to_binary(Path::new("."), "DAA", Path::new("i8080")).unwrap();
 
         assert_eq!(res.binary_data[0], 0x27);
     }
 
     #[test]
     fn test__translate_assembly_to_binary__first_element_is_27_and_has_listing() {
-        let res = translate_assembly_to_binary("DAA", Path::new("i8080")).unwrap();
+        let res = translate_assembly_to_binary(Path::new("."), "DAA", Path::new("i8080")).unwrap();
 
         assert_eq!(res.binary_data[0], 0x27);
 
@@ -284,7 +284,7 @@ mod tests {
 
     #[test]
     fn test__translate_to_docx_and_open() {
-        assert!(translate_to_docx_and_open("DAA", Path::new("i8080")).is_ok())
+        assert!(translate_to_docx_and_open(Path::new("."), "DAA", Path::new("i8080")).is_ok())
     }
 
     #[test]

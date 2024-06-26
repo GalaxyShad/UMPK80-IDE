@@ -1,6 +1,6 @@
 use std::ffi::CStr;
+
 use libc::{c_void, size_t};
-use crate::umpk80_lib::Umpk80Register::B;
 
 #[repr(C)]
 pub enum Umpk80Register {
@@ -43,7 +43,7 @@ pub struct UMPK80Instruction {
 }
 
 #[repr(C)]
-struct CUMPK80_I8080DisassembleResult {
+struct Cumpk80I8080disassembleResult {
     address: u16,
     bytes_count: u8,
     bytes: [u8; 3],
@@ -60,56 +60,56 @@ pub struct I8080DisassembleResult {
 
 #[link(name = "cumpk80")]
 extern "C" {
-    fn UMPK80_Create() -> *mut libc::c_void;
-    fn UMPK80_Free(umpk: *mut libc::c_void);
+    fn UMPK80_Create() -> *mut c_void;
+    fn UMPK80_Free(umpk: *mut c_void);
 
-    fn UMPK80_PortIOSetInput(umpk: *mut libc::c_void, data: u8);
-    fn UMPK80_PortIOGetInput(umpk: *mut libc::c_void) -> u8;
+    fn UMPK80_PortIOSetInput(umpk: *mut c_void, data: u8);
+    fn UMPK80_PortIOGetInput(umpk: *mut c_void) -> u8;
 
-    fn UMPK80_PortIOGetOutput(umpk: *mut libc::c_void) -> u8;
+    fn UMPK80_PortIOGetOutput(umpk: *mut c_void) -> u8;
 
-    fn UMPK80_Tick(umpk: *mut libc::c_void);
-    fn UMPK80_Stop(umpk: *mut libc::c_void);
-    fn UMPK80_Restart(umpk: *mut libc::c_void);
+    fn UMPK80_Tick(umpk: *mut c_void);
+    fn UMPK80_Stop(umpk: *mut c_void);
+    fn UMPK80_Restart(umpk: *mut c_void);
 
-    fn UMPK80_KeyboardPressButton(umpk: *mut libc::c_void, key: u8);
-    fn UMPK80_KeyboardReleaseButton(umpk: *mut libc::c_void, key: u8);
+    fn UMPK80_KeyboardPressButton(umpk: *mut c_void, key: u8);
+    fn UMPK80_KeyboardReleaseButton(umpk: *mut c_void, key: u8);
 
-    fn UMPK80_DisplayGetDigit(umpk: *mut libc::c_void, digit: libc::c_int) -> u8;
-    fn UMPK80_LoadOS(umpk: *mut libc::c_void, os: *const u8);
+    fn UMPK80_DisplayGetDigit(umpk: *mut c_void, digit: libc::c_int) -> u8;
+    fn UMPK80_LoadOS(umpk: *mut c_void, os: *const u8);
 
     fn UMPK80_LoadProgram(
-        umpk: *mut libc::c_void,
+        umpk: *mut c_void,
         program: *const u8,
-        programSize: u16,
-        dstAddress: u16,
+        program_size: u16,
+        dst_address: u16,
     );
 
-    fn UMPK80_CpuSetProgramCounter(umpk: *mut libc::c_void, value: u16);
-    fn UMPK80_CpuProgramCounter(umpk: *mut libc::c_void) -> u16;
-    fn UMPK80_CpuStackPointer(umpk: *mut libc::c_void) -> u16;
-    fn UMPK80_CpuGetRegister(umpk: *mut libc::c_void, reg: Umpk80Register) -> u8;
-    fn UMPK80_CpuSetRegister(umpk: *mut libc::c_void, reg: Umpk80Register, data: u8);
-    fn UMPK80_CpuJump(umpk: *mut libc::c_void, adr: u16);
-    fn UMPK80_CpuCall(umpk: *mut libc::c_void, adr: u16);
+    fn UMPK80_CpuSetProgramCounter(umpk: *mut c_void, value: u16);
+    fn UMPK80_CpuProgramCounter(umpk: *mut c_void) -> u16;
+    fn UMPK80_CpuStackPointer(umpk: *mut c_void) -> u16;
+    fn UMPK80_CpuGetRegister(umpk: *mut c_void, reg: Umpk80Register) -> u8;
+    fn UMPK80_CpuSetRegister(umpk: *mut c_void, reg: Umpk80Register, data: u8);
+    fn UMPK80_CpuJump(umpk: *mut c_void, adr: u16);
+    fn UMPK80_CpuCall(umpk: *mut c_void, adr: u16);
 
-    fn UMPK80_GetRegister(umpk: *mut libc::c_void, reg: Umpk80Register) -> u8;
-    fn UMPK80_SetRegister(umpk: *mut libc::c_void, reg: Umpk80Register, value: u8);
+    fn UMPK80_GetRegister(umpk: *mut c_void, reg: Umpk80Register) -> u8;
+    fn UMPK80_SetRegister(umpk: *mut c_void, reg: Umpk80Register, value: u8);
 
-    fn UMPK80_GetRegisterPair(umpk: *mut libc::c_void, regPair: Umpk80RegisterPair) -> u16;
-    fn UMPK80_SetRegisterPair(umpk: *mut libc::c_void, regPair: Umpk80RegisterPair, value: u16);
+    fn UMPK80_GetRegisterPair(umpk: *mut c_void, reg_pair: Umpk80RegisterPair) -> u16;
+    fn UMPK80_SetRegisterPair(umpk: *mut c_void, reg_pair: Umpk80RegisterPair, value: u16);
 
-    fn UMPK80_MemoryRead(umpk: *mut libc::c_void, adr: u16) -> u8;
-    fn UMPK80_MemoryWrite(umpk: *mut libc::c_void, adr: u16, data: u8);
+    fn UMPK80_MemoryRead(umpk: *mut c_void, adr: u16) -> u8;
+    fn UMPK80_MemoryWrite(umpk: *mut c_void, adr: u16, data: u8);
 
     fn UMPK80_GetInstruction(code: u8) -> *const CUMPK80InstructionT;
 
-    fn UMPK80_CreateI8080Disassembler(memory: *const u8, size: size_t) -> *mut libc::c_void;
-    fn UMPK80_FreeI8080Disassembler(disasm: *mut libc::c_void);
+    fn UMPK80_CreateI8080Disassembler(memory: *const u8, size: size_t) -> *mut c_void;
+    fn UMPK80_FreeI8080Disassembler(disasm: *mut c_void);
 
-    fn UMPK80_I8080DisassemblerDisassemble(disasm: *mut libc::c_void) -> CUMPK80_I8080DisassembleResult;
-    fn UMPK80_I8080DisassemblerReset(disasm: *mut libc::c_void);
-    fn UMPK80_I8080DisassemblerPG(disasm: *mut libc::c_void) -> u16;
+    fn UMPK80_I8080DisassemblerDisassemble(disasm: *mut c_void) -> Cumpk80I8080disassembleResult;
+    fn UMPK80_I8080DisassemblerReset(disasm: *mut c_void);
+    fn UMPK80_I8080DisassemblerPG(disasm: *mut c_void) -> u16;
 }
 
 pub fn umpk_get_instruction(code: u8) -> UMPK80Instruction {
@@ -145,7 +145,7 @@ impl Umpk80 {
             if ptr.is_null() {
                 panic!("Failed to create UMPK80 instance");
             }
-            Self { ptr: ptr, speaker_volume: 0.01, display_address: 0 }
+            Self { ptr, speaker_volume: 0.01, display_address: 0 }
         }
     }
 
@@ -295,8 +295,8 @@ impl Intel8080Disassembler {
 
         let instruction: Option<UMPK80Instruction> = unsafe {
             match res.instruction.is_null() {
-                true => Option::None,
-                false => Option::Some(UMPK80Instruction {
+                true => None,
+                false => Some(UMPK80Instruction {
                     mnemonic: CStr::from_ptr((*res.instruction).mnemonic).to_str().unwrap(),
                     length: (*res.instruction).length,
                     operand: CStr::from_ptr((*res.instruction).mnemonic).to_str().unwrap(),
@@ -326,7 +326,7 @@ impl Drop for Intel8080Disassembler {
 
 #[cfg(test)]
 mod tests {
-    use crate::umpk80_lib::{I8080DisassembleResult, Intel8080Disassembler, Umpk80, UMPK80_GetInstruction, UMPK80Instruction, Umpk80Register, umpk_get_instruction};
+    use crate::umpk80_lib::{Intel8080Disassembler, Umpk80, Umpk80Register, umpk_get_instruction};
 
     static OS_FILE: &[u8] = include_bytes!("../../core/data/scaned-os-fixed.bin");
 

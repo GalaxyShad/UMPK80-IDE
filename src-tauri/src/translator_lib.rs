@@ -9,7 +9,7 @@ pub struct SomeIntel8080Translator {
 
 impl SomeIntel8080Translator {
     pub fn new(exe_path: &Path) -> Self {
-        let mut command = Command::new(exe_path);
+        let command = Command::new(exe_path);
 
         Self {
             exe_path: exe_path.to_path_buf(),

@@ -67,7 +67,7 @@ impl Umpk80State {
                 play_tone((frequency) * 1.5, duration * 3, volume);
             }
 
-            let FETA3 = 0x0364;
+            const FETA3: u16 = 0x0364;
             if umpk.get_cpu_program_counter() == FETA3 {
                 let b = umpk.get_cpu_register(Umpk80Register::B);
                 let c = umpk.get_cpu_register(Umpk80Register::C);

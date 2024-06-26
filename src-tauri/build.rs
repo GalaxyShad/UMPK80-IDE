@@ -18,11 +18,11 @@ fn main() {
         .compile("cumpk80");
 
     let target_triple = env::var("TARGET").expect("TARGET environment variable not set");
-    let mut rid;
+    let rid;
 
     println!("cargo::warning=ARCH-{:?}", ARCH);
 
-    if (ARCH == "x86_64") {
+    if ARCH == "x86_64" {
         rid = match OS {
             "linux" => "linux-x64",
             "windows" => "win-x64",
@@ -30,7 +30,7 @@ fn main() {
 
             _ => { panic!("Unsupported OS") }
         }
-    } else if (ARCH == "aarch64") {
+    } else if ARCH == "aarch64" {
         rid = match OS {
             "linux" => "linux-arm64",
             "windows" => "win-arm64",

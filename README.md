@@ -60,7 +60,7 @@ You can download the latest executable version of this project in the [Releases 
 ### Tech Stack
 - GitModules
 - React
-- Zustant
+- Zustand
 - Tauri
 - Rust
 - Monaco Editor
